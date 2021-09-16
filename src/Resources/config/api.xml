@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="simplystream.twitch_api.normalizer.snake_case"
+                 class="Symfony\Component\Serializer\Normalizer\ObjectNormalizer">
+            <argument type="service" id="serializer.mapping.class_metadata_factory">~</argument>
+            <argument type="service" id="serializer.name_converter.camel_case_to_snake_case">~</argument>
+            <argument type="service" id="property_accessor">~</argument>
+            <argument type="service" id="property_info">~</argument>
+        </service>
+
+        <service id="simplystream.twitch_api.serializer" class="Symfony\Component\Serializer\Serializer">
+            <argument type="collection">
+                <argument type="service" id="serializer.normalizer.datetime">~</argument>
+                <argument type="service" id="simplystream.twitch_api.normalizer.snake_case">~</argument>
+            </argument>
+            <argument type="collection">
+                <argument type="service" id="serializer.encoder.json">~</argument>
+            </argument>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService">
+            <argument type="service" id="httplug.client">~</argument>
+            <argument type="service" id="httplug.psr17_request_factory">~</argument>
+            <argument type="service" id="httplug.psr17_stream_factory">~</argument>
+            <argument type="service" id="simplystream.twitch_api.serializer">~</argument>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider">
+                ~
+            </argument>
+            <argument type="abstract">~</argument>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\Factories\ConditionFactory"/>
+        <service id="SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStorage"/>
+    </services>
+</container>
