@@ -10,6 +10,7 @@ namespace SimplyStream\TwitchApiBundle\Helix\Authentication\Provider;
 
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Provider\GenericProvider;
+use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\OidcAccessToken;
 
@@ -38,6 +39,8 @@ class TwitchProvider extends GenericProvider
      * Returns the URL for requesting public keys to verify JWT signature
      *
      * @return string
+     *
+     * @TODO: @see https://github.com/Strobotti/php-jwk to parse public key
      */
     public function getPublicKeysUrl()
     {
@@ -84,5 +87,26 @@ class TwitchProvider extends GenericProvider
         $options['response_type'] = $responseType;
 
         return $options;
+    }
+
+    protected function fetchResourceOwnerDetails(AccessToken $token)
+    {
+        $resourceOwnerDetails = parent::fetchResourceOwnerDetails($token);
+
+        // @TODO: Use library to verify and parse Token properly
+        $resourceOwnerDetails = array_merge(
+            $resourceOwnerDetails,
+            json_decode(
+                base64_decode(
+                    str_replace(
+                        '_',
+                        '/',
+                        str_replace('-', '+', explode('.', $token->getValues()['id_token'])[1])
+                    )
+                ),
+                true)
+        );
+
+        return $resourceOwnerDetails;
     }
 }
