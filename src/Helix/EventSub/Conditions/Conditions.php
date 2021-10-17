@@ -8,6 +8,7 @@ interface Conditions
         ChannelBanCondition::TYPE => ChannelBanCondition::class,
         ChannelCheerCondition::TYPE => ChannelCheerCondition::class,
         ChannelFollowCondition::TYPE => ChannelFollowCondition::class,
+        ChannelRaidCondition::TYPE => ChannelRaidCondition::class,
         ChannelPointsCustomRewardAddCondition::TYPE => ChannelPointsCustomRewardAddCondition::class,
         ChannelPointsCustomRewardUpdateCondition::TYPE => ChannelPointsCustomRewardUpdateCondition::class,
         ChannelPointsCustomRewardRemoveCondition::TYPE => ChannelPointsCustomRewardRemoveCondition::class,
