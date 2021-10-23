@@ -8,11 +8,14 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Authentication\Provider;
 
+use Firebase\JWT\JWK;
+use Firebase\JWT\JWT;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\OidcAccessToken;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @package SimplyStream\TwitchApiBundle\Helix\Authentication\Provider
@@ -92,21 +95,20 @@ class TwitchProvider extends GenericProvider
     protected function fetchResourceOwnerDetails(AccessToken $token)
     {
         $resourceOwnerDetails = parent::fetchResourceOwnerDetails($token);
+        $keyset = $this->getPublicKeyset();
 
-        // @TODO: Use library to verify and parse Token properly
-        $resourceOwnerDetails = array_merge(
+        return \array_merge(
             $resourceOwnerDetails,
-            json_decode(
-                base64_decode(
-                    str_replace(
-                        '_',
-                        '/',
-                        str_replace('-', '+', explode('.', $token->getValues()['id_token'])[1])
-                    )
-                ),
-                true)
+            (array)JWT::decode($token->getValues()['id_token'], $keyset, ['RS256'])
         );
+    }
 
-        return $resourceOwnerDetails;
+    protected function getPublicKeyset()
+    {
+        $factory = $this->getRequestFactory();
+        $request = $factory->getRequest(Request::METHOD_GET, $this->getPublicKeysUrl());
+        $jwk = $this->getResponse($request);
+
+        return JWK::parseKeySet((string)$jwk->getBody());
     }
 }
