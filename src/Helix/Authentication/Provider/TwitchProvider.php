@@ -42,8 +42,6 @@ class TwitchProvider extends GenericProvider
      * Returns the URL for requesting public keys to verify JWT signature
      *
      * @return string
-     *
-     * @TODO: @see https://github.com/Strobotti/php-jwk to parse public key
      */
     public function getPublicKeysUrl()
     {
@@ -92,6 +90,9 @@ class TwitchProvider extends GenericProvider
         return $options;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function fetchResourceOwnerDetails(AccessToken $token)
     {
         $resourceOwnerDetails = parent::fetchResourceOwnerDetails($token);
@@ -103,6 +104,11 @@ class TwitchProvider extends GenericProvider
         );
     }
 
+    /**
+     * Requests keyset (public key) from Twitch needed to validate received ID token
+     *
+     * @return array
+     */
     protected function getPublicKeyset()
     {
         $factory = $this->getRequestFactory();
