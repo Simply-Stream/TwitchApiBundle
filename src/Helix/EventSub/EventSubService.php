@@ -14,6 +14,7 @@ use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorageInterface;
@@ -140,9 +141,9 @@ class EventSubService
      * @param Subscription              $subscription
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return string
+     * @return ResponseInterface
      */
-    public function subscribe(Subscription $subscription, AccessTokenInterface $accessToken = null): string
+    public function subscribe(Subscription $subscription, AccessTokenInterface $accessToken = null): ResponseInterface
     {
         try {
             if (! $accessToken) {
@@ -173,7 +174,7 @@ class EventSubService
         }
 
         // @TODO: Denormalize?
-        return (string)$response->getBody();
+        return $response;
     }
 
     /**
@@ -212,9 +213,9 @@ class EventSubService
      *
      * @param string $subscriptionId
      *
-     * @return string
+     * @return ResponseInterface
      */
-    public function unsubscribe(string $subscriptionId): string
+    public function unsubscribe(string $subscriptionId): ResponseInterface
     {
         try {
             $accessToken = $this->getAccessToken('client_credentials');
@@ -225,9 +226,7 @@ class EventSubService
                 ->withHeader('Content-Type', 'application/json')
                 ->withHeader('Client-ID', $this->options['clientId']);
 
-            $this->httpClient->sendRequest($request);
-
-            return $subscriptionId;
+            return $this->httpClient->sendRequest($request);
         } catch (ClientExceptionInterface $e) {
             // @TODO: Better exception handling (not generic)
             throw new \RuntimeException($e->getMessage());
