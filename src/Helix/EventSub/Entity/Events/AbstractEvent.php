@@ -19,9 +19,13 @@ abstract class AbstractEvent implements EventInterface
 
     /**
      * @param string $id
+     *
+     * @return AbstractEvent
      */
-    public function setId(string $id): void
+    public function setId(string $id): self
     {
         $this->id = $id;
+
+        return $this;
     }
 }
