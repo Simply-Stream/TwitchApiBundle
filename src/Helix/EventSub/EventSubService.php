@@ -18,14 +18,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorageInterface;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Events\EventInterface;
+use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\EventResponse;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Events\Events;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidAccessTokenException;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidSignatureException;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\UnsupportedEventException;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * @package SimplyStream\TwitchApiBundle\Helix\EventSub
@@ -57,7 +56,7 @@ class EventSubService
     /** @var StreamFactoryInterface */
     protected $streamFactory;
 
-    /** @var SerializerInterface */
+    /** @var Serializer */
     protected $serializer;
 
     /** @var TwitchProvider */
@@ -73,7 +72,7 @@ class EventSubService
      * @param ClientInterface         $httpClient
      * @param RequestFactoryInterface $requestFactory
      * @param StreamFactoryInterface  $streamFactory
-     * @param SerializerInterface     $serializer
+     * @param Serializer              $serializer
      * @param TwitchProvider          $twitch
      * @param array                   $options
      */
@@ -81,7 +80,7 @@ class EventSubService
         ClientInterface $httpClient,
         RequestFactoryInterface $requestFactory,
         StreamFactoryInterface $streamFactory,
-        SerializerInterface $serializer,
+        Serializer $serializer,
         TwitchProvider $twitch,
         array $options
     ) {
@@ -285,15 +284,14 @@ class EventSubService
      *
      * @param RequestInterface $request
      * @param string|null      $secret
-     * @param bool             $raw
      *
-     * @return array
+     * @return EventResponse
      *
      * @throws InvalidSignatureException
      * @throws UnsupportedEventException
      * @throws \JsonException
      */
-    public function handleSubscriptionCallback(RequestInterface $request, ?string $secret = null, bool $raw = false): array
+    public function handleSubscriptionCallback(RequestInterface $request, ?string $secret = null): EventResponse
     {
         $this->verifySignature($request, $secret);
         $body = \json_decode((string)$request->getBody(), true, 512, JSON_THROW_ON_ERROR);
@@ -304,37 +302,40 @@ class EventSubService
                 throw new \Exception('Challenge is missing');
             }
 
-            return $body;
+            return $this->createResponse($body['subscription'], $type, null, $body['challenge']);
         }
 
-        if ($raw) {
-            return $body;
-        }
-
-        // @TODO: Refactor to use symfony serializer, no need to split it like that
-        return [
-            'subscription' => $body['subscription'],
-            'event' => $this->convertToObject(json_encode($body['event'], JSON_THROW_ON_ERROR), $type),
-        ];
+        return $this->createResponse($body['subscription'], $type, $body['event']);
     }
 
     /**
-     * Converts the subscription callback data from Twitch to an object mapped by the received event.
+     * Create response based on subscription and/or challenge.
      *
-     * @param string $data
-     * @param string $type
+     * @TODO: Still don't like this way, might refactor later (again)
      *
-     * @return EventInterface
+     * @param array       $subscription
+     * @param string      $type
+     * @param array|null  $event
+     * @param string|null $challenge
+     *
+     * @return EventResponse
      */
-    protected function convertToObject(string $data, string $type): EventInterface
+    protected function createResponse(array $subscription, string $type, ?array $event = null, ?string $challenge = null)
     {
-        return $this->serializer->deserialize(
-            $data,
-            Events::AVAILABLE_EVENTS[$type],
-            'json',
-            [
-                ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
-            ]
+        return new EventResponse(
+            $this->serializer->denormalize(
+                $subscription,
+                Subscription::class,
+                'array',
+                [
+                    'eventsub.eventType' => $type,
+                ]
+            ),
+            $challenge,
+            $this->serializer->denormalize(
+                $event,
+                Events::AVAILABLE_EVENTS[$type]
+            )
         );
     }
 }

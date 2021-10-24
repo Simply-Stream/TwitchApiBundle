@@ -17,24 +17,44 @@ use SimplyStream\TwitchApiBundle\Helix\EventSub\Transport;
 class Subscription
 {
     /**
+     * @var string|null
+     */
+    protected ?string $id;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $status;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected ?\DateTime $createdAt;
+
+    /**
+     * @var int|null
+     */
+    protected ?int $cost;
+
+    /**
      * @var string
      */
-    protected $type;
+    protected string $type;
 
     /**
      * @var ConditionInterface
      */
-    protected $condition;
+    protected ConditionInterface $condition;
 
     /**
      * @var Transport
      */
-    protected $transport;
+    protected Transport $transport;
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected $version;
+    protected ?string $version;
 
     /**
      * @param ConditionInterface $condition
@@ -47,6 +67,70 @@ class Subscription
         $this->condition = $condition;
         $this->transport = $transport;
         $this->version = $version;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string|null $id
+     */
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string|null $status
+     */
+    public function setStatus(?string $status): void
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime|null $createdAt
+     */
+    public function setCreatedAt(?\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCost(): ?int
+    {
+        return $this->cost;
+    }
+
+    /**
+     * @param int|null $cost
+     */
+    public function setCost(?int $cost): void
+    {
+        $this->cost = $cost;
     }
 
     /**
