@@ -7,11 +7,6 @@ class StreamOnlineEvent extends AbstractEvent
     use HasBroadcasterUser;
 
     /**
-     * @var int
-     */
-    protected $id;
-
-    /**
      * @var string
      */
     protected $type;
@@ -20,26 +15,6 @@ class StreamOnlineEvent extends AbstractEvent
      * @var \DateTime
      */
     protected $startedAt;
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return StreamOnlineEvent
-     */
-    public function setId(int $id): StreamOnlineEvent
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     /**
      * @return string

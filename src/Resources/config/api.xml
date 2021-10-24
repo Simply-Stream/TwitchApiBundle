@@ -4,18 +4,18 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="simplystream.twitch_api.normalizer.snake_case"
-                 class="Symfony\Component\Serializer\Normalizer\ObjectNormalizer">
+        <service id="simplystream.twitch_api.normalizer.subscription"
+                 class="SimplyStream\TwitchApiBundle\Normalizer\SubscriptionNormalizer">
             <argument type="service" id="serializer.mapping.class_metadata_factory">~</argument>
             <argument type="service" id="serializer.name_converter.camel_case_to_snake_case">~</argument>
             <argument type="service" id="property_accessor">~</argument>
-            <argument type="service" id="property_info">~</argument>
+            <argument type="service" id="property_info.reflection_extractor">~</argument>
         </service>
 
         <service id="simplystream.twitch_api.serializer" class="Symfony\Component\Serializer\Serializer">
             <argument type="collection">
                 <argument type="service" id="serializer.normalizer.datetime">~</argument>
-                <argument type="service" id="simplystream.twitch_api.normalizer.snake_case">~</argument>
+                <argument type="service" id="simplystream.twitch_api.normalizer.subscription">~</argument>
             </argument>
             <argument type="collection">
                 <argument type="service" id="serializer.encoder.json">~</argument>
