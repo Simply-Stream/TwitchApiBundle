@@ -2,6 +2,8 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Events;
 
+use SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Contribution;
+
 class HypeTrainEndEvent extends AbstractEvent
 {
     use HasBroadcasterUser;
@@ -17,9 +19,7 @@ class HypeTrainEndEvent extends AbstractEvent
     protected $total;
 
     /**
-     * @TODO: Change to class
-     *
-     * @var string
+     * @var Contribution[]
      */
     protected $topContributions;
 
@@ -49,9 +49,9 @@ class HypeTrainEndEvent extends AbstractEvent
     /**
      * @param int $level
      *
-     * @return HypeTrainEndEvent
+     * @return $this
      */
-    public function setLevel(int $level): HypeTrainEndEvent
+    public function setLevel(int $level): self
     {
         $this->level = $level;
 
@@ -69,9 +69,9 @@ class HypeTrainEndEvent extends AbstractEvent
     /**
      * @param int $total
      *
-     * @return HypeTrainEndEvent
+     * @return $this
      */
-    public function setTotal(int $total): HypeTrainEndEvent
+    public function setTotal(int $total): self
     {
         $this->total = $total;
 
@@ -79,19 +79,19 @@ class HypeTrainEndEvent extends AbstractEvent
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getTopContributions(): string
+    public function getTopContributions(): array
     {
         return $this->topContributions;
     }
 
     /**
-     * @param string $topContributions
+     * @param array $topContributions
      *
-     * @return HypeTrainEndEvent
+     * @return $this
      */
-    public function setTopContributions(string $topContributions): HypeTrainEndEvent
+    public function setTopContributions(array $topContributions): self
     {
         $this->topContributions = $topContributions;
 
@@ -109,9 +109,9 @@ class HypeTrainEndEvent extends AbstractEvent
     /**
      * @param \DateTime $startedAt
      *
-     * @return HypeTrainEndEvent
+     * @return $this
      */
-    public function setStartedAt(\DateTime $startedAt): HypeTrainEndEvent
+    public function setStartedAt(\DateTime $startedAt): self
     {
         $this->startedAt = $startedAt;
 
@@ -129,9 +129,9 @@ class HypeTrainEndEvent extends AbstractEvent
     /**
      * @param \DateTime $endedAt
      *
-     * @return HypeTrainEndEvent
+     * @return $this
      */
-    public function setEndedAt(\DateTime $endedAt): HypeTrainEndEvent
+    public function setEndedAt(\DateTime $endedAt): self
     {
         $this->endedAt = $endedAt;
 
@@ -149,9 +149,9 @@ class HypeTrainEndEvent extends AbstractEvent
     /**
      * @param \DateTime $cooldownEndsAt
      *
-     * @return HypeTrainEndEvent
+     * @return $this
      */
-    public function setCooldownEndsAt(\DateTime $cooldownEndsAt): HypeTrainEndEvent
+    public function setCooldownEndsAt(\DateTime $cooldownEndsAt): self
     {
         $this->cooldownEndsAt = $cooldownEndsAt;
 

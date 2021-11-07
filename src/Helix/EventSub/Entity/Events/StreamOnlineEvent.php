@@ -9,12 +9,37 @@ class StreamOnlineEvent extends AbstractEvent
     /**
      * @var string
      */
+    protected $id;
+
+    /**
+     * @var string
+     */
     protected $type;
 
     /**
      * @var \DateTime
      */
     protected $startedAt;
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return $this
+     */
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
      * @return string
@@ -27,9 +52,9 @@ class StreamOnlineEvent extends AbstractEvent
     /**
      * @param string $type
      *
-     * @return StreamOnlineEvent
+     * @return $this
      */
-    public function setType(string $type): StreamOnlineEvent
+    public function setType(string $type): self
     {
         $this->type = $type;
 
@@ -47,9 +72,9 @@ class StreamOnlineEvent extends AbstractEvent
     /**
      * @param \DateTime $startedAt
      *
-     * @return StreamOnlineEvent
+     * @return $this
      */
-    public function setStartedAt(\DateTime $startedAt): StreamOnlineEvent
+    public function setStartedAt(\DateTime $startedAt): self
     {
         $this->startedAt = $startedAt;
 

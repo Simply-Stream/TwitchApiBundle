@@ -5,34 +5,34 @@ namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Events;
 trait HasUser
 {
     /**
-     * @var string
+     * @var ?string
      */
     protected $userId;
 
     /**
-     * @var string
+     * @var ?string
      */
     protected $userLogin;
 
     /**
-     * @var string
+     * @var ?string
      */
     protected $userName;
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getUserId(): string
+    public function getUserId(): ?string
     {
         return $this->userId;
     }
 
     /**
-     * @param string $userId
+     * @param ?string $userId
      *
      * @return $this
      */
-    public function setUserId(string $userId): self
+    public function setUserId(?string $userId): self
     {
         $this->userId = $userId;
 
@@ -40,19 +40,19 @@ trait HasUser
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getUserLogin(): string
+    public function getUserLogin(): ?string
     {
         return $this->userLogin;
     }
 
     /**
-     * @param string $userLogin
+     * @param ?string $userLogin
      *
      * @return $this
      */
-    public function setUserLogin(string $userLogin): self
+    public function setUserLogin(?string $userLogin): self
     {
         $this->userLogin = $userLogin;
 
@@ -60,19 +60,19 @@ trait HasUser
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getUserName(): string
+    public function getUserName(): ?string
     {
         return $this->userName;
     }
 
     /**
-     * @param string $userName
+     * @param ?string $userName
      *
      * @return $this
      */
-    public function setUserName(string $userName): self
+    public function setUserName(?string $userName): self
     {
         $this->userName = $userName;
 

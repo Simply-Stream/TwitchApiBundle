@@ -2,6 +2,8 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Events;
 
+use SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Reward;
+
 class ChannelPointsCustomRewardRedemptionAddEvent extends AbstractEvent
 {
     use HasUser,
@@ -23,9 +25,7 @@ class ChannelPointsCustomRewardRedemptionAddEvent extends AbstractEvent
     protected $status;
 
     /**
-     * @TODO: Change to class
-     *
-     * @var string
+     * @var Reward
      */
     protected $reward;
 
@@ -45,9 +45,9 @@ class ChannelPointsCustomRewardRedemptionAddEvent extends AbstractEvent
     /**
      * @param string $userInput
      *
-     * @return ChannelPointsCustomRewardRedemptionAddEvent
+     * @return $this
      */
-    public function setUserInput(string $userInput): ChannelPointsCustomRewardRedemptionAddEvent
+    public function setUserInput(string $userInput): self
     {
         $this->userInput = $userInput;
 
@@ -65,9 +65,9 @@ class ChannelPointsCustomRewardRedemptionAddEvent extends AbstractEvent
     /**
      * @param string $id
      *
-     * @return ChannelPointsCustomRewardRedemptionAddEvent
+     * @return $this
      */
-    public function setId(string $id): ChannelPointsCustomRewardRedemptionAddEvent
+    public function setId(string $id): self
     {
         $this->id = $id;
 
@@ -85,9 +85,9 @@ class ChannelPointsCustomRewardRedemptionAddEvent extends AbstractEvent
     /**
      * @param string $status
      *
-     * @return ChannelPointsCustomRewardRedemptionAddEvent
+     * @return $this
      */
-    public function setStatus(string $status): ChannelPointsCustomRewardRedemptionAddEvent
+    public function setStatus(string $status): self
     {
         $this->status = $status;
 
@@ -95,19 +95,19 @@ class ChannelPointsCustomRewardRedemptionAddEvent extends AbstractEvent
     }
 
     /**
-     * @return string
+     * @return Reward
      */
-    public function getReward(): string
+    public function getReward(): Reward
     {
         return $this->reward;
     }
 
     /**
-     * @param string $reward
+     * @param Reward $reward
      *
-     * @return ChannelPointsCustomRewardRedemptionAddEvent
+     * @return $this
      */
-    public function setReward(string $reward): ChannelPointsCustomRewardRedemptionAddEvent
+    public function setReward(Reward $reward): self
     {
         $this->reward = $reward;
 
@@ -125,9 +125,9 @@ class ChannelPointsCustomRewardRedemptionAddEvent extends AbstractEvent
     /**
      * @param \DateTime $redeemedAt
      *
-     * @return ChannelPointsCustomRewardRedemptionAddEvent
+     * @return $this
      */
-    public function setRedeemedAt(\DateTime $redeemedAt): ChannelPointsCustomRewardRedemptionAddEvent
+    public function setRedeemedAt(\DateTime $redeemedAt): self
     {
         $this->redeemedAt = $redeemedAt;
 
