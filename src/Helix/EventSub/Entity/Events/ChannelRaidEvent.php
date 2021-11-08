@@ -37,7 +37,7 @@ class ChannelRaidEvent extends AbstractEvent
     /**
      * @var int
      */
-    protected $viewer;
+    protected $viewers;
 
     /**
      * @return string
@@ -50,9 +50,9 @@ class ChannelRaidEvent extends AbstractEvent
     /**
      * @param string $fromBroadcasterUserId
      *
-     * @return ChannelRaidEvent
+     * @return $this
      */
-    public function setFromBroadcasterUserId(string $fromBroadcasterUserId): ChannelRaidEvent
+    public function setFromBroadcasterUserId(string $fromBroadcasterUserId): self
     {
         $this->fromBroadcasterUserId = $fromBroadcasterUserId;
 
@@ -70,9 +70,9 @@ class ChannelRaidEvent extends AbstractEvent
     /**
      * @param string $fromBroadcasterUserLogin
      *
-     * @return ChannelRaidEvent
+     * @return $this
      */
-    public function setFromBroadcasterUserLogin(string $fromBroadcasterUserLogin): ChannelRaidEvent
+    public function setFromBroadcasterUserLogin(string $fromBroadcasterUserLogin): self
     {
         $this->fromBroadcasterUserLogin = $fromBroadcasterUserLogin;
 
@@ -90,9 +90,9 @@ class ChannelRaidEvent extends AbstractEvent
     /**
      * @param string $fromBroadcasterUserName
      *
-     * @return ChannelRaidEvent
+     * @return $this
      */
-    public function setFromBroadcasterUserName(string $fromBroadcasterUserName): ChannelRaidEvent
+    public function setFromBroadcasterUserName(string $fromBroadcasterUserName): self
     {
         $this->fromBroadcasterUserName = $fromBroadcasterUserName;
 
@@ -110,9 +110,9 @@ class ChannelRaidEvent extends AbstractEvent
     /**
      * @param string $toBroadcasterUserId
      *
-     * @return ChannelRaidEvent
+     * @return $this
      */
-    public function setToBroadcasterUserId(string $toBroadcasterUserId): ChannelRaidEvent
+    public function setToBroadcasterUserId(string $toBroadcasterUserId): self
     {
         $this->toBroadcasterUserId = $toBroadcasterUserId;
 
@@ -130,9 +130,9 @@ class ChannelRaidEvent extends AbstractEvent
     /**
      * @param string $toBroadcasterUserLogin
      *
-     * @return ChannelRaidEvent
+     * @return $this
      */
-    public function setToBroadcasterUserLogin(string $toBroadcasterUserLogin): ChannelRaidEvent
+    public function setToBroadcasterUserLogin(string $toBroadcasterUserLogin): self
     {
         $this->toBroadcasterUserLogin = $toBroadcasterUserLogin;
 
@@ -150,9 +150,9 @@ class ChannelRaidEvent extends AbstractEvent
     /**
      * @param string $toBroadcasterUserName
      *
-     * @return ChannelRaidEvent
+     * @return $this
      */
-    public function setToBroadcasterUserName(string $toBroadcasterUserName): ChannelRaidEvent
+    public function setToBroadcasterUserName(string $toBroadcasterUserName): self
     {
         $this->toBroadcasterUserName = $toBroadcasterUserName;
 
@@ -162,19 +162,19 @@ class ChannelRaidEvent extends AbstractEvent
     /**
      * @return int
      */
-    public function getViewer(): int
+    public function getViewers(): int
     {
-        return $this->viewer;
+        return $this->viewers;
     }
 
     /**
-     * @param int $viewer
+     * @param int $viewers
      *
-     * @return ChannelRaidEvent
+     * @return $this
      */
-    public function setViewer(int $viewer): ChannelRaidEvent
+    public function setViewers(int $viewers): self
     {
-        $this->viewer = $viewer;
+        $this->viewers = $viewers;
 
         return $this;
     }

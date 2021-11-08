@@ -2,7 +2,6 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Events;
 
-class ChannelPointsCustomRewardUpdateEvent extends AbstractEvent
+class ChannelPointsCustomRewardUpdateEvent extends ChannelPointsCustomRewardAddEvent
 {
-
 }

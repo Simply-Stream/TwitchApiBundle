@@ -18,11 +18,28 @@ class ChannelRaidCondition extends AbstractCondition
     /**
      * @var string
      */
+    protected $fromBroadcasterUserId;
+
+    /**
+     * @var string
+     */
     protected $toBroadcasterUserId;
 
-    protected $requiredOptions = [
-        'toBroadcasterUserId',
-    ];
+    /**
+     * There's actually no required option, but it still needs either from- or toBroadcasterUserId to work
+     * @see https://dev.twitch.tv/docs/eventsub/eventsub-reference#channel-raid-condition
+     *
+     * @var array
+     */
+    protected $requiredOptions = [];
+
+    /**
+     * @return string
+     */
+    public function getFromBroadcasterUserId(): string
+    {
+        return $this->fromBroadcasterUserId;
+    }
 
     /**
      * @return string
