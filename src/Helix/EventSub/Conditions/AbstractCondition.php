@@ -40,6 +40,9 @@ abstract class AbstractCondition implements ConditionInterface
     }
 
     /**
+     * @TODO: Add possibility to make only a subset of parameters required.
+     *        @see https://dev.twitch.tv/docs/eventsub/eventsub-reference#channel-raid-condition
+     *
      * @inheritDoc
      */
     protected function assertRequiredOptions(array $options): void
