@@ -29,7 +29,7 @@ class ChannelUpdateEvent extends AbstractEvent
     /**
      * @var bool
      */
-    protected $mature;
+    protected $isMature;
 
     /**
      * @return string
@@ -114,19 +114,19 @@ class ChannelUpdateEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isMature(): bool
+    public function isIsMature(): bool
     {
-        return $this->mature;
+        return $this->isMature;
     }
 
     /**
-     * @param bool $mature
+     * @param bool $isMature
      *
      * @return ChannelUpdateEvent
      */
-    public function setMature(bool $mature): ChannelUpdateEvent
+    public function setIsMature(bool $isMature): ChannelUpdateEvent
     {
-        $this->mature = $mature;
+        $this->isMature = $isMature;
 
         return $this;
     }

@@ -36,7 +36,7 @@ class ChannelRaidCondition extends AbstractCondition
     /**
      * @return string
      */
-    public function getFromBroadcasterUserId(): string
+    public function getFromBroadcasterUserId(): ?string
     {
         return $this->fromBroadcasterUserId;
     }
@@ -44,7 +44,7 @@ class ChannelRaidCondition extends AbstractCondition
     /**
      * @return string
      */
-    public function getToBroadcasterUserId(): string
+    public function getToBroadcasterUserId(): ?string
     {
         return $this->toBroadcasterUserId;
     }

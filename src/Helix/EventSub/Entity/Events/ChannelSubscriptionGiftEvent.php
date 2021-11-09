@@ -27,7 +27,7 @@ class ChannelSubscriptionGiftEvent extends AbstractEvent
     /**
      * @var bool
      */
-    protected $anonymous;
+    protected $isAnonymous;
 
     /**
      * @return int
@@ -92,19 +92,19 @@ class ChannelSubscriptionGiftEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isAnonymous(): bool
+    public function isIsAnonymous(): bool
     {
-        return $this->anonymous;
+        return $this->isAnonymous;
     }
 
     /**
-     * @param bool $anonymous
+     * @param bool $isAnonymous
      *
      * @return $this
      */
-    public function setAnonymous(bool $anonymous): self
+    public function setIsAnonymous(bool $isAnonymous): self
     {
-        $this->anonymous = $anonymous;
+        $this->isAnonymous = $isAnonymous;
 
         return $this;
     }
