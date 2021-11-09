@@ -21,7 +21,7 @@ class ChannelBanEvent extends AbstractEvent
     /**
      * @var bool
      */
-    protected $permanent;
+    protected $isPermanent;
 
     /**
      * @return string
@@ -66,19 +66,19 @@ class ChannelBanEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isPermanent(): bool
+    public function isIsPermanent(): bool
     {
-        return $this->permanent;
+        return $this->isPermanent;
     }
 
     /**
-     * @param bool $permanent
+     * @param bool $isPermanent
      *
      * @return ChannelBanEvent
      */
-    public function setPermanent(bool $permanent): ChannelBanEvent
+    public function setIsPermanent(bool $isPermanent): ChannelBanEvent
     {
-        $this->permanent = $permanent;
+        $this->isPermanent = $isPermanent;
 
         return $this;
     }

@@ -19,17 +19,17 @@ class ChannelPointsCustomRewardAddEvent extends AbstractEvent
     /**
      * @var bool
      */
-    protected $enabled;
+    protected $isEnabled;
 
     /**
      * @var bool
      */
-    protected $paused;
+    protected $isPaused;
 
     /**
      * @var bool
      */
-    protected $inStock;
+    protected $isInStock;
 
     /**
      * @var string
@@ -49,7 +49,7 @@ class ChannelPointsCustomRewardAddEvent extends AbstractEvent
     /**
      * @var bool
      */
-    protected $userInputRequired;
+    protected $isUserInputRequired;
 
     /**
      * @var bool
@@ -119,19 +119,19 @@ class ChannelPointsCustomRewardAddEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isEnabled(): bool
+    public function isIsEnabled(): bool
     {
-        return $this->enabled;
+        return $this->isEnabled;
     }
 
     /**
-     * @param bool $enabled
+     * @param bool $isEnabled
      *
      * @return $this
      */
-    public function setEnabled(bool $enabled): self
+    public function setIsEnabled(bool $isEnabled): self
     {
-        $this->enabled = $enabled;
+        $this->isEnabled = $isEnabled;
 
         return $this;
     }
@@ -139,19 +139,19 @@ class ChannelPointsCustomRewardAddEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isPaused(): bool
+    public function isIsPaused(): bool
     {
-        return $this->paused;
+        return $this->isPaused;
     }
 
     /**
-     * @param bool $paused
+     * @param bool $isPaused
      *
      * @return $this
      */
-    public function setPaused(bool $paused): self
+    public function setIsPaused(bool $isPaused): self
     {
-        $this->paused = $paused;
+        $this->isPaused = $isPaused;
 
         return $this;
     }
@@ -159,19 +159,19 @@ class ChannelPointsCustomRewardAddEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isInStock(): bool
+    public function isIsInStock(): bool
     {
-        return $this->inStock;
+        return $this->isInStock;
     }
 
     /**
-     * @param bool $inStock
+     * @param bool $isInStock
      *
      * @return $this
      */
-    public function setInStock(bool $inStock): self
+    public function setIsInStock(bool $isInStock): self
     {
-        $this->inStock = $inStock;
+        $this->isInStock = $isInStock;
 
         return $this;
     }
@@ -239,19 +239,19 @@ class ChannelPointsCustomRewardAddEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isUserInputRequired(): bool
+    public function isIsUserInputRequired(): bool
     {
-        return $this->userInputRequired;
+        return $this->isUserInputRequired;
     }
 
     /**
-     * @param bool $userInputRequired
+     * @param bool $isUserInputRequired
      *
      * @return $this
      */
-    public function setUserInputRequired(bool $userInputRequired): self
+    public function setIsUserInputRequired(bool $isUserInputRequired): self
     {
-        $this->userInputRequired = $userInputRequired;
+        $this->isUserInputRequired = $isUserInputRequired;
 
         return $this;
     }

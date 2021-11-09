@@ -7,7 +7,7 @@ class MaxPerStream
     /**
      * @var bool
      */
-    protected $enabled;
+    protected $isEnabled;
 
     /**
      * @var int
@@ -17,19 +17,19 @@ class MaxPerStream
     /**
      * @return bool
      */
-    public function isEnabled(): bool
+    public function isIsEnabled(): bool
     {
-        return $this->enabled;
+        return $this->isEnabled;
     }
 
     /**
-     * @param bool $enabled
+     * @param bool $isEnabled
      *
      * @return $this
      */
-    public function setEnabled(bool $enabled): self
+    public function setIsEnabled(bool $isEnabled): self
     {
-        $this->enabled = $enabled;
+        $this->isEnabled = $isEnabled;
 
         return $this;
     }

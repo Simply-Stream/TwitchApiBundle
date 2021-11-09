@@ -10,7 +10,7 @@ class ChannelCheerEvent extends AbstractEvent
     /**
      * @var bool
      */
-    protected $anonymous;
+    protected $isAnonymous;
 
     /**
      * @var string
@@ -25,19 +25,19 @@ class ChannelCheerEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isAnonymous(): bool
+    public function isIsAnonymous(): bool
     {
-        return $this->anonymous;
+        return $this->isAnonymous;
     }
 
     /**
-     * @param bool $anonymous
+     * @param bool $isAnonymous
      *
      * @return ChannelCheerEvent
      */
-    public function setAnonymous(bool $anonymous): ChannelCheerEvent
+    public function setIsAnonymous(bool $isAnonymous): ChannelCheerEvent
     {
-        $this->anonymous = $anonymous;
+        $this->isAnonymous = $isAnonymous;
 
         return $this;
     }

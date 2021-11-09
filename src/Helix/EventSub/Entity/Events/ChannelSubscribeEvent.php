@@ -15,7 +15,7 @@ class ChannelSubscribeEvent extends AbstractEvent
     /**
      * @var bool
      */
-    protected $gift;
+    protected $isGift;
 
     /**
      * @return string
@@ -40,19 +40,19 @@ class ChannelSubscribeEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isGift(): bool
+    public function isIsGift(): bool
     {
-        return $this->gift;
+        return $this->isGift;
     }
 
     /**
-     * @param bool $gift
+     * @param bool $isGift
      *
      * @return ChannelSubscribeEvent
      */
-    public function setGift(bool $gift): ChannelSubscribeEvent
+    public function setIsGift(bool $isGift): ChannelSubscribeEvent
     {
-        $this->gift = $gift;
+        $this->isGift = $isGift;
 
         return $this;
     }

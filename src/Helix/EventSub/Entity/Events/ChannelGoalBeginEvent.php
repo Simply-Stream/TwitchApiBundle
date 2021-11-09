@@ -24,7 +24,7 @@ class ChannelGoalBeginEvent extends AbstractEvent
     /**
      * @var bool
      */
-    protected $achieved;
+    protected $isAchieved;
 
     /**
      * @var int
@@ -109,19 +109,19 @@ class ChannelGoalBeginEvent extends AbstractEvent
     /**
      * @return bool
      */
-    public function isAchieved(): bool
+    public function isIsAchieved(): bool
     {
-        return $this->achieved;
+        return $this->isAchieved;
     }
 
     /**
-     * @param bool $achieved
+     * @param bool $isAchieved
      *
      * @return $this
      */
-    public function setAchieved(bool $achieved): self
+    public function setIsAchieved(bool $isAchieved): self
     {
-        $this->achieved = $achieved;
+        $this->isAchieved = $isAchieved;
 
         return $this;
     }
