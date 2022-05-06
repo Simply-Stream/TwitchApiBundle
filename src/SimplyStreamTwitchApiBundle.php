@@ -9,11 +9,12 @@
 namespace SimplyStream\TwitchApiBundle;
 
 use SimplyStream\TwitchApiBundle\DependencyInjection\SimplyStreamTwitchApiExtension;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class SimplyStreamTwitchApiBundle extends Bundle
 {
-    public function getContainerExtension()
+    public function getContainerExtension(): ?ExtensionInterface
     {
         if (null === $this->extension) {
             $this->extension = new SimplyStreamTwitchApiExtension();

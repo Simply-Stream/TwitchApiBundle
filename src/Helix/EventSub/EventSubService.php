@@ -16,6 +16,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use SimplyStream\TwitchApiBundle\Helix\Api\TwitchApiService;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorageInterface;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\EventResponse;
@@ -45,7 +46,7 @@ class EventSubService
     public const WEBHOOK_USER_REVOKED = 'user_removed';
 
     /** @var string */
-    public const API_URL = 'https://api.twitch.tv/helix/eventsub/subscriptions';
+    public const API_URL = TwitchApiService::BASE_API_URL . 'eventsub/subscriptions';
 
     /** @var ClientInterface */
     protected $httpClient;

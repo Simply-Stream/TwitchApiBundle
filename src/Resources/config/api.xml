@@ -33,6 +33,16 @@
             <argument type="abstract">~</argument>
         </service>
 
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\TwitchApiService">
+            <argument type="service" id="httplug.client">~</argument>
+            <argument type="service" id="httplug.psr17_request_factory">~</argument>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider">
+                ~
+            </argument>
+            <argument type="abstract">~</argument>
+        </service>
+
+
         <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\Factories\ConditionFactory"/>
         <service id="SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStorage"/>
     </services>
