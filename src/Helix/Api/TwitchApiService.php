@@ -83,10 +83,26 @@ class TwitchApiService
             throw new \RuntimeException('You cannot search for more than 100 ids or games');
         }
 
-        $uri = new Uri(self::BASE_API_URL . 'games');
-        $query = self::buildQueryString(['id' => $id, 'game' => $game]);
+        if (empty($id) && empty($game)) {
+            throw new \RuntimeException('You need at least one id or game to request');
+        }
 
-        return $this->sendRequest($uri->withQuery($query));
+        $uri = new Uri(self::BASE_API_URL . 'games');
+        $query = self::buildQueryString(['id' => $id, 'name' => $game]);
+
+        return $this->sendRequest($uri->withQuery($query), $accessToken);
+    }
+
+    public function getTopGames(
+        string $after = null,
+        string $before = null,
+        int $first = 20,
+        AccessTokenInterface $accessToken = null
+    ): ResponseInterface {
+        $uri = new Uri(self::BASE_API_URL . 'games/top');
+        $query = self::buildQueryString(['after' => $after, 'before' => $before, 'first' => $first]);
+
+        return $this->sendRequest($uri->withQuery($query), $accessToken);
     }
 
     protected function sendRequest(UriInterface $uri, AccessTokenInterface $accessToken = null, string $method = 'GET'): ResponseInterface
