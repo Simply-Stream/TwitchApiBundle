@@ -105,6 +105,52 @@ class TwitchApiService
         return $this->sendRequest($uri->withQuery($query), $accessToken);
     }
 
+    /**
+     * @param string                    $id
+     * @param string                    $idType - Allowed values: id|game_id|broadcaster_id
+     * @param string|null               $after
+     * @param string|null               $before
+     * @param int                       $first
+     * @param AccessTokenInterface|null $accessToken
+     *
+     * @return ResponseInterface
+     * @throws \Exception
+     */
+    public function getClips(
+        string $id,
+        string $idType = 'broadcaster_id',
+        string $after = null,
+        string $before = null,
+        int $first = 20,
+        AccessTokenInterface $accessToken = null
+    ): ResponseInterface {
+        $allowedIdTypes = ['id', 'game_id', 'broadcaster_id'];
+
+        if (! in_array($idType, $allowedIdTypes)) {
+            throw new \Exception(sprintf('Invalid ID type. Given "%s", allowed are: %s', $idType, implode(',', $allowedIdTypes)));
+        }
+
+        $uri = new Uri(self::BASE_API_URL . 'clips');
+        $query = self::buildQueryString([$idType => $id, 'after' => $after, 'before' => $before, 'first' => $first]);
+
+        return $this->sendRequest($uri->withQuery($query), $accessToken);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function getUsers(array $logins = null, array $ids = [], AccessTokenInterface $accessToken = null): ResponseInterface
+    {
+        if (count($ids) === 0 && count($logins) === 0) {
+            throw new \RuntimeException('You need to specify at least one "id" or "login"');
+        }
+
+        $uri = new Uri(self::BASE_API_URL . 'users');
+        $query = self::buildQueryString(['id' => $ids, 'login' => $logins]);
+
+        return $this->sendRequest($uri->withQuery($query), $accessToken);
+    }
+
     protected function sendRequest(UriInterface $uri, AccessTokenInterface $accessToken = null, string $method = 'GET'): ResponseInterface
     {
         if (! $accessToken) {
