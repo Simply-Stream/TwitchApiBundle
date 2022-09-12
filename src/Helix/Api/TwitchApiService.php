@@ -136,6 +136,14 @@ class TwitchApiService
         return $this->sendRequest($uri->withQuery($query), $accessToken);
     }
 
+    public function getChannelInformation(array $ids, AccessTokenInterface $accessToken = null): ResponseInterface
+    {
+        $uri = new Uri(self::BASE_API_URL . 'channels');
+        $query = self::buildQueryString(['broadcaster_id' => $ids]);
+
+        return $this->sendRequest($uri->withQuery($query), $accessToken);
+    }
+
     /**
      * @throws \Exception
      */
