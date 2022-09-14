@@ -25,6 +25,7 @@ use SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidAccessTokenException;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidSignatureException;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\UnsupportedEventException;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Serializer;
 
 /**
@@ -320,6 +321,7 @@ class EventSubService
      * @param string|null $challenge
      *
      * @return EventResponse
+     * @throws ExceptionInterface
      */
     protected function createResponse(array $subscription, string $type, ?array $event = null, ?string $challenge = null)
     {
