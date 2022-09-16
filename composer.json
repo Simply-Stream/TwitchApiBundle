@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": "^8.1",
-        "symfony/http-foundation": "^6.1",
+        "symfony/http-foundation": "^6.0",
         "league/oauth2-client": "^2.6",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
