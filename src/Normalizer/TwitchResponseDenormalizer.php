@@ -15,10 +15,11 @@ class TwitchResponseDenormalizer extends ObjectNormalizer implements Denormalize
      * @param             $data
      * @param string      $type
      * @param string|null $format
+     * @param array       $context
      *
      * @return bool
      */
-    public function supportsDenormalization($data, string $type, string $format = null): bool
+    public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool
     {
         return $type === TwitchResponse::class;
     }

@@ -19,6 +19,8 @@ class SubscriptionNormalizer extends ObjectNormalizer implements NormalizerInter
      * @param string|null          $format
      *
      * @return array|array[]|bool|bool[]|float|int|int[]|mixed|string|string[]|null
+     *
+     * @TODO Extend from another method, due to the @internal annotation of this method
      */
     protected function denormalizeParameter(
         \ReflectionClass $class,
