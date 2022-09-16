@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 class SimplyStreamTwitchApiExtension extends Extension
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -51,7 +51,10 @@ class SimplyStreamTwitchApiExtension extends Extension
         ]);
     }
 
-    public function getAlias()
+    /**
+     * {@inheritDoc}
+     */
+    public function getAlias(): string
     {
         return 'simplystream_twitch_api';
     }
