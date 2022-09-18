@@ -16,7 +16,9 @@ use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorage
 use SimplyStream\TwitchApiBundle\Helix\Dto\ChannelInformation;
 use SimplyStream\TwitchApiBundle\Helix\Dto\Clip;
 use SimplyStream\TwitchApiBundle\Helix\Dto\Game;
+use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchErrorResponse;
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponse;
+use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchUser;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidAccessTokenException;
 use SimplyStream\TwitchApiBundle\Normalizer\TwitchResponseDenormalizer;
@@ -107,7 +109,7 @@ class TwitchApiService
      * @return ResponseInterface
      * @throws ClientExceptionInterface
      */
-    public function getGames(array $id = [], array $game = [], AccessTokenInterface $accessToken = null): TwitchResponse
+    public function getGames(array $id = [], array $game = [], AccessTokenInterface $accessToken = null): TwitchResponseInterface
     {
         if ($id && $game) {
             throw new \RuntimeException('You can only request by game or id, not both');
@@ -141,7 +143,7 @@ class TwitchApiService
         string $before = null,
         int $first = 20,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponse {
+    ): TwitchResponseInterface {
         $uri = new Uri(self::BASE_API_URL . 'games/top');
         $query = self::buildQueryString(['after' => $after, 'before' => $before, 'first' => $first]);
 
@@ -166,7 +168,7 @@ class TwitchApiService
         string $before = null,
         int $first = 20,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponse {
+    ): TwitchResponseInterface {
         $allowedIdTypes = ['id', 'game_id', 'broadcaster_id'];
 
         if (! in_array($idType, $allowedIdTypes)) {
@@ -186,7 +188,7 @@ class TwitchApiService
      * @return TwitchResponse
      * @throws ClientExceptionInterface
      */
-    public function getChannelInformation(array $ids, AccessTokenInterface $accessToken = null): TwitchResponse
+    public function getChannelInformation(array $ids, AccessTokenInterface $accessToken = null): TwitchResponseInterface
     {
         $uri = new Uri(self::BASE_API_URL . 'channels');
         $query = self::buildQueryString(['broadcaster_id' => $ids]);
@@ -202,7 +204,7 @@ class TwitchApiService
      * @return TwitchResponse
      * @throws ClientExceptionInterface
      */
-    public function getUsers(array $logins = null, array $ids = [], AccessTokenInterface $accessToken = null): TwitchResponse
+    public function getUsers(array $logins = null, array $ids = [], AccessTokenInterface $accessToken = null): TwitchResponseInterface
     {
         if (count($ids) === 0 && count($logins) === 0) {
             throw new \RuntimeException('You need to specify at least one "id" or "login"');
@@ -217,8 +219,12 @@ class TwitchApiService
     /**
      * @throws ClientExceptionInterface
      */
-    protected function sendRequest(UriInterface $uri, string $datatype, AccessTokenInterface $accessToken = null, string $method = 'GET'):
-    TwitchResponse {
+    protected function sendRequest(
+        UriInterface $uri,
+        string $datatype,
+        AccessTokenInterface $accessToken = null,
+        string $method = 'GET'
+    ): TwitchResponseInterface {
         if (! $accessToken) {
             $accessToken = $this->getAccessToken('client_credentials');
         }
@@ -229,8 +235,16 @@ class TwitchApiService
             ->withHeader('Content-Type', 'application/json')
             ->withHeader('Client-ID', $this->options['clientId']);
 
+        $response = $this->client->sendRequest($request);
+
+        if ($response->getStatusCode() >= 400) {
+            /** @var TwitchErrorResponse $error */
+            $error = $this->serializer->deserialize($response->getBody(), TwitchErrorResponse::class, 'json');
+            throw new \InvalidArgumentException(sprintf('Error from API: "(%s): %s"', $error->getError(), $error->getMessage()));
+        }
+
         return $this->serializer->deserialize(
-            $this->client->sendRequest($request)->getBody(),
+            $response->getBody(),
             TwitchResponse::class,
             'json',
             [TwitchResponseDenormalizer::DENORMALIZER_CONTEXT_DATA_TYPE => $datatype]

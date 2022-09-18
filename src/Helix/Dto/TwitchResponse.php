@@ -2,7 +2,7 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Dto;
 
-class TwitchResponse
+class TwitchResponse implements TwitchResponseInterface
 {
     /**
      * @var array
