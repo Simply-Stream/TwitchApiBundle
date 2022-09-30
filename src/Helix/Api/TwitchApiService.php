@@ -15,6 +15,7 @@ use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStor
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorageInterface;
 use SimplyStream\TwitchApiBundle\Helix\Dto\ChannelInformation;
 use SimplyStream\TwitchApiBundle\Helix\Dto\Clip;
+use SimplyStream\TwitchApiBundle\Helix\Dto\Follows;
 use SimplyStream\TwitchApiBundle\Helix\Dto\Game;
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchErrorResponse;
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponse;
@@ -214,6 +215,21 @@ class TwitchApiService
         $query = self::buildQueryString(['id' => $ids, 'login' => $logins]);
 
         return $this->sendRequest($uri->withQuery($query), TwitchUser::class, $accessToken);
+    }
+
+    public function getUsersFollows(
+        string $fromId = '',
+        string $toId = '',
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
+        if (! $fromId || ! $toId) {
+            throw new \RuntimeException('At minimum, fromId or toId must be provided for a query to be valid.');
+        }
+
+        $uri = new Uri(self::BASE_API_URL . 'users/follows');
+        $query = self::buildQueryString(['to_id' => $toId, 'from_id' => $fromId]);
+
+        return $this->sendRequest($uri->withQuery($query), Follows::class, $accessToken);
     }
 
     /**
