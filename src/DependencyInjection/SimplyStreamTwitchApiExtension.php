@@ -8,12 +8,12 @@
 
 namespace SimplyStream\TwitchApiBundle\DependencyInjection;
 
+use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
+use SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService;
 
 class SimplyStreamTwitchApiExtension extends Extension
 {
@@ -44,7 +44,7 @@ class SimplyStreamTwitchApiExtension extends Extension
         $definition->setArgument(5, ['clientId' => $config['twitch_id'], 'webhook' => ['secret' => $config['webhook']['secret']]]);
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'simplystream_twitch_api';
     }

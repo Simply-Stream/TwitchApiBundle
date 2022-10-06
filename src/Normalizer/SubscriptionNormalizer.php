@@ -14,7 +14,7 @@ class SubscriptionNormalizer extends ObjectNormalizer implements NormalizerInter
      * @param \ReflectionClass     $class
      * @param \ReflectionParameter $parameter
      * @param string               $parameterName
-     * @param                      $parameterData
+     * @param mixed                $parameterData
      * @param array                $context
      * @param string|null          $format
      *
@@ -24,10 +24,10 @@ class SubscriptionNormalizer extends ObjectNormalizer implements NormalizerInter
         \ReflectionClass $class,
         \ReflectionParameter $parameter,
         string $parameterName,
-        $parameterData,
+        mixed $parameterData,
         array $context,
         string $format = null
-    ) {
+    ): mixed {
         if ($parameterName === 'condition') {
             $options = [];
             array_walk($parameterData, function ($value, $key) use (&$options) {
