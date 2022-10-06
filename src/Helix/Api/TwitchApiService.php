@@ -154,8 +154,8 @@ class TwitchApiService
     /**
      * @param string                    $id
      * @param string                    $idType - Allowed values: id|game_id|broadcaster_id
-     * @param string|null               $after
-     * @param string|null               $before
+     * @param array                     $dateRange
+     * @param array                     $cursor
      * @param int                       $first
      * @param AccessTokenInterface|null $accessToken
      *
@@ -165,8 +165,8 @@ class TwitchApiService
     public function getClips(
         string $id,
         string $idType = 'broadcaster_id',
-        string $after = null,
-        string $before = null,
+        array $dateRange = [],
+        array $cursor = [],
         int $first = 20,
         AccessTokenInterface $accessToken = null
     ): TwitchResponseInterface {
@@ -177,7 +177,18 @@ class TwitchApiService
         }
 
         $uri = new Uri(self::BASE_API_URL . 'clips');
-        $query = self::buildQueryString([$idType => $id, 'after' => $after, 'before' => $before, 'first' => $first]);
+        $query = self::buildQueryString([
+                $idType => $id,
+                'started_at' => $dateRange['started_at'] ?
+                    (new \DateTimeImmutable('- ' . $dateRange['started_at'] . ' months'))->format(\DateTimeInterface::RFC3339) : null,
+                'ended_at' => $dateRange['ended_at'] ?
+                    (new \DateTimeImmutable('- ' . $dateRange['ended_at'] . ' months'))->format(\DateTimeInterface::RFC3339) :
+                    (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339),
+                'after' => $cursor['after'] ?? null,
+                'before' => $cursor['before'] ?? null,
+                'first' => $first,
+            ]
+        );
 
         return $this->sendRequest($uri->withQuery($query), Clip::class, $accessToken);
     }
