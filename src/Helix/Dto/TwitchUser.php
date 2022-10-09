@@ -281,4 +281,12 @@ class TwitchUser
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return 'https://twitch.tv/' . $this->getLogin();
+    }
 }

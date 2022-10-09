@@ -245,6 +245,7 @@ class TwitchApiService
 
     /**
      * @throws ClientExceptionInterface
+     * @throws \JsonException
      */
     protected function sendRequest(
         UriInterface $uri,
@@ -265,9 +266,8 @@ class TwitchApiService
         $response = $this->client->sendRequest($request);
 
         if ($response->getStatusCode() >= 400) {
-            /** @var TwitchErrorResponse $error */
-            $error = $this->serializer->deserialize($response->getBody(), TwitchErrorResponse::class, 'json');
-            throw new \InvalidArgumentException(sprintf('Error from API: "(%s): %s"', $error->getError(), $error->getMessage()));
+            $error = json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+            throw new \InvalidArgumentException(sprintf('Error from API: "(%s): %s"', $error->error, $error->message));
         }
 
         return $this->serializer->deserialize(
