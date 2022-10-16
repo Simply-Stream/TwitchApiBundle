@@ -35,9 +35,9 @@ class TwitchUser
     protected string $offline_image_url;
 
     /**
-     * @var string
+     * @var ?string
      */
-    protected string $profile_image_url;
+    protected ?string $profile_image_url = null;
 
     /**
      * @var string 'staff', 'admin', 'global_mod' or ''
@@ -183,9 +183,9 @@ class TwitchUser
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getProfileImageUrl(): string
+    public function getProfileImageUrl(): ?string
     {
         return $this->profile_image_url;
     }
