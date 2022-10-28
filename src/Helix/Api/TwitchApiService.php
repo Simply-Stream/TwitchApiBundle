@@ -17,7 +17,7 @@ use SimplyStream\TwitchApiBundle\Helix\Dto\ChannelInformation;
 use SimplyStream\TwitchApiBundle\Helix\Dto\Clip;
 use SimplyStream\TwitchApiBundle\Helix\Dto\Follows;
 use SimplyStream\TwitchApiBundle\Helix\Dto\Game;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchErrorResponse;
+use SimplyStream\TwitchApiBundle\Helix\Dto\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponse;
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchUser;
@@ -231,16 +231,31 @@ class TwitchApiService
     public function getUsersFollows(
         string $fromId = '',
         string $toId = '',
+        ?string $cursor = '',
+        ?int $first = 20,
         AccessTokenInterface $accessToken = null
     ): TwitchResponseInterface {
-        if (! $fromId || ! $toId) {
+        if (! $fromId && ! $toId) {
             throw new \RuntimeException('At minimum, fromId or toId must be provided for a query to be valid.');
         }
 
         $uri = new Uri(self::BASE_API_URL . 'users/follows');
-        $query = self::buildQueryString(['to_id' => $toId, 'from_id' => $fromId]);
+        $query = self::buildQueryString(['to_id' => $toId, 'from_id' => $fromId, 'after' => $cursor, 'first' => $first]);
 
         return $this->sendRequest($uri->withQuery($query), Follows::class, $accessToken);
+    }
+
+    public function getBroadcasterSubscriptions(
+        string $broadcasterId,
+        ?string $userId = null,
+        ?string $after = null,
+        int $first = 20,
+        ?AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
+        $uri = new Uri(self::BASE_API_URL . 'subscriptions');
+        $query = self::buildQueryString(['broadcaster_id' => $broadcasterId, 'user_id' => $userId, 'after' => $after, 'first' => $first]);
+
+        return $this->sendRequest($uri->withQuery($query), Subscription::class, $accessToken);
     }
 
     /**
