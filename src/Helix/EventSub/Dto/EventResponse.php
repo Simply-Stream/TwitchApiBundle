@@ -2,8 +2,7 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Dto;
 
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Events\EventInterface;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Subscription;
+use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events\EventInterface;
 
 class EventResponse
 {
