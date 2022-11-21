@@ -9,7 +9,7 @@ class UserAuthorizationRevokeEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $clientId;
+    protected string $clientId;
 
     /**
      * @return string

@@ -4,14 +4,14 @@ namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events;
 
 class ChannelPollEndEvent extends ChannelPollBeginEvent
 {
-    const POLL_STATUS_COMPLETED = 'completed';
-    const POLL_STATUS_ARCHIVED = 'archived';
-    const POLL_STATUS_TERMINATED = 'terminated';
+    public const POLL_STATUS_COMPLETED = 'completed';
+    public const POLL_STATUS_ARCHIVED = 'archived';
+    public const POLL_STATUS_TERMINATED = 'terminated';
 
     /**
      * @var string - Enum of following values: completed, archived, terminated
      */
-    protected $status;
+    protected string $status;
 
     /**
      * @return string

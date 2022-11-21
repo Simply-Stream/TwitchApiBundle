@@ -42,7 +42,18 @@
             <argument type="service" id="jms_serializer.accessor_strategy"/>
 
             <tag name="jms_serializer.handler"
-                 type="SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Subscription"
+                 type="SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\EventResponse"
+                 method="deserializeTwitchResponseFromjson"
+                 format="json"/>
+        </service>
+
+        <service id="simplystream_twitch_api.serializer.subscription_response_handler"
+                 class="SimplyStream\TwitchApiBundle\Serializer\TwitchResponseHandler">
+            <argument type="service" id="jms_serializer.object_constructor"/>
+            <argument type="service" id="jms_serializer.accessor_strategy"/>
+
+            <tag name="jms_serializer.handler"
+                 type="SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Subscription"
                  method="deserializeTwitchResponseFromjson"
                  format="json"/>
         </service>

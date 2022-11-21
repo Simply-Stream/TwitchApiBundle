@@ -9,12 +9,12 @@ class UserUpdateEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $email;
+    protected string $email;
 
     /**
      * @var string
      */
-    protected $description;
+    protected string $description;
 
     /**
      * @return string

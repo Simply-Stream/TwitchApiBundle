@@ -12,27 +12,27 @@ class ChannelSubscriptionMessageEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $tier;
+    protected string $tier;
 
     /**
      * @var Message
      */
-    protected $message;
+    protected Message $message;
 
     /**
      * @var int
      */
-    protected $cumulativeMonths;
+    protected int $cumulativeMonths;
 
     /**
      * @var int
      */
-    protected $streakMonths;
+    protected int $streakMonths;
 
     /**
      * @var int
      */
-    protected $durationMonths;
+    protected int $durationMonths;
 
     /**
      * @return string

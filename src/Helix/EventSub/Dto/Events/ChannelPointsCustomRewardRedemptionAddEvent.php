@@ -12,27 +12,27 @@ class ChannelPointsCustomRewardRedemptionAddEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $userInput;
+    protected string $userInput;
 
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var string
      */
-    protected $status;
+    protected string $status;
 
     /**
      * @var Reward
      */
-    protected $reward;
+    protected Reward $reward;
 
     /**
      * @var \DateTime
      */
-    protected $redeemedAt;
+    protected \DateTime $redeemedAt;
 
     /**
      * @return string

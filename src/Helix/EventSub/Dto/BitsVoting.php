@@ -7,12 +7,12 @@ class BitsVoting
     /**
      * @var bool
      */
-    protected $isEnabled;
+    protected bool $isEnabled;
 
     /**
      * @var int
      */
-    protected $amountPerVote;
+    protected int $amountPerVote;
 
     /**
      * @return bool

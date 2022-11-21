@@ -11,12 +11,12 @@ class TopPredictors
     /**
      * @var ?int
      */
-    protected $channelPointsWon;
+    protected ?int $channelPointsWon;
 
     /**
      * @var int
      */
-    protected $channelPointsUsed;
+    protected int $channelPointsUsed;
 
     /**
      * @return int|null

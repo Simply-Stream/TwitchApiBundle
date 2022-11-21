@@ -8,6 +8,7 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub;
 
+use JMS\Serializer\SerializerInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -19,14 +20,13 @@ use Psr\Http\Message\StreamFactoryInterface;
 use SimplyStream\TwitchApiBundle\Helix\Api\TwitchApiService;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorageInterface;
+use SimplyStream\TwitchApiBundle\Helix\EventSub\Conditions\Conditions;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\EventResponse;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events\Events;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidAccessTokenException;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidSignatureException;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\UnsupportedEventException;
-use Symfony\Component\Serializer\Exception\ExceptionInterface;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * @package SimplyStream\TwitchApiBundle\Helix\EventSub
@@ -58,7 +58,7 @@ class EventSubService
     /** @var StreamFactoryInterface */
     protected $streamFactory;
 
-    /** @var Serializer */
+    /** @var SerializerInterface */
     protected $serializer;
 
     /** @var TwitchProvider */
@@ -74,7 +74,7 @@ class EventSubService
      * @param ClientInterface         $httpClient
      * @param RequestFactoryInterface $requestFactory
      * @param StreamFactoryInterface  $streamFactory
-     * @param Serializer              $serializer
+     * @param SerializerInterface     $serializer
      * @param TwitchProvider          $twitch
      * @param array                   $options
      */
@@ -82,7 +82,7 @@ class EventSubService
         ClientInterface $httpClient,
         RequestFactoryInterface $requestFactory,
         StreamFactoryInterface $streamFactory,
-        Serializer $serializer,
+        SerializerInterface $serializer,
         TwitchProvider $twitch,
         array $options
     ) {
@@ -291,54 +291,24 @@ class EventSubService
      *
      * @throws InvalidSignatureException
      * @throws UnsupportedEventException
-     * @throws \JsonException
+     * @throws \JsonException|\Symfony\Component\Serializer\Exception\ExceptionInterface
      */
     public function handleSubscriptionCallback(RequestInterface $request, ?string $secret = null): EventResponse
     {
         $this->verifySignature($request, $secret);
-        $body = \json_decode((string)$request->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $type = $this->extractType($request);
 
-        if (isset($body['subscription']['status']) && $body['subscription']['status'] === self::WEBHOOK_CALLBACK_VERIFICATION_PENDING) {
-            if (! isset($body['challenge'])) {
-                throw new \Exception('Challenge is missing');
-            }
+        /** @var EventResponse $eventResponse */
+        $eventResponse = $this->serializer->deserialize(
+            (string)$request->getBody(),
+            sprintf('%s<%s, %s>', EventResponse::class, Conditions::CONDITIONS[$type], Events::AVAILABLE_EVENTS[$type]),
+            'json'
+        );
 
-            return $this->createResponse($body['subscription'], $type, null, $body['challenge']);
+        if ($eventResponse->getSubscription()->getStatus() === self::WEBHOOK_CALLBACK_VERIFICATION_PENDING && ! $eventResponse->getChallenge()) {
+            throw new \RuntimeException('Challenge is missing');
         }
 
-        return $this->createResponse($body['subscription'], $type, $body['event']);
-    }
-
-    /**
-     * Create response based on subscription and/or challenge.
-     *
-     * @TODO: Still don't like this way, might refactor later (again)
-     *
-     * @param array       $subscription
-     * @param string      $type
-     * @param array|null  $event
-     * @param string|null $challenge
-     *
-     * @return EventResponse
-     * @throws ExceptionInterface
-     */
-    protected function createResponse(array $subscription, string $type, ?array $event = null, ?string $challenge = null)
-    {
-        return new EventResponse(
-            $this->serializer->denormalize(
-                $subscription,
-                Subscription::class,
-                'array',
-                [
-                    'eventsub.eventType' => $type,
-                ]
-            ),
-            $challenge,
-            $this->serializer->denormalize(
-                $event,
-                Events::AVAILABLE_EVENTS[$type]
-            )
-        );
+        return $eventResponse;
     }
 }

@@ -7,17 +7,17 @@ trait HasBroadcasterUser
     /**
      * @var string
      */
-    protected $broadcasterUserId;
+    protected string $broadcasterUserId;
 
     /**
      * @var string
      */
-    protected $broadcasterUserLogin;
+    protected string $broadcasterUserLogin;
 
     /**
      * @var string
      */
-    protected $broadcasterUserName;
+    protected string $broadcasterUserName;
 
     /**
      * @return string

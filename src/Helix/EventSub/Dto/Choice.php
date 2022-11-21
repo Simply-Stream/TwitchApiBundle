@@ -7,27 +7,27 @@ class Choice
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var string
      */
-    protected $title;
+    protected string $title;
 
     /**
      * @var int
      */
-    protected $bitsVotes;
+    protected int $bitsVotes;
 
     /**
      * @var int
      */
-    protected $channelPointsVotes;
+    protected int $channelPointsVotes;
 
     /**
      * @var int
      */
-    protected $votes;
+    protected int $votes;
 
     /**
      * @return string

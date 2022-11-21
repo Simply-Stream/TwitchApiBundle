@@ -7,7 +7,7 @@ abstract class AbstractEvent implements EventInterface
     /**
      * @var string
      */
-    protected $messageId;
+    protected string $messageId;
 
     /**
      * @return string

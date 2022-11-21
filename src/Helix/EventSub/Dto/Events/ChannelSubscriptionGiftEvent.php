@@ -10,24 +10,24 @@ class ChannelSubscriptionGiftEvent extends AbstractEvent
     /**
      * @var int
      */
-    protected $total;
+    protected int $total;
 
     /**
      * @var string
      */
-    protected $tier;
+    protected string $tier;
 
     /**
      * Null if not shared by user
      *
      * @var ?int
      */
-    protected $cumulativeTotal;
+    protected ?int $cumulativeTotal;
 
     /**
      * @var bool
      */
-    protected $isAnonymous;
+    protected bool $isAnonymous;
 
     /**
      * @return int

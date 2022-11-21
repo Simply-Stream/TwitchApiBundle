@@ -2,6 +2,7 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events;
 
+use JMS\Serializer\Annotation as Serializer;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Outcome;
 
 class ChannelPredictionBeginEvent extends AbstractEvent
@@ -11,27 +12,28 @@ class ChannelPredictionBeginEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var string
      */
-    protected $title;
+    protected string $title;
 
     /**
      * @var Outcome[]
+     * @Serializer\Type("array<SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Outcome>")
      */
-    protected $outcomes;
+    protected array $outcomes;
 
     /**
      * @var string
      */
-    protected $startedAt;
+    protected string $startedAt;
 
     /**
      * @var string
      */
-    protected $locksAt;
+    protected string $locksAt;
 
     /**
      * @return string

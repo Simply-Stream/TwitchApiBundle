@@ -12,7 +12,7 @@ class ChannelFollowEvent extends AbstractEvent
      *
      * @var string
      */
-    protected $followedAt;
+    protected string $followedAt;
 
     /**
      * @return string

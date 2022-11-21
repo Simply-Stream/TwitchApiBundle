@@ -9,17 +9,17 @@ class StreamOnlineEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var string
      */
-    protected $type;
+    protected string $type;
 
     /**
      * @var \DateTime
      */
-    protected $startedAt;
+    protected \DateTime $startedAt;
 
     /**
      * @return string

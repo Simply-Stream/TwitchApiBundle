@@ -7,17 +7,17 @@ trait HasModeratorUser
     /**
      * @var string
      */
-    protected $moderatorUserId;
+    protected string $moderatorUserId;
 
     /**
      * @var string
      */
-    protected $moderatorUserLogin;
+    protected string $moderatorUserLogin;
 
     /**
      * @var string
      */
-    protected $moderatorUserName;
+    protected string $moderatorUserName;
 
     /**
      * @return string

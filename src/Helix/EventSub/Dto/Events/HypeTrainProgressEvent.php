@@ -7,7 +7,7 @@ class HypeTrainProgressEvent extends HypeTrainBeginEvent
     /**
      * @var int
      */
-    protected $level;
+    protected int $level;
 
     /**
      * @return int

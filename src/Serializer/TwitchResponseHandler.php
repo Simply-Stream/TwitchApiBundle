@@ -27,6 +27,7 @@ class TwitchResponseHandler
         \assert($metadata instanceof ClassMetadata);
 
         $context->pushClassMetadata($metadata);
+        $context->increaseDepth();
         $object = $this->objectConstructor->construct($visitor, $metadata, $response, $type, $context);
 
         if (null === $object) {
@@ -42,8 +43,22 @@ class TwitchResponseHandler
                 continue;
             }
 
-            if (isset($propertyMetadata->type['name']) && $propertyMetadata->type['name'] === 'T' && count($type['params']) === 1) {
+            // @TODO: Make this more dynamic, maybe check out the @template phpdoc to beautify this
+            if (isset($propertyMetadata->type['name']) && ($propertyMetadata->type['name'] === 'T' || $propertyMetadata->type['name'] ===
+                    'T1') && count($type['params']) === 1) {
                 $propertyMetadata->setType($type['params'][0]);
+            }
+
+            if (isset($propertyMetadata->type['name']) && $propertyMetadata->type['name'] === 'T2' && count($type['params']) > 1) {
+                $propertyMetadata->setType($type['params'][1]);
+            }
+
+            if (isset($propertyMetadata->type['params']) && count($propertyMetadata->type['params']) > 0 && ($propertyMetadata->type['params'][0]['name'] === 'T' || $propertyMetadata->type['params'][0]['name'] === 'T1')) {
+                $propertyMetadata->type['params'][0]['name'] = $type['params'][0]['name'];
+            }
+
+            if (isset($propertyMetadata->type['params']) && count($propertyMetadata->type['params']) > 0 && $propertyMetadata->type['params'][0]['name'] === 'T2') {
+                $propertyMetadata->type['params'][0]['name'] = $type['params'][1]['name'];
             }
 
             // Twitch will send a date that is not supported by PHP, so we crop off the nanoseconds
@@ -68,6 +83,15 @@ class TwitchResponseHandler
             $context->popPropertyMetadata();
         }
 
-        return $visitor->endVisitingObject($metadata, $response, $type);
+        $rs = $visitor->endVisitingObject($metadata, $response, $type);
+        $this->afterVisitingObject($context);
+
+        return $rs;
+    }
+
+    private function afterVisitingObject(DeserializationContext $context): void
+    {
+        $context->decreaseDepth();
+        $context->popClassMetadata();
     }
 }

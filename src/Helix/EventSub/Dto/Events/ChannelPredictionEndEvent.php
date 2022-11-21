@@ -7,7 +7,7 @@ class ChannelPredictionEndEvent extends ChannelPredictionBeginEvent
     /**
      * @var string
      */
-    protected $winningOutcomeId;
+    protected string $winningOutcomeId;
 
     /**
      * @return string

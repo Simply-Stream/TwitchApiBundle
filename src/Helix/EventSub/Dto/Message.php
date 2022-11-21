@@ -2,17 +2,20 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Dto;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class Message
 {
     /**
      * @var string
      */
-    protected $text;
+    protected string $text;
 
     /**
      * @var Emote[]
+     * @Serializer\Type("array<SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Emote>")
      */
-    protected $emotes;
+    protected array $emotes;
 
     /**
      * @return string

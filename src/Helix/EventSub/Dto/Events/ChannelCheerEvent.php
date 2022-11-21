@@ -10,17 +10,17 @@ class ChannelCheerEvent extends AbstractEvent
     /**
      * @var bool
      */
-    protected $isAnonymous;
+    protected bool $isAnonymous;
 
     /**
      * @var string
      */
-    protected $message;
+    protected string $message;
 
     /**
      * @var int
      */
-    protected $bits;
+    protected int $bits;
 
     /**
      * @return bool

@@ -11,12 +11,12 @@ class Contribution
     /**
      * @var string
      */
-    protected $type;
+    protected string $type;
 
     /**
      * @var int
      */
-    protected $total;
+    protected int $total;
 
     /**
      * @return string

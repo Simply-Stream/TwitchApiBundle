@@ -9,27 +9,27 @@ class ChannelUpdateEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $title;
+    protected string $title;
 
     /**
      * @var string
      */
-    protected $language;
+    protected string $language;
 
     /**
      * @var string
      */
-    protected $categoryId;
+    protected string $categoryId;
 
     /**
      * @var string
      */
-    protected $categoryName;
+    protected string $categoryName;
 
     /**
      * @var bool
      */
-    protected $isMature;
+    protected bool $isMature;
 
     /**
      * @return string

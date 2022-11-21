@@ -2,6 +2,7 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events;
 
+use JMS\Serializer\Annotation as Serializer;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Contribution;
 
 class HypeTrainBeginEvent extends AbstractEvent
@@ -11,42 +12,43 @@ class HypeTrainBeginEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var int
      */
-    protected $total;
+    protected int $total;
 
     /**
      * @var int
      */
-    protected $progress;
+    protected int $progress;
 
     /**
      * @var int
      */
-    protected $goal;
+    protected int $goal;
 
     /**
      * @var Contribution[]
+     * @Serializer\Type("array<SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Contribution>")
      */
-    protected $topContributions;
+    protected array $topContributions;
 
     /**
      * @var Contribution
      */
-    protected $lastContribution;
+    protected Contribution $lastContribution;
 
     /**
      * @var \DateTime
      */
-    protected $tartedAt;
+    protected \DateTime $tartedAt;
 
     /**
      * @var \DateTime
      */
-    protected $expiresAt;
+    protected \DateTime $expiresAt;
 
     /**
      * @return string

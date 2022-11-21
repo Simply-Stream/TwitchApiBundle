@@ -7,12 +7,12 @@ class MaxPerStream
     /**
      * @var bool
      */
-    protected $isEnabled;
+    protected bool $isEnabled;
 
     /**
      * @var int
      */
-    protected $value;
+    protected int $value;
 
     /**
      * @return bool

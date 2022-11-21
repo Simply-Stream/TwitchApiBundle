@@ -2,24 +2,66 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Dto;
 
+use JMS\Serializer\Annotation as Serializer;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events\EventInterface;
 
 class EventResponse
 {
-    protected ?string $challenge;
-
+    /**
+     * @var Subscription
+     * @Serializer\Type("SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Subscription<T1>")
+     */
     protected Subscription $subscription;
 
-    protected EventInterface $event;
+    /**
+     * @var EventInterface|null
+     * @Serializer\Type("T2")
+     */
+    protected ?EventInterface $event;
 
-    public function __construct(
-        Subscription $subscription,
-        ?string $challenge = null,
-        ?EventInterface $event = null
-    ) {
+    /**
+     * @var string|null
+     */
+    protected ?string $challenge;
+
+    /**
+     * @return Subscription
+     */
+    public function getSubscription(): Subscription
+    {
+        return $this->subscription;
+    }
+
+    /**
+     * @param Subscription $subscription
+     *
+     * @return EventResponse
+     */
+    public function setSubscription(Subscription $subscription): EventResponse
+    {
         $this->subscription = $subscription;
-        $this->challenge = $challenge;
+
+        return $this;
+    }
+
+    /**
+     * @return EventInterface|null
+     */
+    public function getEvent(): ?EventInterface
+    {
+        return $this->event;
+    }
+
+    /**
+     * @param EventInterface|null $event
+     *
+     * @return EventResponse
+     */
+    public function setEvent(?EventInterface $event): EventResponse
+    {
         $this->event = $event;
+
+        return $this;
     }
 
     /**
@@ -31,26 +73,14 @@ class EventResponse
     }
 
     /**
-     * @return Subscription
+     * @param string|null $challenge
+     *
+     * @return EventResponse
      */
-    public function getSubscription(): Subscription
+    public function setChallenge(?string $challenge): EventResponse
     {
-        return $this->subscription;
-    }
+        $this->challenge = $challenge;
 
-    /**
-     * @return EventInterface
-     */
-    public function getEvent(): EventInterface
-    {
-        return $this->event;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEventType(): string
-    {
-        return $this->event::class;
+        return $this;
     }
 }

@@ -7,37 +7,37 @@ class ChannelRaidEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $fromBroadcasterUserId;
+    protected string $fromBroadcasterUserId;
 
     /**
      * @var string
      */
-    protected $fromBroadcasterUserLogin;
+    protected string $fromBroadcasterUserLogin;
 
     /**
      * @var string
      */
-    protected $fromBroadcasterUserName;
+    protected string $fromBroadcasterUserName;
 
     /**
      * @var string
      */
-    protected $toBroadcasterUserId;
+    protected string $toBroadcasterUserId;
 
     /**
      * @var string
      */
-    protected $toBroadcasterUserLogin;
+    protected string $toBroadcasterUserLogin;
 
     /**
      * @var string
      */
-    protected $toBroadcasterUserName;
+    protected string $toBroadcasterUserName;
 
     /**
      * @var int
      */
-    protected $viewers;
+    protected int $viewers;
 
     /**
      * @return string

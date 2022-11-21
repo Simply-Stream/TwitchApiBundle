@@ -10,12 +10,12 @@ class ChannelSubscribeEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $tier;
+    protected string $tier;
 
     /**
      * @var bool
      */
-    protected $isGift;
+    protected bool $isGift;
 
     /**
      * @return string

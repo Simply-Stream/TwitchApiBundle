@@ -7,22 +7,22 @@ class Reward
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var string
      */
-    protected $title;
+    protected string $title;
 
     /**
      * @var int
      */
-    protected $cost;
+    protected int $cost;
 
     /**
      * @var string
      */
-    protected $prompt;
+    protected string $prompt;
 
     /**
      * @return string

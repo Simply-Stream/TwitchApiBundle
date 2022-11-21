@@ -9,7 +9,7 @@ class UserAuthorizationGrantEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $clientId;
+    protected string $clientId;
 
     /**
      * @return string

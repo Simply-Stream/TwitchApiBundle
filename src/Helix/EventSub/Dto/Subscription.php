@@ -8,6 +8,7 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Dto;
 
+use JMS\Serializer\Annotation as Serializer;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Conditions\ConditionInterface;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Transport;
 
@@ -43,6 +44,7 @@ class Subscription
 
     /**
      * @var ConditionInterface
+     * @Serializer\Type("T")
      */
     protected ConditionInterface $condition;
 

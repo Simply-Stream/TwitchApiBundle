@@ -7,12 +7,12 @@ class GlobalCooldown
     /**
      * @var bool
      */
-    protected $isEnabled;
+    protected bool $isEnabled;
 
     /**
      * @var int
      */
-    protected $seconds;
+    protected int $seconds;
 
     /**
      * @return bool

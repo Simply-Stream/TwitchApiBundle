@@ -7,17 +7,17 @@ class Emote
     /**
      * @var int
      */
-    protected $begin;
+    protected int $begin;
 
     /**
      * @var int
      */
-    protected $end;
+    protected int $end;
 
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @return int

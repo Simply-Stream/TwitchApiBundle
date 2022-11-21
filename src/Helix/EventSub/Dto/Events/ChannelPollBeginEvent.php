@@ -13,37 +13,37 @@ class ChannelPollBeginEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var string
      */
-    protected $title;
+    protected string $title;
 
     /**
      * @var Choice[]
      */
-    protected $choices;
+    protected array $choices;
 
     /**
      * @var BitsVoting
      */
-    protected $bitsVoting;
+    protected BitsVoting $bitsVoting;
 
     /**
      * @var ChannelPointsVoting
      */
-    protected $channelPointsVoting;
+    protected ChannelPointsVoting $channelPointsVoting;
 
     /**
      * @var string
      */
-    protected $startedAt;
+    protected string $startedAt;
 
     /**
      * @var string
      */
-    protected $endsAt;
+    protected string $endsAt;
 
     /**
      * @return string

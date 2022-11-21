@@ -7,17 +7,17 @@ trait HasUser
     /**
      * @var ?string
      */
-    protected $userId;
+    protected ?string $userId;
 
     /**
      * @var ?string
      */
-    protected $userLogin;
+    protected ?string $userLogin;
 
     /**
      * @var ?string
      */
-    protected $userName;
+    protected ?string $userName;
 
     /**
      * @return ?string

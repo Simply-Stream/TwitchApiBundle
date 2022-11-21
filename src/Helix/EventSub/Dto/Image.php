@@ -7,17 +7,17 @@ class Image
     /**
      * @var string
      */
-    protected $url1x;
+    protected string $url1x;
 
     /**
      * @var string
      */
-    protected $url2x;
+    protected string $url2x;
 
     /**
      * @var string
      */
-    protected $url4x;
+    protected string $url4x;
 
     /**
      * @return string

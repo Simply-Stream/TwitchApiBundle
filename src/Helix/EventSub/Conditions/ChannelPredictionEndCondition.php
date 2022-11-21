@@ -18,7 +18,7 @@ class ChannelPredictionEndCondition extends AbstractCondition
     /**
      * @var string
      */
-    protected $broadcasterUserId;
+    protected string $broadcasterUserId;
 
     /**
      * @return string

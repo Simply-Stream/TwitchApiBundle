@@ -14,87 +14,87 @@ class ChannelPointsCustomRewardAddEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var bool
      */
-    protected $isEnabled;
+    protected bool $isEnabled;
 
     /**
      * @var bool
      */
-    protected $isPaused;
+    protected bool $isPaused;
 
     /**
      * @var bool
      */
-    protected $isInStock;
+    protected bool $isInStock;
 
     /**
      * @var string
      */
-    protected $title;
+    protected string $title;
 
     /**
      * @var int
      */
-    protected $cost;
+    protected int $cost;
 
     /**
      * @var string
      */
-    protected $prompt;
+    protected string $prompt;
 
     /**
      * @var bool
      */
-    protected $isUserInputRequired;
+    protected bool $isUserInputRequired;
 
     /**
      * @var bool
      */
-    protected $shouldRedemptionSkipRequestQueue;
+    protected bool $shouldRedemptionSkipRequestQueue;
 
     /**
      * @var MaxPerStream
      */
-    protected $maxPerStream;
+    protected MaxPerStream $maxPerStream;
 
     /**
      * @var MaxPerUserPerStream
      */
-    protected $maxPerUserPerStream;
+    protected MaxPerUserPerStream $maxPerUserPerStream;
 
     /**
      * @var string
      */
-    protected $backgroundColor;
+    protected string $backgroundColor;
 
     /**
      * @var ?Image
      */
-    protected $image;
+    protected ?Image $image;
 
     /**
      * @var Image
      */
-    protected $defaultImage;
+    protected Image $defaultImage;
 
     /**
      * @var GlobalCooldown
      */
-    protected $globalCooldown;
+    protected GlobalCooldown $globalCooldown;
 
     /**
      * @var ?string
      */
-    protected $cooldownExpiresAt;
+    protected ?string $cooldownExpiresAt;
 
     /**
      * @var ?int
      */
-    protected $redemptionsRedeemedCurrentStream;
+    protected ?int $redemptionsRedeemedCurrentStream;
 
     /**
      * @return string

@@ -8,7 +8,7 @@ abstract class AbstractCondition implements ConditionInterface
 {
     public const TYPE = null;
 
-    protected $requiredOptions = [
+    protected array $requiredOptions = [
         'broadcasterUserId',
     ];
 

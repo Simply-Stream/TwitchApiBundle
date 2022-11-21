@@ -7,7 +7,7 @@ class DropEntitlementGrantEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var array For whatever reason, Twitch documents this specifically as array
@@ -24,7 +24,7 @@ class DropEntitlementGrantEvent extends AbstractEvent
      *  benefit_id    string    Identifier of the Benefit.
      *  created_at    string    UTC timestamp in ISO format when this entitlement was granted on Twitch.
      */
-    protected $data;
+    protected array $data;
 
     /**
      * @return string

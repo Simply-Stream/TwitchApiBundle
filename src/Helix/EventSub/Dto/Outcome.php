@@ -7,32 +7,32 @@ class Outcome
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var string
      */
-    protected $title;
+    protected string $title;
 
     /**
      * @var string - Valid values: pink|blue
      */
-    protected $color;
+    protected string $color;
 
     /**
      * @var int
      */
-    protected $users;
+    protected int $users;
 
     /**
      * @var int
      */
-    protected $channelPoints;
+    protected int $channelPoints;
 
     /**
      * @var TopPredictors
      */
-    protected $topPredictors;
+    protected TopPredictors $topPredictors;
 
     /**
      * @return string

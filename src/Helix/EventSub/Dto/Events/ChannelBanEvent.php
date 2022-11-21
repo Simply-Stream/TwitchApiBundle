@@ -11,17 +11,17 @@ class ChannelBanEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $reason;
+    protected string $reason;
 
     /**
      * @var \DateTime
      */
-    protected $endsAt;
+    protected \DateTime $endsAt;
 
     /**
      * @var bool
      */
-    protected $isPermanent;
+    protected bool $isPermanent;
 
     /**
      * @return string

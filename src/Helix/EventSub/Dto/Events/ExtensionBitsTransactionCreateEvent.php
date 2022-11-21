@@ -12,17 +12,17 @@ class ExtensionBitsTransactionCreateEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $extensionClientId;
+    protected string $extensionClientId;
 
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var Product
      */
-    protected $product;
+    protected Product $product;
 
     /**
      * @return string

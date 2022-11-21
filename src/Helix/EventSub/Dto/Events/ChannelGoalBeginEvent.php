@@ -9,42 +9,42 @@ class ChannelGoalBeginEvent extends AbstractEvent
     /**
      * @var string
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @var string
      */
-    protected $type;
+    protected string $type;
 
     /**
      * @var string
      */
-    protected $description;
+    protected string $description;
 
     /**
      * @var bool
      */
-    protected $isAchieved;
+    protected bool $isAchieved;
 
     /**
      * @var int
      */
-    protected $currentAmount;
+    protected int $currentAmount;
 
     /**
      * @var int
      */
-    protected $targetAmount;
+    protected int $targetAmount;
 
     /**
      * @var string
      */
-    protected $startedAt;
+    protected string $startedAt;
 
     /**
      * @var string
      */
-    protected $endedAt;
+    protected string $endedAt;
 
     /**
      * @return string

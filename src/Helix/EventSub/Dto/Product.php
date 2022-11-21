@@ -7,22 +7,22 @@ class Product
     /**
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @var int
      */
-    protected $bits;
+    protected int $bits;
 
     /**
      * @var string
      */
-    protected $sku;
+    protected string $sku;
 
     /**
      * @var bool
      */
-    protected $development;
+    protected bool $development;
 
     /**
      * @return string
