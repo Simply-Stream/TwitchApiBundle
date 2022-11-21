@@ -14,7 +14,7 @@
         "league/oauth2-client": "^2.6",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
-        "symfony/serializer": "^6.0",
+        "jms/serializer-bundle": "^5.0",
         "symfony/property-info": "^6.0",
         "fproject/php-jwt": "^4.0"
     },

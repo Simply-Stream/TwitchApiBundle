@@ -2,15 +2,19 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Dto;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class TwitchResponse implements TwitchResponseInterface
 {
     /**
-     * @var array
+     * @var mixed
+     * @Serializer\Type("T")
      */
-    protected array $data;
+    protected mixed $data;
 
     /**
      * @var array|null
+     * @Serializer\Type("array")
      */
     protected ?array $pagination;
 
@@ -20,19 +24,27 @@ class TwitchResponse implements TwitchResponseInterface
     protected ?int $total = null;
 
     /**
-     * @return array
+     * @param mixed $data
      */
-    public function getData(): array
+    public function __construct(mixed $data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getData(): mixed
     {
         return $this->data;
     }
 
     /**
-     * @param array $data
+     * @param mixed $data
      *
      * @return TwitchResponse
      */
-    public function setData(array $data): TwitchResponse
+    public function setData(mixed $data): TwitchResponse
     {
         $this->data = $data;
 

@@ -4,40 +4,11 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="simplystream.twitch_api.normalizer.subscription"
-                 class="SimplyStream\TwitchApiBundle\Normalizer\SubscriptionNormalizer">
-            <argument type="service" id="serializer.mapping.class_metadata_factory">~</argument>
-            <argument type="service" id="serializer.name_converter.camel_case_to_snake_case">~</argument>
-            <argument type="service" id="property_accessor">~</argument>
-            <argument type="service" id="property_info.reflection_extractor">~</argument>
-        </service>
-
-        <service id="simplystream.twitch_api.normalizer.twitch_response"
-                 class="SimplyStream\TwitchApiBundle\Normalizer\TwitchResponseDenormalizer">
-            <argument type="service" id="serializer.mapping.class_metadata_factory">~</argument>
-            <argument type="service" id="serializer.name_converter.camel_case_to_snake_case">~</argument>
-            <argument type="service" id="property_accessor">~</argument>
-            <argument type="service" id="property_info.reflection_extractor">~</argument>
-        </service>
-
-        <service id="simplystream.twitch_api.serializer" class="Symfony\Component\Serializer\Serializer">
-            <argument type="collection">
-                <argument type="service" id="simplystream.twitch_api.normalizer.twitch_response">~</argument>
-                <argument type="service" id="simplystream.twitch_api.normalizer.subscription">~</argument>
-                <argument type="service" id="serializer.normalizer.datetime">~</argument>
-                <argument type="service" id="serializer.normalizer.object">~</argument>
-                <argument type="service" id="serializer.denormalizer.array">~</argument>
-            </argument>
-            <argument type="collection">
-                <argument type="service" id="serializer.encoder.json">~</argument>
-            </argument>
-        </service>
-
         <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService">
             <argument type="service" id="httplug.client">~</argument>
             <argument type="service" id="httplug.psr17_request_factory">~</argument>
             <argument type="service" id="httplug.psr17_stream_factory">~</argument>
-            <argument type="service" id="simplystream.twitch_api.serializer">~</argument>
+            <argument type="service" id="jms_serializer">~</argument>
             <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider">
                 ~
             </argument>
@@ -50,10 +21,31 @@
             <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider">
                 ~
             </argument>
-            <argument type="service" id="simplystream.twitch_api.serializer">~</argument>
+            <argument type="service" id="jms_serializer">~</argument>
+            <argument type="service" id="httplug.psr17_stream_factory">~</argument>
             <argument type="abstract">~</argument>
         </service>
 
+        <service id="simplystream_twitch_api.serializer.twitch_response_handler"
+                 class="SimplyStream\TwitchApiBundle\Serializer\TwitchResponseHandler">
+            <argument type="service" id="jms_serializer.object_constructor"/>
+            <argument type="service" id="jms_serializer.accessor_strategy"/>
+
+            <tag name="jms_serializer.handler"
+                 type="SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponse"
+                 format="json"/>
+        </service>
+
+        <service id="simplystream_twitch_api.serializer.eventsub_response_handler"
+                 class="SimplyStream\TwitchApiBundle\Serializer\TwitchResponseHandler">
+            <argument type="service" id="jms_serializer.object_constructor"/>
+            <argument type="service" id="jms_serializer.accessor_strategy"/>
+
+            <tag name="jms_serializer.handler"
+                 type="SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Subscription"
+                 method="deserializeTwitchResponseFromjson"
+                 format="json"/>
+        </service>
 
         <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\Factories\ConditionFactory"/>
         <service id="SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStorage"/>
