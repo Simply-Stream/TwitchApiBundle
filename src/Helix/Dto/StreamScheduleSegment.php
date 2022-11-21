@@ -2,8 +2,6 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Dto;
 
-use JMS\Serializer\Annotation as Serializer;
-
 class StreamScheduleSegment
 {
     /**
@@ -45,10 +43,9 @@ class StreamScheduleSegment
     /**
      * The type of content that the broadcaster plans to stream or null if not specified.
      *
-     * @var array|null
-     * @Serializer\Type("SimplyStream\TwitchApiBundle\Helix\Dto\Game")
+     * @var Game|null
      */
-    protected ?array $category = null;
+    protected ?Game $category = null;
 
     /**
      * A Boolean value that determines whether the broadcast is part of a recurring series that streams at the same time each week or is a
