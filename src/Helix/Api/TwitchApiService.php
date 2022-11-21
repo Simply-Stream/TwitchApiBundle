@@ -287,17 +287,46 @@ class TwitchApiService
         );
     }
 
+    public function deleteStreamScheduleSegment(
+        string $broadcasterId,
+        array $segment,
+        AccessTokenInterface $accessToken
+    ): void {
+        $uri = new Uri(self::BASE_API_URL . 'schedule/segment');
+        $query = self::buildQueryString(['broadcaster_id' => $broadcasterId, 'id' => $segment['id']]);
+
+        $this->sendRequest($uri->withQuery($query), null, $accessToken, Request::METHOD_DELETE);
+    }
+
+    public function updateStreamScheduleSegment(
+        string $broadcasterId,
+        string $id,
+        array $segment,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
+        $uri = new Uri(self::BASE_API_URL . 'schedule/segment');
+        $query = self::buildQueryString(['broadcaster_id' => $broadcasterId, 'id' => $id]);
+
+        return $this->sendRequest(
+            $uri->withQuery($query),
+            StreamSchedule::class,
+            $accessToken,
+            Request::METHOD_PATCH,
+            $segment
+        );
+    }
+
     /**
      * @throws ClientExceptionInterface
      * @throws JsonException
      */
     protected function sendRequest(
         UriInterface $uri,
-        string $type,
-        AccessTokenInterface $accessToken = null,
-        string $method = 'GET',
-        array $body = []
-    ): TwitchResponseInterface {
+        ?string $type = null,
+        ?AccessTokenInterface $accessToken = null,
+        ?string $method = 'GET',
+        ?array $body = []
+    ): ?TwitchResponseInterface {
         if (! $accessToken) {
             $accessToken = $this->getAccessToken('client_credentials');
         }
@@ -319,9 +348,13 @@ class TwitchApiService
             throw new InvalidArgumentException(sprintf('Error from API: "(%s): %s"', $error->error, $error->message));
         }
 
+        if ($response->getStatusCode() === 204) {
+            return null;
+        }
+
         return $this->serializer->deserialize(
             $response->getBody(),
-            TwitchResponse::class . "<${type}>",
+            TwitchResponse::class . ($type ? ("<${type}>") : ''),
             'json',
         );
     }
