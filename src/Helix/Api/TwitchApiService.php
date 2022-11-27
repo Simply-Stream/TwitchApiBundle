@@ -240,7 +240,7 @@ class TwitchApiService
         $uri = new Uri(self::BASE_API_URL . 'users');
         $query = self::buildQueryString(['id' => $ids, 'login' => $logins]);
 
-        return $this->sendRequest($uri->withQuery($query), TwitchUser::class, $accessToken);
+        return $this->sendRequest($uri->withQuery($query), 'array<' . TwitchUser::class . '>', $accessToken);
     }
 
     public function getUsersFollows(
