@@ -142,7 +142,7 @@ class TwitchApiService
         $uri = new Uri(self::BASE_API_URL . 'games');
         $query = self::buildQueryString(['id' => $id, 'name' => $game]);
 
-        return $this->sendRequest($uri->withQuery($query), Game::class, $accessToken);
+        return $this->sendRequest($uri->withQuery($query), 'array<' . Game::class . '>', $accessToken);
     }
 
     /**
@@ -163,7 +163,7 @@ class TwitchApiService
         $uri = new Uri(self::BASE_API_URL . 'games/top');
         $query = self::buildQueryString(['after' => $after, 'before' => $before, 'first' => $first]);
 
-        return $this->sendRequest($uri->withQuery($query), Game::class, $accessToken);
+        return $this->sendRequest($uri->withQuery($query), 'array<' . Game::class . '>', $accessToken);
     }
 
     /**
@@ -205,7 +205,7 @@ class TwitchApiService
             ]
         );
 
-        return $this->sendRequest($uri->withQuery($query), Clip::class, $accessToken);
+        return $this->sendRequest($uri->withQuery($query), 'array<' . Clip::class . '>', $accessToken);
     }
 
     /**
@@ -220,7 +220,7 @@ class TwitchApiService
         $uri = new Uri(self::BASE_API_URL . 'channels');
         $query = self::buildQueryString(['broadcaster_id' => $ids]);
 
-        return $this->sendRequest($uri->withQuery($query), ChannelInformation::class, $accessToken);
+        return $this->sendRequest($uri->withQuery($query), 'array<' . ChannelInformation::class . '>', $accessToken);
     }
 
     /**
@@ -229,7 +229,7 @@ class TwitchApiService
      * @param AccessTokenInterface|null $accessToken
      *
      * @return TwitchResponse
-     * @throws ClientExceptionInterface
+     * @throws ClientExceptionInterface|JsonException
      */
     public function getUsers(array $logins = null, array $ids = [], AccessTokenInterface $accessToken = null): TwitchResponseInterface
     {
@@ -257,7 +257,7 @@ class TwitchApiService
         $uri = new Uri(self::BASE_API_URL . 'users/follows');
         $query = self::buildQueryString(['to_id' => $toId, 'from_id' => $fromId, 'after' => $cursor, 'first' => $first]);
 
-        return $this->sendRequest($uri->withQuery($query), Follows::class, $accessToken);
+        return $this->sendRequest($uri->withQuery($query), 'array<' . Follows::class . '>', $accessToken);
     }
 
     public function getBroadcasterSubscriptions(
@@ -270,7 +270,7 @@ class TwitchApiService
         $uri = new Uri(self::BASE_API_URL . 'subscriptions');
         $query = self::buildQueryString(['broadcaster_id' => $broadcasterId, 'user_id' => $userId, 'after' => $after, 'first' => $first]);
 
-        return $this->sendRequest($uri->withQuery($query), Subscription::class, $accessToken);
+        return $this->sendRequest($uri->withQuery($query), 'array<' . Subscription::class . '>', $accessToken);
     }
 
     public function createStreamScheduleSegment(string $broadcasterId, array $segment, AccessTokenInterface $accessToken):
