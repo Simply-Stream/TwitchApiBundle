@@ -287,6 +287,15 @@ class TwitchApiService
         );
     }
 
+    /**
+     * @param string               $broadcasterId
+     * @param array                $segment
+     * @param AccessTokenInterface $accessToken
+     *
+     * @return void
+     * @throws ClientExceptionInterface
+     * @throws JsonException
+     */
     public function deleteStreamScheduleSegment(
         string $broadcasterId,
         array $segment,

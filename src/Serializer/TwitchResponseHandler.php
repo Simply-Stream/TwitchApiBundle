@@ -43,6 +43,11 @@ class TwitchResponseHandler
                 continue;
             }
 
+            $oldMetadataType = null;
+            if (isset($propertyMetadata->type['name'])) {
+                $oldMetadataType = $propertyMetadata->type;
+            }
+
             // @TODO: Make this more dynamic, maybe check out the @template phpdoc to beautify this
             if (isset($propertyMetadata->type['name']) && ($propertyMetadata->type['name'] === 'T' || $propertyMetadata->type['name'] ===
                     'T1') && count($type['params']) === 1) {
@@ -81,6 +86,10 @@ class TwitchResponseHandler
             }
 
             $context->popPropertyMetadata();
+
+            if ($oldMetadataType) {
+                $propertyMetadata->setType($oldMetadataType);
+            }
         }
 
         $rs = $visitor->endVisitingObject($metadata, $response, $type);
