@@ -4,26 +4,167 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService">
-            <argument type="service" id="httplug.client">~</argument>
-            <argument type="service" id="httplug.psr17_request_factory">~</argument>
-            <argument type="service" id="httplug.psr17_stream_factory">~</argument>
-            <argument type="service" id="jms_serializer">~</argument>
-            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider">
-                ~
-            </argument>
-            <argument type="abstract">~</argument>
+        <service
+                class="SimplyStream\TwitchApiBundle\Helix\Api\ApiClient"
+                id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface">
+            <argument type="service" id="httplug.client"/>
+            <argument type="service" id="httplug.psr17_request_factory"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider"/>
+            <argument type="service" id="jms_serializer"/>
+            <argument type="service" id="httplug.psr17_stream_factory"/>
+            <argument type="abstract"/>
         </service>
 
-        <service id="SimplyStream\TwitchApiBundle\Helix\Api\TwitchApiService">
-            <argument type="service" id="httplug.client">~</argument>
-            <argument type="service" id="httplug.psr17_request_factory">~</argument>
-            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider">
-                ~
-            </argument>
-            <argument type="service" id="jms_serializer">~</argument>
-            <argument type="service" id="httplug.psr17_stream_factory">~</argument>
-            <argument type="abstract">~</argument>
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\AdsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\AnalyticsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\BitsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\ChannelPointsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\ChannelsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\CharityApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\ChatApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\ClipsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\EntitlementsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\EventSubApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\ExtensionsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\GamesApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\GoalsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\HypeTrainApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\ModerationApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\MusicApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\PollsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\PredictionsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\RaidsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\ScheduleApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\SearchApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\StreamsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\SubscriptionsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\TagsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\TeamsApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\UsersApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\VideosApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\WhispersApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService">
+            <argument type="service" id="httplug.client"/>
+            <argument type="service" id="httplug.psr17_request_factory"/>
+            <argument type="service" id="httplug.psr17_stream_factory"/>
+            <argument type="service" id="jms_serializer"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider"/>
+            <argument type="abstract"/>
+        </service>
+
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\TwitchApi">
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\AnalyticsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\BitsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ChannelPointsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ChannelsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\CharityApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ChatApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ClipsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\AdsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\EntitlementsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\EventSubApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ExtensionsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\GamesApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\GoalsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\HypeTrainApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ModerationApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\MusicApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\PollsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\PredictionsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\RaidsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\ScheduleApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\SearchApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\StreamsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\SubscriptionsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\TagsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\TeamsApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\UsersApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\VideosApi"/>
+            <argument type="service" id="SimplyStream\TwitchApiBundle\Helix\Api\WhispersApi"/>
         </service>
 
         <service id="simplystream_twitch_api.serializer.twitch_response_handler"

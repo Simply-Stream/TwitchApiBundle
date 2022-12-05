@@ -12,13 +12,13 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
-use SimplyStream\TwitchApiBundle\Helix\Api\TwitchApiService;
+use SimplyStream\TwitchApiBundle\Helix\Api\TwitchApi;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
 
 /**
  * @package SimplyStream\TwitchApiBundle\Tests\Helix\Api
  *
- * @covers  \SimplyStream\TwitchApiBundle\Helix\Api\TwitchApiService
+ * @covers  \SimplyStream\TwitchApiBundle\Helix\Api\TwitchApi
  */
 class TwitchApiServiceTest extends TestCase
 {
@@ -35,7 +35,7 @@ class TwitchApiServiceTest extends TestCase
             ->with('client_credentials')
             ->willThrowException(new IdentityProviderException('Invalid credentials', 403, []));
 
-        $sut = new TwitchApiService($httpClientMock, $requestFactoryMock);
+        $sut = new TwitchApi($httpClientMock, $requestFactoryMock);
         $sut->getGames();
     }
 }
