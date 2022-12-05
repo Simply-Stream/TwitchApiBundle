@@ -18,7 +18,7 @@ class ChannelFollowCondition extends AbstractCondition
     /**
      * @var string
      */
-    protected $broadcasterUserId;
+    protected string $broadcasterUserId;
 
     /**
      * @return string

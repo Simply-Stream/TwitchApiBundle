@@ -15,14 +15,14 @@ class ExtensionBitsTransactionCreateCondition extends AbstractCondition
 {
     public const TYPE = 'extension.bits_transaction.create';
 
-    protected $requiredOptions = [
+    protected array $requiredOptions = [
         'extensionClientId',
     ];
 
     /**
      * @var string
      */
-    protected $extensionClientId;
+    protected string $extensionClientId;
 
     /**
      * @return string

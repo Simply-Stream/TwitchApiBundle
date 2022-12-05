@@ -15,17 +15,14 @@ class UserUpdateCondition extends AbstractCondition
 {
     public const TYPE = 'user.update';
 
-    /**
-     * @inheritdoc
-     */
-    protected $requiredOptions = [
+    protected array $requiredOptions = [
         'userId',
     ];
 
     /**
      * @var string
      */
-    protected $userId;
+    protected string $userId;
 
     /**
      * @return string

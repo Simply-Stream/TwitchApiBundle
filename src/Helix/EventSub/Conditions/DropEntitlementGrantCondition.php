@@ -15,24 +15,24 @@ class DropEntitlementGrantCondition extends AbstractCondition
 {
     public const TYPE = 'drop.entitlement.grant';
 
-    protected $requiredOptions = [
+    protected array $requiredOptions = [
         'organizationId',
     ];
 
     /**
      * @var string
      */
-    protected $organizationId;
+    protected string $organizationId;
 
     /**
      * @var string
      */
-    protected $categoryId;
+    protected string $categoryId;
 
     /**
      * @var string
      */
-    protected $campaignId;
+    protected string $campaignId;
 
     /**
      * @return string

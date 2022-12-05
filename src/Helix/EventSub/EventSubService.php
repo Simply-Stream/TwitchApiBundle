@@ -8,23 +8,21 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub;
 
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use JMS\Serializer\SerializerInterface as JMSSerializerInterfaceAlias;
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use Psr\Http\Client\ClientExceptionInterface;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamFactoryInterface;
+use SimplyStream\TwitchApiBundle\Helix\Api\EventSubApi;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
-use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorageInterface;
+use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\EventSub\Conditions\Conditions;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\EventResponse;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Events\Events;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Entity\Subscription;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidAccessTokenException;
+use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events\Events;
+use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidSignatureException;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\UnsupportedEventException;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 /**
  * @package SimplyStream\TwitchApiBundle\Helix\EventSub
@@ -44,94 +42,21 @@ class EventSubService
     public const WEBHOOK_AUTHORIZATION_REVOKED = 'authorization_revoked';
     public const WEBHOOK_USER_REVOKED = 'user_removed';
 
-    /** @var string */
-    public const API_URL = 'https://api.twitch.tv/helix/eventsub/subscriptions';
-
-    /** @var ClientInterface */
-    protected $httpClient;
-
-    /** @var RequestFactoryInterface */
-    protected $requestFactory;
-
-    /** @var StreamFactoryInterface */
-    protected $streamFactory;
-
-    /** @var Serializer */
-    protected $serializer;
-
-    /** @var TwitchProvider */
-    protected $twitch;
-
-    /** @var array */
-    protected $options;
-
-    /** @var TokenStorageInterface */
-    protected $tokenStorage;
+    protected NormalizerInterface $normalizer;
 
     /**
-     * @param ClientInterface         $httpClient
-     * @param RequestFactoryInterface $requestFactory
-     * @param StreamFactoryInterface  $streamFactory
-     * @param Serializer              $serializer
-     * @param TwitchProvider          $twitch
-     * @param array                   $options
+     * @param EventSubApi                 $eventSubApi
+     * @param JMSSerializerInterfaceAlias $jmsSerializer
+     * @param TwitchProvider              $twitch
+     * @param array                       $options
      */
     public function __construct(
-        ClientInterface $httpClient,
-        RequestFactoryInterface $requestFactory,
-        StreamFactoryInterface $streamFactory,
-        Serializer $serializer,
-        TwitchProvider $twitch,
-        array $options
+        protected EventSubApi $eventSubApi,
+        protected JMSSerializerInterfaceAlias $jmsSerializer,
+        protected TwitchProvider $twitch,
+        protected array $options
     ) {
-        $this->httpClient = $httpClient;
-        $this->requestFactory = $requestFactory;
-        $this->streamFactory = $streamFactory;
-        $this->serializer = $serializer;
-        $this->twitch = $twitch;
-        $this->options = $options;
-    }
-
-    /**
-     * @param TokenStorageInterface $tokenStorage
-     *
-     * @return EventSubService
-     */
-    public function setTokenStorage(TokenStorageInterface $tokenStorage): EventSubService
-    {
-        $this->tokenStorage = $tokenStorage;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getRequestUri(): string
-    {
-        return self::API_URL;
-    }
-
-    /**
-     * @param string $grant
-     *
-     * @return AccessTokenInterface
-     */
-    protected function getAccessToken(string $grant): AccessTokenInterface
-    {
-        if ($this->tokenStorage && $this->tokenStorage->has($grant)) {
-            return $this->tokenStorage->get($grant);
-        }
-
-        $accessToken = null;
-
-        try {
-            $accessToken = $this->twitch->getAccessToken($grant);
-        } catch (IdentityProviderException $e) {
-            throw new InvalidAccessTokenException($accessToken, $e->getMessage());
-        }
-
-        return $accessToken;
+        $this->normalizer = new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter());
     }
 
     /**
@@ -140,39 +65,25 @@ class EventSubService
      * @param Subscription              $subscription
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return ResponseInterface
+     * @return TwitchResponseInterface
+     * @throws \RuntimeException
      */
-    public function subscribe(Subscription $subscription, AccessTokenInterface $accessToken = null): ResponseInterface
+    public function subscribe(Subscription $subscription, AccessTokenInterface $accessToken = null): TwitchResponseInterface
     {
         try {
-            if (! $accessToken) {
-                $accessToken = $this->getAccessToken('client_credentials');
-            }
-
             if (! $subscription->getTransport()->getSecret()) {
                 $subscription->getTransport()->setSecret($this->options['webhook']['secret']);
             }
 
-            $body = $this->streamFactory->createStream(
-                $this->serializer->serialize(
-                    $subscription,
-                    'json'
-                )
+            $response = $this->eventSubApi->createEventSubSubscription(
+                $this->jmsSerializer->toArray($subscription, type: Subscription::class . '<' . $subscription->getCondition()::class . '>'),
+                $subscription->getCondition()::class,
+                $accessToken
             );
-
-            $request = $this->requestFactory->createRequest('POST', $this->getRequestUri());
-            $request = $request->withBody($body)
-                ->withHeader('Authorization', ucfirst($accessToken->getValues()['token_type']) . ' ' . $accessToken->getToken())
-                ->withHeader('Content-Type', 'application/json')
-                ->withHeader('Client-ID', $this->options['clientId']);
-
-            $response = $this->httpClient->sendRequest($request);
-        } catch (ClientExceptionInterface $e) {
-            // @TODO: Handle exception properly (not generic)
+        } catch (\JsonException $e) {
             throw new \RuntimeException($e->getMessage());
         }
 
-        // @TODO: Denormalize?
         return $response;
     }
 
@@ -212,51 +123,23 @@ class EventSubService
      *
      * @param string $subscriptionId
      *
-     * @return ResponseInterface
+     * @return void
+     * @throws \JsonException
      */
-    public function unsubscribe(string $subscriptionId): ResponseInterface
+    public function unsubscribe(string $subscriptionId): void
     {
-        try {
-            $accessToken = $this->getAccessToken('client_credentials');
-            $request = $this->requestFactory->createRequest('DELETE',
-                $this->getRequestUri() . '?' . http_build_query(['id' => $subscriptionId]));
-            $request = $request
-                ->withHeader('Authorization', ucfirst($accessToken->getValues()['token_type']) . ' ' . $accessToken->getToken())
-                ->withHeader('Content-Type', 'application/json')
-                ->withHeader('Client-ID', $this->options['clientId']);
-
-            return $this->httpClient->sendRequest($request);
-        } catch (ClientExceptionInterface $e) {
-            // @TODO: Better exception handling (not generic)
-            throw new \RuntimeException($e->getMessage());
-        }
+        $this->eventSubApi->deleteEventSubSubscription($subscriptionId);
     }
 
     /**
      * Returns all current subscriptions from Twitch
      *
-     * @return array
+     * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getSubscriptions(): array
+    public function getSubscriptions(): TwitchResponseInterface
     {
-        try {
-            $accessToken = $this->getAccessToken('client_credentials');
-
-            $request = $this->requestFactory->createRequest('GET', $this->getRequestUri());
-            $request = $request
-                ->withHeader('Authorization', ucfirst($accessToken->getValues()['token_type']) . ' ' . $accessToken->getToken())
-                ->withHeader('Content-Type', 'application/json')
-                ->withHeader('Client-ID', $this->options['clientId']);
-
-            $response = $this->httpClient->sendRequest($request);
-
-            // @TODO: Replace with Collection wrapper? Denormalize?
-            return \json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR) ?? [];
-        } catch (ClientExceptionInterface $e) {
-            // @TODO: Better exception handling (not generic)
-            throw new \RuntimeException($e->getMessage());
-        }
+        return $this->eventSubApi->getEventSubSubscriptions();
     }
 
     /**
@@ -289,53 +172,23 @@ class EventSubService
      *
      * @throws InvalidSignatureException
      * @throws UnsupportedEventException
-     * @throws \JsonException
      */
     public function handleSubscriptionCallback(RequestInterface $request, ?string $secret = null): EventResponse
     {
         $this->verifySignature($request, $secret);
-        $body = \json_decode((string)$request->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $type = $this->extractType($request);
 
-        if (isset($body['subscription']['status']) && $body['subscription']['status'] === self::WEBHOOK_CALLBACK_VERIFICATION_PENDING) {
-            if (! isset($body['challenge'])) {
-                throw new \Exception('Challenge is missing');
-            }
+        /** @var EventResponse $eventResponse */
+        $eventResponse = $this->jmsSerializer->deserialize(
+            (string)$request->getBody(),
+            sprintf('%s<%s, %s>', EventResponse::class, Conditions::CONDITIONS[$type], Events::AVAILABLE_EVENTS[$type]),
+            'json'
+        );
 
-            return $this->createResponse($body['subscription'], $type, null, $body['challenge']);
+        if ($eventResponse->getSubscription()->getStatus() === self::WEBHOOK_CALLBACK_VERIFICATION_PENDING && ! $eventResponse->getChallenge()) {
+            throw new \RuntimeException('Challenge is missing');
         }
 
-        return $this->createResponse($body['subscription'], $type, $body['event']);
-    }
-
-    /**
-     * Create response based on subscription and/or challenge.
-     *
-     * @TODO: Still don't like this way, might refactor later (again)
-     *
-     * @param array       $subscription
-     * @param string      $type
-     * @param array|null  $event
-     * @param string|null $challenge
-     *
-     * @return EventResponse
-     */
-    protected function createResponse(array $subscription, string $type, ?array $event = null, ?string $challenge = null)
-    {
-        return new EventResponse(
-            $this->serializer->denormalize(
-                $subscription,
-                Subscription::class,
-                'array',
-                [
-                    'eventsub.eventType' => $type,
-                ]
-            ),
-            $challenge,
-            $this->serializer->denormalize(
-                $event,
-                Events::AVAILABLE_EVENTS[$type]
-            )
-        );
+        return $eventResponse;
     }
 }

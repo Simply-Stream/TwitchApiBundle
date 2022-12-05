@@ -15,17 +15,14 @@ class UserAuthorizationGrantCondition extends AbstractCondition
 {
     public const TYPE = 'user.authorization.grant';
 
-    /**
-     * @inheritdoc
-     */
-    protected $requiredOptions = [
+    protected array $requiredOptions = [
         'clientId',
     ];
 
     /**
      * @var string
      */
-    protected $clientId;
+    protected string $clientId;
 
     /**
      * @return string

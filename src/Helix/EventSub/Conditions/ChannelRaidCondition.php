@@ -18,12 +18,12 @@ class ChannelRaidCondition extends AbstractCondition
     /**
      * @var string
      */
-    protected $fromBroadcasterUserId;
+    protected string $fromBroadcasterUserId;
 
     /**
      * @var string
      */
-    protected $toBroadcasterUserId;
+    protected string $toBroadcasterUserId;
 
     /**
      * There's actually no required option, but it still needs either from- or toBroadcasterUserId to work
@@ -31,10 +31,10 @@ class ChannelRaidCondition extends AbstractCondition
      *
      * @var array
      */
-    protected $requiredOptions = [];
+    protected array $requiredOptions = [];
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getFromBroadcasterUserId(): ?string
     {
