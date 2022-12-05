@@ -47,7 +47,7 @@ class UsersApi extends AbstractApi
             throw new RuntimeException('You need to specify at least one "id" or "login"');
         }
 
-        if (count($ids) + count($logins)) {
+        if ((count($ids) + count($logins)) > 100) {
             throw new RuntimeException('You can only request a total amount of 100 users at once');
         }
 

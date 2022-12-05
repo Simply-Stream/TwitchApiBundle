@@ -24,17 +24,18 @@ class EventSubApi extends AbstractApi
      * access token. If the subscription type requires user authorization, the token must include the required scope. However, if the
      * subscription type doesn’t include user authorization, the token may include any scopes or no scopes.
      *
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param array                     $body
+     * @param string                    $type
+     * @param AccessTokenInterface|null $accessToken
      *
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function createEventSubSubscription(array $body, AccessTokenInterface $accessToken): TwitchResponseInterface
+    public function createEventSubSubscription(array $body, string $type, AccessTokenInterface $accessToken = null): TwitchResponseInterface
     {
         return $this->sendRequest(
             path: self::BASE_PATH . '/subscriptions',
-            type: 'array<' . Subscription::class . '>',
+            type: 'array<' . Subscription::class . '<' . $type . '>' . '>',
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -51,15 +52,15 @@ class EventSubApi extends AbstractApi
      * If you use WebSockets to receive events, the request must specify a user access token. The request will fail if you use an app
      * access token. The token may include any scopes.
      *
-     * @param string               $id
-     * @param AccessTokenInterface $accessToken
+     * @param string                    $id
+     * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return void
      * @throws \JsonException
      */
-    public function deleteEventSubSubscription(string $id, AccessTokenInterface $accessToken): TwitchResponseInterface
+    public function deleteEventSubSubscription(string $id, AccessTokenInterface $accessToken = null): void
     {
-        return $this->sendRequest(
+        $this->sendRequest(
             path: self::BASE_PATH . '/subscriptions',
             query: [
                 'id' => $id,

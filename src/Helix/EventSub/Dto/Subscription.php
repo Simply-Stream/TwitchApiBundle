@@ -20,43 +20,43 @@ class Subscription
     /**
      * @var string|null
      */
-    protected ?string $id;
+    protected ?string $id = null;
 
     /**
      * @var string|null
      */
-    protected ?string $status;
+    protected ?string $status = null;
 
     /**
      * @var \DateTime|null
      */
-    protected ?\DateTime $createdAt;
+    protected ?\DateTime $createdAt = null;
 
     /**
      * @var int|null
      */
-    protected ?int $cost;
+    protected ?int $cost = null;
 
     /**
      * @var string
      */
-    protected string $type;
+    protected string $type = '';
 
     /**
      * @var ConditionInterface
      * @Serializer\Type("T")
      */
-    protected ConditionInterface $condition;
+    protected ?ConditionInterface $condition = null;
 
     /**
      * @var Transport
      */
-    protected Transport $transport;
+    protected ?Transport $transport = null;
 
     /**
      * @var string|null
      */
-    protected ?string $version;
+    protected ?string $version = null;
 
     /**
      * @param ConditionInterface $condition
