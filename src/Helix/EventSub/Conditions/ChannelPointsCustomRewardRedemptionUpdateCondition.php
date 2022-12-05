@@ -18,12 +18,12 @@ class ChannelPointsCustomRewardRedemptionUpdateCondition extends AbstractConditi
     /**
      * @var string
      */
-    protected $broadcasterUserId;
+    protected string $broadcasterUserId;
 
     /**
      * @var string|null
      */
-    protected $rewardId;
+    protected ?string $rewardId;
 
     /**
      * @return string

@@ -15,17 +15,14 @@ class UserAuthorizationRevokeCondition extends AbstractCondition
 {
     public const TYPE = 'user.authorization.revoke';
 
-    /**
-     * @inheritdoc
-     */
-    protected $requiredOptions = [
+    protected array $requiredOptions = [
         'clientId',
     ];
 
     /**
      * @var string
      */
-    protected $clientId;
+    protected string $clientId;
 
     /**
      * @return string

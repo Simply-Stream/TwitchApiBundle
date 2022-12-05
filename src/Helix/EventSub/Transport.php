@@ -16,17 +16,17 @@ class Transport
     /**
      * @var string
      */
-    protected $method;
+    protected string $method;
 
     /**
      * @var string
      */
-    protected $callback;
+    protected string $callback;
 
     /**
      * @var string
      */
-    protected $secret;
+    protected string $secret;
 
     /**
      * @param string $callback

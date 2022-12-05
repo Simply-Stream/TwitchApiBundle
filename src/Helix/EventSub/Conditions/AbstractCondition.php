@@ -8,7 +8,7 @@ abstract class AbstractCondition implements ConditionInterface
 {
     public const TYPE = null;
 
-    protected $requiredOptions = [
+    protected array $requiredOptions = [
         'broadcasterUserId',
     ];
 
@@ -24,7 +24,7 @@ abstract class AbstractCondition implements ConditionInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getType(): string
     {
@@ -32,7 +32,7 @@ abstract class AbstractCondition implements ConditionInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getRequiredOptions(): array
     {
@@ -40,7 +40,8 @@ abstract class AbstractCondition implements ConditionInterface
     }
 
     /**
-     * @inheritDoc
+     * @TODO: Add possibility to make only a subset of parameters required.
+     *        @see https://dev.twitch.tv/docs/eventsub/eventsub-reference#channel-raid-condition
      */
     protected function assertRequiredOptions(array $options): void
     {

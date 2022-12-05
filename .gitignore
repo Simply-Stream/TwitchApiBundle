@@ -45,7 +45,7 @@
 # Composer PHAR
 /composer.phar
 
-# Backup entities generated with doctrine:generate:entities command
+# Backup entities generated with doctrine-mapping:generate:entities command
 **/Entity/*~
 
 # Embedded web-server pid file

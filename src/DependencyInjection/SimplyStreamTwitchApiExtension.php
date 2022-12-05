@@ -8,17 +8,18 @@
 
 namespace SimplyStream\TwitchApiBundle\DependencyInjection;
 
+use SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface;
+use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
+use SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService;
 
 class SimplyStreamTwitchApiExtension extends Extension
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -29,8 +30,8 @@ class SimplyStreamTwitchApiExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $definition = $container->getDefinition(TwitchProvider::class);
-        $definition->setArgument(0, [
+        $twitchProviderDefinition = $container->getDefinition(TwitchProvider::class);
+        $twitchProviderDefinition->setArgument(0, [
             'clientId' => $config['twitch_id'],
             'clientSecret' => $config['twitch_secret'],
             'urlAuthorize' => 'https://id.twitch.tv/oauth2/authorize',
@@ -40,11 +41,22 @@ class SimplyStreamTwitchApiExtension extends Extension
             'scopes' => $config['scopes'],
         ]);
 
-        $definition = $container->getDefinition(EventSubService::class);
-        $definition->setArgument(5, ['clientId' => $config['twitch_id'], 'webhook' => ['secret' => $config['webhook']['secret']]]);
+        $eventServiceDefinition = $container->getDefinition(EventSubService::class);
+        $eventServiceDefinition->setArgument(3, [
+            'clientId' => $config['twitch_id'],
+            'webhook' => ['secret' => $config['webhook']['secret']],
+        ]);
+
+        $apiClientDefinition = $container->getDefinition(ApiClientInterface::class);
+        $apiClientDefinition->setArgument(5, [
+            'clientId' => $config['twitch_id'],
+        ]);
     }
 
-    public function getAlias()
+    /**
+     * {@inheritDoc}
+     */
+    public function getAlias(): string
     {
         return 'simplystream_twitch_api';
     }

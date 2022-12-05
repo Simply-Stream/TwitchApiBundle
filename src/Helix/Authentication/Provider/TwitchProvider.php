@@ -25,7 +25,7 @@ class TwitchProvider extends GenericProvider
     /**
      * @inheritDoc
      */
-    public function getBaseAuthorizationUrl()
+    public function getBaseAuthorizationUrl(): string
     {
         return 'https://id.twitch.tv/oauth2/authorize';
     }
@@ -33,7 +33,7 @@ class TwitchProvider extends GenericProvider
     /**
      * @inheritDoc
      */
-    public function getBaseAccessTokenUrl(array $params)
+    public function getBaseAccessTokenUrl(array $params): string
     {
         return 'https://id.twitch.tv/oauth2/token';
     }
@@ -43,7 +43,7 @@ class TwitchProvider extends GenericProvider
      *
      * @return string
      */
-    public function getPublicKeysUrl()
+    public function getPublicKeysUrl(): string
     {
         return 'https://id.twitch.tv/oauth2/keys';
     }
@@ -51,7 +51,7 @@ class TwitchProvider extends GenericProvider
     /**
      * @inheritDoc
      */
-    public function getDefaultScopes()
+    public function getDefaultScopes(): array
     {
         return ['openid'];
     }
@@ -61,7 +61,7 @@ class TwitchProvider extends GenericProvider
      *
      * @return string Scope separator, defaults to ' '
      */
-    protected function getScopeSeparator()
+    protected function getScopeSeparator(): string
     {
         return ' ';
     }
@@ -77,7 +77,7 @@ class TwitchProvider extends GenericProvider
     /**
      * @inheritDoc
      */
-    protected function getAuthorizationParameters(array $options)
+    protected function getAuthorizationParameters(array $options): array
     {
         // response_type has been hardcoded in parent class and will be overridden by the parent::getAuthorizationParameters() call.
         // For twitch/oidc, we can also use token, id_token and token+id_token, to let the frontend handle twitchs response.
@@ -93,7 +93,7 @@ class TwitchProvider extends GenericProvider
     /**
      * @inheritDoc
      */
-    protected function fetchResourceOwnerDetails(AccessToken $token)
+    protected function fetchResourceOwnerDetails(AccessToken $token): array
     {
         $resourceOwnerDetails = parent::fetchResourceOwnerDetails($token);
         $keyset = $this->getPublicKeyset();
@@ -109,7 +109,7 @@ class TwitchProvider extends GenericProvider
      *
      * @return array
      */
-    protected function getPublicKeyset()
+    protected function getPublicKeyset(): array
     {
         $factory = $this->getRequestFactory();
         $request = $factory->getRequest(Request::METHOD_GET, $this->getPublicKeysUrl());
