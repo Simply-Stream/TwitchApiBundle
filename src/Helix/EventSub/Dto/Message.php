@@ -9,13 +9,13 @@ class Message
     /**
      * @var string
      */
-    protected string $text;
+    protected string $text = '';
 
     /**
      * @var Emote[]
      * @Serializer\Type("array<SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Emote>")
      */
-    protected array $emotes;
+    protected array $emotes = [];
 
     /**
      * @return string

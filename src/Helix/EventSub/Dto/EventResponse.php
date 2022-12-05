@@ -8,21 +8,21 @@ use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events\EventInterface;
 class EventResponse
 {
     /**
-     * @var Subscription
+     * @var Subscription|null
      * @Serializer\Type("SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Subscription<T1>")
      */
-    protected Subscription $subscription;
+    protected ?Subscription $subscription = null;
 
     /**
      * @var EventInterface|null
      * @Serializer\Type("T2")
      */
-    protected ?EventInterface $event;
+    protected ?EventInterface $event = null;
 
     /**
      * @var string|null
      */
-    protected ?string $challenge;
+    protected ?string $challenge = null;
 
     /**
      * @return Subscription
