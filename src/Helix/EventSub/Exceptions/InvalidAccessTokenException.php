@@ -30,7 +30,7 @@ class InvalidAccessTokenException extends \RuntimeException
     public function __construct(?AccessTokenInterface $accessToken, $message = "", $code = 0, Throwable $previous = null)
     {
         if ($accessToken) {
-            $this->message .= ": ${accessToken}";
+            $this->message .= ": {$accessToken}";
         }
 
         parent::__construct($message ?? $this->message, $code, $previous);

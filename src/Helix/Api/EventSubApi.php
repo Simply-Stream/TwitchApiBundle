@@ -116,7 +116,7 @@ class EventSubApi extends AbstractApi
                 'user_id' => $userId,
                 'after' => $after,
             ],
-            type: 'array<' . Subscription::class . '>',
+            type: 'array',
             accessToken: $accessToken
         );
     }

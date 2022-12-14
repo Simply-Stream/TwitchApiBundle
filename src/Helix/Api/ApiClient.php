@@ -79,7 +79,7 @@ class ApiClient implements ApiClientInterface
 
         return $this->serializer->deserialize(
             $response->getBody(),
-            TwitchResponse::class . ($type ? ("<${type}>") : ''),
+            TwitchResponse::class . ($type ? ("<{$type}>") : ''),
             'json',
         );
     }
