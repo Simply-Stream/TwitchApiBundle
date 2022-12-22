@@ -16,10 +16,26 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('simplystream_twitch_api');
-        //@formatter:off
         $rootNode = $treeBuilder->getRootNode();
+        //@formatter:off
         $rootNode
             ->children()
+                ->scalarNode('http_client')
+                    ->isRequired()
+                    ->info('Service id of HTTP client to use (must implement \Psr\Http\Client\ClientInterface)')
+                ->end()
+                ->scalarNode('serializer')
+                    ->isRequired()
+                    ->info('Service id of HTTP client to use (must implement \JMS\Serializer\SerializerInterface)')
+                ->end()
+                ->scalarNode('request_factory')
+                    ->isRequired()
+                    ->info('Service id of Request factory to use (must implement \Psr\Http\Message\RequestFactoryInterface)')
+                ->end()
+                ->scalarNode('stream_factory')
+                    ->isRequired()
+                    ->info('Service id of Request factory to use (must implement \Psr\Http\Message\StreamFactoryInterface)')
+                ->end()
                 ->scalarNode('twitch_id')->isRequired()->end()
                 ->scalarNode('twitch_secret')->isRequired()->end()
                 ->scalarNode('redirect_uri')->isRequired()->end()
