@@ -8,13 +8,13 @@
 
 namespace SimplyStream\TwitchApiBundle\DependencyInjection;
 
-use SimplyStream\TwitchApiBundle\Helix\Api\ApiClientInterface;
-use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
+use SimplyStream\TwitchApiBundle\Helix\Api\ApiClient;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 class SimplyStreamTwitchApiExtension extends Extension
 {
@@ -30,7 +30,8 @@ class SimplyStreamTwitchApiExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $twitchProviderDefinition = $container->getDefinition(TwitchProvider::class);
+        // @TODO: Check if this class is still needed, now that KnpU has a helix provider
+        $twitchProviderDefinition = $container->getDefinition('simplystream_twitch_api.helix_authentication_provider.twitch_provider');
         $twitchProviderDefinition->setArgument(0, [
             'clientId' => $config['twitch_id'],
             'clientSecret' => $config['twitch_secret'],
@@ -47,9 +48,17 @@ class SimplyStreamTwitchApiExtension extends Extension
             'webhook' => ['secret' => $config['webhook']['secret']],
         ]);
 
-        $apiClientDefinition = $container->getDefinition(ApiClientInterface::class);
-        $apiClientDefinition->setArgument(5, [
-            'clientId' => $config['twitch_id'],
+        $apiClient = $container->register(
+            'simplystream_twitch_api.helix_api.api_client',
+            ApiClient::class
+        );
+        $apiClient->setArguments([
+            new Reference($config['http_client']),
+            new Reference($config['request_factory']),
+            $container->getDefinition('simplystream_twitch_api.helix_authentication_provider.twitch_provider'),
+            new Reference($config['serializer']),
+            new Reference($config['stream_factory']),
+            ['clientId' => $config['twitch_id']],
         ]);
     }
 
