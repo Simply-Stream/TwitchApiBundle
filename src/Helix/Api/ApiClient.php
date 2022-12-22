@@ -6,9 +6,6 @@ use InvalidArgumentException;
 use JMS\Serializer\SerializerInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerTrait;
@@ -18,6 +15,7 @@ use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorage
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponse;
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidAccessTokenException;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function json_decode;
 
 class ApiClient implements ApiClientInterface
@@ -25,11 +23,9 @@ class ApiClient implements ApiClientInterface
     use LoggerTrait, LoggerAwareTrait;
 
     public function __construct(
-        protected ClientInterface $client,
-        protected RequestFactoryInterface $requestFactory,
+        protected HttpClientInterface $client,
         protected TwitchProvider $twitch,
         protected SerializerInterface $serializer,
-        protected StreamFactoryInterface $streamFactory,
         protected array $options = [],
         protected TokenStorageInterface $tokenStorage = new InMemoryStorage(),
     ) {
@@ -50,26 +46,19 @@ class ApiClient implements ApiClientInterface
             $accessToken = $this->getAccessToken('client_credentials');
         }
 
-        $request = $this->requestFactory->createRequest($method, $uri);
-        $request = $request
-            ->withHeader('Authorization', ucfirst($accessToken->getValues()['token_type']) . ' ' . $accessToken->getToken())
-            ->withHeader('Content-Type', 'application/json')
-            ->withHeader('Client-ID', $this->options['clientId']);
-
-        foreach ($headers as $header => $value) {
-            $request = $request->withHeader($header, $value);
-        }
-
-        if (! empty($body)) {
-            $request = $request->withBody($this->streamFactory->createStream($this->serializer->serialize($body, 'json')));
-        }
-
-        $response = $this->client->sendRequest($request);
+        $response = $this->client->request($method, $uri, [
+            'json' => $body,
+            'headers' => array_merge($headers, [
+                'Authorization' => ucfirst($accessToken->getValues()['token_type']) . ' ' . $accessToken->getToken(),
+                'Content-Type' => 'application/json',
+                'Client-ID' => $this->options['clientId'],
+            ]),
+        ]);
 
         if ($response->getStatusCode() >= 400) {
             // @TODO: Use serializer
-            $error = json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
-            $this->error($error->message, ['response' => $response->getBody()]);
+            $error = json_decode($response->getContent(), false, 512, JSON_THROW_ON_ERROR);
+            $this->error($error->message, ['response' => $response->getContent()]);
             throw new InvalidArgumentException(sprintf('Error from API: "(%s): %s"', $error->error, $error->message));
         }
 
@@ -78,7 +67,7 @@ class ApiClient implements ApiClientInterface
         }
 
         return $this->serializer->deserialize(
-            $response->getBody(),
+            $response->getContent(),
             TwitchResponse::class . ($type ? ("<{$type}>") : ''),
             'json',
         );

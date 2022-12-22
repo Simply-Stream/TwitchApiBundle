@@ -49,7 +49,8 @@ abstract class AbstractApi
     ): ?TwitchResponseInterface {
         $uri = new Uri(ApiClientInterface::BASE_API_URL . $path);
 
-        return $this->apiClient
-            ->sendRequest($uri->withQuery($this->buildQueryString($query)), $type, $method, $body, $accessToken, $headers);
+        return $this->apiClient->sendRequest(
+            $uri->withQuery($this->buildQueryString($query)), $type, $method, $body, $accessToken, $headers
+        );
     }
 }

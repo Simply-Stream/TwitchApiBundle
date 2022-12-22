@@ -54,10 +54,8 @@ class SimplyStreamTwitchApiExtension extends Extension
         );
         $apiClient->setArguments([
             new Reference($config['http_client']),
-            new Reference($config['request_factory']),
             $container->getDefinition('simplystream_twitch_api.helix_authentication_provider.twitch_provider'),
             new Reference($config['serializer']),
-            new Reference($config['stream_factory']),
             ['clientId' => $config['twitch_id']],
         ]);
     }
