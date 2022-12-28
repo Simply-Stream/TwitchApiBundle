@@ -65,8 +65,12 @@ class GamesApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getGames(array $id = [], array $name = [], array $igdbId = [], AccessTokenInterface $accessToken = null):
-    TwitchResponseInterface {
+    public function getGames(
+        array $id = [],
+        array $name = [],
+        array $igdbId = [],
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         if ((count($id) + count($name) + count($igdbId)) > 100) {
             throw new RuntimeException('You cannot search for more than 100 ids or games');
         }

@@ -5,6 +5,7 @@ namespace SimplyStream\TwitchApiBundle\Helix\Api;
 use InvalidArgumentException;
 use JMS\Serializer\SerializerInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -29,6 +30,15 @@ class ApiClient implements ApiClientInterface
         protected array $options = [],
         protected TokenStorageInterface $tokenStorage = new InMemoryStorage(),
     ) {
+        if (! empty($this->options['token'])) {
+            foreach ($this->options['token'] as $grant => $token) {
+                $this->tokenStorage->save($grant, new AccessToken([
+                    'access_token' => $token['token'],
+                    'expires_in' => $token['expires_in'],
+                    'token_type' => $token['token_type'],
+                ]));
+            }
+        }
     }
 
     /**
