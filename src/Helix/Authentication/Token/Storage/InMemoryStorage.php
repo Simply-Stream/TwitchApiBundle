@@ -10,7 +10,7 @@ class InMemoryStorage implements TokenStorageInterface
     /**
      * @var ParameterBag
      */
-    protected $tokens;
+    protected ParameterBag $tokens;
 
     /**
      * @param array $tokens Initial set of tokens

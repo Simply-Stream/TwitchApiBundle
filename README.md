@@ -49,12 +49,14 @@ Following configuration is required:
 
 ```yaml
     simplystream_twitch_api:
-        # Any \Psr\Http\Client\ClientInterface client implementation
-        http_client: 'psr18.http_client'
-        # Any \Psr\Http\Message\RequestFactoryInterface implementation
-        request_factory: 'nyholm.psr7.psr17_factory'
-        # Any \Psr\Http\Message\StreamFactoryInterface implementation
-        stream_factory: 'nyholm.psr7.psr17_factory'
+        # Can set a static client_credential
+        token:
+            client_credentials:
+                token: '123'
+                expires_in: 1000
+                token_type: 'Bearer'
+        # Any \Symfony\Contracts\HttpClient\HttpClientInterface implementation
+        http_client: 'http_client'
         # Currently the jms_serializer, but the intention is to support more
         serializer: 'jms_serializer'
         # See https://dev.twitch.tv/docs/authentication#registration on how to get client id and secret

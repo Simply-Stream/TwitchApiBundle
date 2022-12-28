@@ -52,11 +52,25 @@ class SimplyStreamTwitchApiExtension extends Extension
             'simplystream_twitch_api.helix_api.api_client',
             ApiClient::class
         );
+        $apiClientOptions = [
+            'clientId' => $config['twitch_id'],
+        ];
+
+        if (isset($config['token']['client_credentials'])) {
+            $apiClientOptions['token'] = [
+                'client_credentials' => [
+                    'token' => $config['token']['client_credentials']['token'],
+                    'expires_in' => $config['token']['client_credentials']['expires_in'],
+                    'token_type' => $config['token']['client_credentials']['token_type'],
+                ],
+            ];
+        }
+
         $apiClient->setArguments([
             new Reference($config['http_client']),
             $container->getDefinition('simplystream_twitch_api.helix_authentication_provider.twitch_provider'),
             new Reference($config['serializer']),
-            ['clientId' => $config['twitch_id']],
+            $apiClientOptions,
         ]);
     }
 
