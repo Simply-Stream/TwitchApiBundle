@@ -98,7 +98,7 @@ class ClipsApi extends AbstractApi
         string $after = null,
         AccessTokenInterface $accessToken = null
     ): TwitchResponseInterface {
-        if (! $broadcasterId && $gameId && $id) {
+        if (! $broadcasterId && ! $gameId && ! $id) {
             throw new \RuntimeException('You need to specify at least one kind of ID');
         }
 
