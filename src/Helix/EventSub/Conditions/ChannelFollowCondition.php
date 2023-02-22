@@ -21,10 +21,23 @@ class ChannelFollowCondition extends AbstractCondition
     protected string $broadcasterUserId;
 
     /**
+     * @var string
+     */
+    protected string $moderatorUserId;
+
+    /**
      * @return string
      */
     public function getBroadcasterUserId(): string
     {
         return $this->broadcasterUserId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModeratorUserId(): string
+    {
+        return $this->moderatorUserId;
     }
 }
