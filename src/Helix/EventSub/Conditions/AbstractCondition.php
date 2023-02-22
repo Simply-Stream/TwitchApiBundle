@@ -7,6 +7,7 @@ use InvalidArgumentException;
 abstract class AbstractCondition implements ConditionInterface
 {
     public const TYPE = null;
+    public const AUTH_TYPE = self::AUTH_TYPE_APP;
 
     protected array $requiredOptions = [
         'broadcasterUserId',

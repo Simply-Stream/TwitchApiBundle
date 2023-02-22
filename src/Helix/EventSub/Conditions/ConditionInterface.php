@@ -13,6 +13,8 @@ namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Conditions;
  */
 interface ConditionInterface
 {
+    public const AUTH_TYPE_APP = 'app';
+    public const AUTH_TYPE_USER = 'user';
     /**
      * Returns the type for a condition
      *

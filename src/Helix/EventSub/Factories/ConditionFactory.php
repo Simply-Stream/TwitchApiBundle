@@ -2,6 +2,7 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Factories;
 
+use SimplyStream\TwitchApiBundle\Helix\EventSub\Conditions\AbstractCondition;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Conditions\Conditions;
 
 class ConditionFactory
@@ -12,7 +13,7 @@ class ConditionFactory
      *
      * @return mixed
      */
-    public static function createFromType(string $type, array $options = [])
+    public static function createFromType(string $type, array $options = []): AbstractCondition
     {
         $conditionType = Conditions::CONDITIONS[$type];
 
