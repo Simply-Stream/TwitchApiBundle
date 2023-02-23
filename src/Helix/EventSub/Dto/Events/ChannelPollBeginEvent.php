@@ -2,6 +2,7 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events;
 
+use JMS\Serializer\Annotation as Serializer;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\BitsVoting;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\ChannelPointsVoting;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Choice;
@@ -22,6 +23,7 @@ class ChannelPollBeginEvent extends AbstractEvent
 
     /**
      * @var array<Choice>
+     * @Serializer\Type('array<SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Choice>')
      */
     protected array $choices;
 
