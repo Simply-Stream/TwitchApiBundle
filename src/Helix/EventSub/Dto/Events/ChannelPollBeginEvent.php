@@ -21,7 +21,7 @@ class ChannelPollBeginEvent extends AbstractEvent
     protected string $title;
 
     /**
-     * @var Choice[]
+     * @var array<Choice>
      */
     protected array $choices;
 

@@ -20,7 +20,7 @@ class HypeTrainEndEvent extends AbstractEvent
     protected int $total;
 
     /**
-     * @var Contribution[]
+     * @var array<Contribution>
      * @Serializer\Type("array<SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Contribution>")
      */
     protected array $topContributions;
