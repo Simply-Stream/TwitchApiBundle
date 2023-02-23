@@ -20,7 +20,7 @@ class ChannelPredictionBeginEvent extends AbstractEvent
     protected string $title;
 
     /**
-     * @var Outcome[]
+     * @var array<Outcome>
      * @Serializer\Type("array<SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Outcome>")
      */
     protected array $outcomes;
