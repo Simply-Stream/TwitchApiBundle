@@ -23,7 +23,7 @@ class ChannelPollBeginEvent extends AbstractEvent
 
     /**
      * @var array<Choice>
-     * @Serializer\Type('array<SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Choice>')
+     * @Serializer\Type("array<SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Choice>")
      */
     protected array $choices;
 
