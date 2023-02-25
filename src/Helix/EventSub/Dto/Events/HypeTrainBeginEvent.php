@@ -41,14 +41,19 @@ class HypeTrainBeginEvent extends AbstractEvent
     protected Contribution $lastContribution;
 
     /**
-     * @var \DateTime
+     * @var string
      */
-    protected \DateTime $tartedAt;
+    protected string $startedAt;
 
     /**
-     * @var \DateTime
+     * @var string
      */
-    protected \DateTime $expiresAt;
+    protected string $expiresAt;
+
+    /**
+     * @var int 
+     */
+    protected int $level;
 
     /**
      * @return string
@@ -171,41 +176,61 @@ class HypeTrainBeginEvent extends AbstractEvent
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getTartedAt(): \DateTime
+    public function getStartedAt(): string
     {
-        return $this->tartedAt;
+        return $this->startedAt;
     }
 
     /**
-     * @param \DateTime $tartedAt
+     * @param string $startedAt
      *
      * @return $this
      */
-    public function setTartedAt(\DateTime $tartedAt): self
+    public function setStartedAt(string $startedAt): self
     {
-        $this->tartedAt = $tartedAt;
+        $this->startedAt = $startedAt;
 
         return $this;
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getExpiresAt(): \DateTime
+    public function getExpiresAt(): string
     {
         return $this->expiresAt;
     }
 
     /**
-     * @param \DateTime $expiresAt
+     * @param string $expiresAt
      *
      * @return $this
      */
-    public function setExpiresAt(\DateTime $expiresAt): self
+    public function setExpiresAt(string $expiresAt): self
     {
         $this->expiresAt = $expiresAt;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    /**
+     * @param int $level
+     *
+     * @return HypeTrainBeginEvent
+     */
+    public function setLevel(int $level): HypeTrainBeginEvent
+    {
+        $this->level = $level;
 
         return $this;
     }

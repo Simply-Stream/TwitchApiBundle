@@ -186,4 +186,12 @@ class ChannelPollBeginEvent extends AbstractEvent
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
 }

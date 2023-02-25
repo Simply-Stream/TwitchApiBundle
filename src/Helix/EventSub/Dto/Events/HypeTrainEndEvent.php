@@ -26,19 +26,19 @@ class HypeTrainEndEvent extends AbstractEvent
     protected array $topContributions;
 
     /**
-     * @var \DateTime
+     * @var string
      */
-    protected \DateTime $startedAt;
+    protected string $startedAt;
 
     /**
-     * @var \DateTime
+     * @var string
      */
-    protected \DateTime $endedAt;
+    protected string $endedAt;
 
     /**
-     * @var \DateTime
+     * @var string
      */
-    protected \DateTime $cooldownEndsAt;
+    protected string $cooldownEndsAt;
 
     /**
      * @return int
@@ -101,19 +101,19 @@ class HypeTrainEndEvent extends AbstractEvent
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getStartedAt(): \DateTime
+    public function getStartedAt(): string
     {
         return $this->startedAt;
     }
 
     /**
-     * @param \DateTime $startedAt
+     * @param string $startedAt
      *
      * @return $this
      */
-    public function setStartedAt(\DateTime $startedAt): self
+    public function setStartedAt(string $startedAt): self
     {
         $this->startedAt = $startedAt;
 
@@ -121,19 +121,19 @@ class HypeTrainEndEvent extends AbstractEvent
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getEndedAt(): \DateTime
+    public function getEndedAt(): string
     {
         return $this->endedAt;
     }
 
     /**
-     * @param \DateTime $endedAt
+     * @param string $endedAt
      *
      * @return $this
      */
-    public function setEndedAt(\DateTime $endedAt): self
+    public function setEndedAt(string $endedAt): self
     {
         $this->endedAt = $endedAt;
 
@@ -141,19 +141,19 @@ class HypeTrainEndEvent extends AbstractEvent
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getCooldownEndsAt(): \DateTime
+    public function getCooldownEndsAt(): string
     {
         return $this->cooldownEndsAt;
     }
 
     /**
-     * @param \DateTime $cooldownEndsAt
+     * @param string $cooldownEndsAt
      *
      * @return $this
      */
-    public function setCooldownEndsAt(\DateTime $cooldownEndsAt): self
+    public function setCooldownEndsAt(string $cooldownEndsAt): self
     {
         $this->cooldownEndsAt = $cooldownEndsAt;
 
