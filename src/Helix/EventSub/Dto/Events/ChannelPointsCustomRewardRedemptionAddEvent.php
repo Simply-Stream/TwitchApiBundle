@@ -30,9 +30,9 @@ class ChannelPointsCustomRewardRedemptionAddEvent extends AbstractEvent
     protected Reward $reward;
 
     /**
-     * @var \DateTime
+     * @var string
      */
-    protected \DateTime $redeemedAt;
+    protected string $redeemedAt;
 
     /**
      * @return string
@@ -115,19 +115,19 @@ class ChannelPointsCustomRewardRedemptionAddEvent extends AbstractEvent
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getRedeemedAt(): \DateTime
+    public function getRedeemedAt(): string
     {
         return $this->redeemedAt;
     }
 
     /**
-     * @param \DateTime $redeemedAt
+     * @param string $redeemedAt
      *
      * @return $this
      */
-    public function setRedeemedAt(\DateTime $redeemedAt): self
+    public function setRedeemedAt(string $redeemedAt): self
     {
         $this->redeemedAt = $redeemedAt;
 

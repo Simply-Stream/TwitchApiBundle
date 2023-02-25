@@ -14,6 +14,11 @@ class ChannelPollEndEvent extends ChannelPollBeginEvent
     protected string $status;
 
     /**
+     * @var string
+     */
+    protected string $endedAt;
+
+    /**
      * @return string
      */
     public function getStatus(): string
@@ -29,6 +34,26 @@ class ChannelPollEndEvent extends ChannelPollBeginEvent
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndedAt(): string
+    {
+        return $this->endedAt;
+    }
+
+    /**
+     * @param string $endedAt
+     *
+     * @return ChannelPollEndEvent
+     */
+    public function setEndedAt(string $endedAt): ChannelPollEndEvent
+    {
+        $this->endedAt = $endedAt;
 
         return $this;
     }
