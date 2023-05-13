@@ -88,6 +88,27 @@ class ChatApi extends AbstractApi
     }
 
     /**
+     * Gets the list of global emotes. Global emotes are Twitch-created emotes that users can use in any Twitch chat.
+     *
+     * Authorization
+     * Requires an app access token or user access token.
+     *
+     * @param string               $broadcasterId
+     * @param AccessTokenInterface $accessToken
+     *
+     * @return TwitchResponseInterface
+     * @throws \JsonException
+     */
+    public function getGlobalEmotes(AccessTokenInterface $accessToken): TwitchResponseInterface
+    {
+        return $this->sendRequest(
+            path: self::BASE_PATH . '/emotes/global',
+            type: 'array<' . Emote::class . '>',
+            accessToken: $accessToken
+        );
+    }
+
+    /**
      * Gets emotes for one or more specified emote sets.
      *
      * An emote set groups emotes that have a similar context. For example, Twitch places all the subscriber emotes that a broadcaster
