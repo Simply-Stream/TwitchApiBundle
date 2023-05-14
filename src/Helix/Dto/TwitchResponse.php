@@ -24,6 +24,11 @@ class TwitchResponse implements TwitchResponseInterface
     protected ?int $total = null;
 
     /**
+     * @var string|null
+     */
+    protected ?string $template = null;
+
+    /**
      * @param mixed $data
      */
     public function __construct(mixed $data)
@@ -87,6 +92,26 @@ class TwitchResponse implements TwitchResponseInterface
     public function setTotal(?int $total): TwitchResponse
     {
         $this->total = $total;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTemplate(): ?string
+    {
+        return $this->template;
+    }
+
+    /**
+     * @param string|null $template
+     *
+     * @return TwitchResponse
+     */
+    public function setTemplate(?string $template): TwitchResponse
+    {
+        $this->template = $template;
 
         return $this;
     }

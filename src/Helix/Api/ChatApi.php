@@ -4,6 +4,7 @@ namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use SimplyStream\TwitchApiBundle\Helix\Dto\ChatBadge;
+use SimplyStream\TwitchApiBundle\Helix\Dto\ChatBadgeSet;
 use SimplyStream\TwitchApiBundle\Helix\Dto\ChatColor;
 use SimplyStream\TwitchApiBundle\Helix\Dto\ChatSettings;
 use SimplyStream\TwitchApiBundle\Helix\Dto\Chatter;
@@ -69,13 +70,13 @@ class ChatApi extends AbstractApi
      * Authorization:
      * Requires an app access token or user access token.
      *
-     * @param string               $broadcasterId An ID that identifies the broadcaster whose emotes you want to get.
-     * @param AccessTokenInterface $accessToken
+     * @param string                    $broadcasterId An ID that identifies the broadcaster whose emotes you want to get.
+     * @param AccessTokenInterface|null $accessToken
      *
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getChannelEmotes(string $broadcasterId, AccessTokenInterface $accessToken): TwitchResponseInterface
+    public function getChannelEmotes(string $broadcasterId, ?AccessTokenInterface $accessToken = null): TwitchResponseInterface
     {
         return $this->sendRequest(
             path: self::BASE_PATH . '/emotes',
@@ -93,13 +94,12 @@ class ChatApi extends AbstractApi
      * Authorization
      * Requires an app access token or user access token.
      *
-     * @param string               $broadcasterId
-     * @param AccessTokenInterface $accessToken
+     * @param AccessTokenInterface|null $accessToken
      *
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getGlobalEmotes(AccessTokenInterface $accessToken): TwitchResponseInterface
+    public function getGlobalEmotes(?AccessTokenInterface $accessToken = null): TwitchResponseInterface
     {
         return $this->sendRequest(
             path: self::BASE_PATH . '/emotes/global',
@@ -160,7 +160,7 @@ class ChatApi extends AbstractApi
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array<' . ChatBadge::class . '>',
+            type: 'array<' . ChatBadgeSet::class . '>',
             accessToken: $accessToken
         );
     }
@@ -181,7 +181,7 @@ class ChatApi extends AbstractApi
     {
         return $this->sendRequest(
             path: self::BASE_PATH . '/badges/global',
-            type: 'array<' . ChatBadge::class . '>',
+            type: 'array<' . ChatBadgeSet::class . '<' . ChatBadge::class . '>>',
             accessToken: $accessToken
         );
     }

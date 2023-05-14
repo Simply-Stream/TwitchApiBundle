@@ -2,6 +2,8 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Dto;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class Emote
 {
     /**
@@ -22,6 +24,7 @@ class Emote
      * NOTE: You should use the templated URL in the template field to fetch the image instead of using these URLs.
      *
      * @var array
+     * @Serializer\Type("array")
      */
     protected array $images;
 
@@ -58,6 +61,7 @@ class Emote
      * - static — A static PNG file is available for this emote.
      *
      * @var array<string>
+     * @Serializer\Type("array<string>")
      */
     protected array $format;
 
@@ -70,6 +74,7 @@ class Emote
      * - 3.0 — A large version (112px x 112px) is available.
      *
      * @var array<string>
+     * @Serializer\Type("array<string>")
      */
     protected array $scale;
 
@@ -79,6 +84,7 @@ class Emote
      * - light
      *
      * @var array<string>
+     * @Serializer\Type("array<string>")
      */
     protected array $theme_mode;
 
