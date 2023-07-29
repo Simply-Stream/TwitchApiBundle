@@ -63,15 +63,15 @@ class ChannelsApi extends AbstractApi
      *                                            set this field. The maximum delay is 900 seconds (15 minutes).
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return void
      * @throws \JsonException
      */
     public function modifyChannelInformation(
         string $broadcasterId,
         array $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
-        return $this->sendRequest(
+    ): void {
+        $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'broadcaster_id' => $broadcasterId,
@@ -103,6 +103,92 @@ class ChannelsApi extends AbstractApi
                 'broadcaster_id' => $broadcasterId,
             ],
             type: 'array<' . ChannelEditor::class . '>',
+            accessToken: $accessToken
+        );
+    }
+
+    /**
+     * Gets a list of broadcasters that the specified user follows. You can also use this endpoint to see whether a user follows a specific
+     * broadcaster.
+     *
+     * Authorization
+     * Requires a user access token that includes the user:read:follows scope.
+     *
+     * @param string               $userId        A user’s ID. Returns the list of broadcasters that this user follows. This ID must match
+     *                                            the user ID in the user OAuth token.
+     * @param string|null          $broadcasterId A broadcaster’s ID. Use this parameter to see whether the user follows this broadcaster.
+     *                                            If specified, the response contains this broadcaster if the user follows them. If not
+     *                                            specified, the response contains all broadcasters that the user follows.
+     * @param int                  $first         The maximum number of items to return per page in the response. The minimum page size is
+     *                                            1 item per page and the maximum is 100. The default is 20.
+     * @param string|null          $after         The cursor used to get the next page of results. The Pagination object in the response
+     *                                            contains the cursor’s value.
+     * @param AccessTokenInterface $accessToken
+     *
+     * @return TwitchResponseInterface
+     * @throws \JsonException
+     * @see https://dev.twitch.tv/docs/api/guide#pagination
+     */
+    public function getFollowedChannels(
+        string $userId,
+        AccessTokenInterface $accessToken,
+        ?string $broadcasterId = null,
+        int $first = 20,
+        ?string $after = null
+    ): TwitchResponseInterface {
+        return $this->sendRequest(
+            path: self::BASE_PATH . '/followed',
+            query: [
+                'user_id' => $userId,
+                'broadcaster_id' => $broadcasterId,
+                'first' => $first,
+                'after' => $after,
+            ],
+            type: 'array',
+            accessToken: $accessToken
+        );
+    }
+
+    /**
+     * Gets a list of users that follow the specified broadcaster. You can also use this endpoint to see whether a specific user follows
+     * the broadcaster.
+     *
+     * Authorization
+     * Requires a user access token that includes the moderator:read:followers scope. The ID in the broadcaster_id query parameter must
+     * match the user ID in the access token or the user must be a moderator for the specified broadcaster. If a scope is not provided,
+     * only the total follower count will be included in the response.
+     *
+     * @param string               $broadcasterId The broadcaster’s ID. Returns the list of users that follow this broadcaster.
+     * @param string|null          $userId        A user’s ID. Use this parameter to see whether the user follows this broadcaster. If
+     *                                            specified, the response contains this user if they follow the broadcaster. If not
+     *                                            specified, the response contains all users that follow the broadcaster.
+     * @param int                  $first         The maximum number of items to return per page in the response. The minimum page size is
+     *                                            1 item per page and the maximum is 100. The default is 20.
+     * @param string|null          $after         The cursor used to get the next page of results. The Pagination object in the response
+     *                                            contains the cursor’s value.
+     * @param AccessTokenInterface $accessToken
+     *
+     * @return TwitchResponseInterface
+     * @throws \JsonException
+     *
+     * @see https://dev.twitch.tv/docs/api/guide#pagination
+     */
+    public function getChannelFollowers(
+        string $broadcasterId,
+        AccessTokenInterface $accessToken,
+        ?string $userId = null,
+        int $first = 20,
+        ?string $after = null
+    ): TwitchResponseInterface {
+        return $this->sendRequest(
+            path: self::BASE_PATH . '/followers',
+            query: [
+                'user_id' => $userId,
+                'broadcaster_id' => $broadcasterId,
+                'first' => $first,
+                'after' => $after,
+            ],
+            type: 'array',
             accessToken: $accessToken
         );
     }

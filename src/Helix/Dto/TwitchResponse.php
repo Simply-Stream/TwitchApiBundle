@@ -4,7 +4,7 @@ namespace SimplyStream\TwitchApiBundle\Helix\Dto;
 
 use JMS\Serializer\Annotation as Serializer;
 
-class TwitchResponse implements TwitchResponseInterface
+class TwitchResponse implements TwitchResponseInterface, TwitchPaginatedResponseInterface
 {
     /**
      * @var mixed
