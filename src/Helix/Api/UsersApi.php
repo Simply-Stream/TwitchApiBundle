@@ -38,7 +38,7 @@ class UsersApi extends AbstractApi
      *                                          login names you may specify is 100.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponse
+     * @return TwitchResponseInterface
      * @throws JsonException
      */
     public function getUsers(array $ids = [], array $logins = [], AccessTokenInterface $accessToken = null): TwitchResponseInterface

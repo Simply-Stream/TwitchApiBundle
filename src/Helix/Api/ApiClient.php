@@ -67,8 +67,8 @@ class ApiClient implements ApiClientInterface
 
         if ($response->getStatusCode() >= 400) {
             // @TODO: Use serializer
-            $error = json_decode($response->getContent(), false, 512, JSON_THROW_ON_ERROR);
-            $this->error($error->message, ['response' => $response->getContent()]);
+            $error = json_decode($response->getContent(false), false, 512, JSON_THROW_ON_ERROR);
+            $this->error($error->message, ['response' => $response->getContent(false)]);
             throw new InvalidArgumentException(sprintf('Error from API: "(%s): %s"', $error->error, $error->message));
         }
 
