@@ -28,12 +28,16 @@ class ChannelsApi extends AbstractApi
      * @return TwitchResponse
      * @throws \JsonException
      */
-    public function getChannelInformation(array $broadcasterId, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getChannelInformation(
+        array $broadcasterId,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH,
-            query: ['broadcaster_id' => $broadcasterId],
-            type: 'array<' . ChannelInformation::class . '>',
+            query: [
+                'broadcaster_id' => $broadcasterId
+            ],
+            type: ChannelInformation::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -47,20 +51,34 @@ class ChannelsApi extends AbstractApi
      * @param string               $broadcasterId The ID of the broadcaster whose channel you want to update. This ID must match the
      *                                            user ID associated with the user access token.
      * @param array                $body
-     *                                            - game_id    String    No    The ID of the game that the user plays. The game is not
-     *                                            updated if the ID isn’t a game ID that Twitch recognizes. To unset this field, use
+     *                                            - game_id                         String    No    The ID of the game that the user plays.
+     *                                            The game is not updated if the ID isn’t a game ID that Twitch recognizes. To unset this
+     *                                            field, use
      *                                            “0” or “” (an empty string).
-     *                                            - broadcaster_language    String    No    The user’s
+     *                                            - broadcaster_language            String    No    The user’s
      *                                            preferred language. Set the value to an ISO 639-1 two-letter language code (for
      *                                            example, en for English). Set to “other” if the user’s preferred language is not a
      *                                            Twitch supported language. The language isn’t updated if the language code isn’t a
      *                                            Twitch supported language.
-     *                                            - title    String    No    The title of the user’s stream. You may not set this
-     *                                            field to an empty string.
-     *                                            - delay    Integer    No    The number
-     *                                            of seconds you want your broadcast buffered before streaming it live. The delay
-     *                                            helps ensure fairness during competitive play. Only users with Partner status may
-     *                                            set this field. The maximum delay is 900 seconds (15 minutes).
+     *                                            - title                           String    No    The title of the user’s stream. You may
+     *                                            not set this field to an empty string.
+     *                                            - delay                           Integer   No    The number of seconds you want your
+     *                                            broadcast buffered before streaming it live. The delay helps ensure fairness during
+     *                                            competitive play. Only users with Partner status may set this field. The maximum delay is
+     *                                            900 seconds (15 minutes).
+     *                                            - tags                            String[]  No    A list of channel-defined tags to apply
+     *                                            to the channel. To remove all tags from the channel, set tags to an empty array. Tags
+     *                                            help identify the content that the channel streams. Learn More
+     *                                            A channel may specify a maximum of 10 tags. Each tag is limited to a maximum of 25
+     *                                            characters and may not be an empty string or contain spaces or special characters. Tags
+     *                                            are case insensitive. For readability, consider using camelCasing or PascalCasing.
+     *                                            - content_classification_labels   Label[]   No    List of labels that should be set
+     *                                            as the Channel’s CCLs.
+     *                                            - is_branded_content              Boolean   No    Boolean flag indicating if the
+     *                                            channel has branded content.
+     *
+     * @TODO: change format of body parameter to be readable
+     *
      * @param AccessTokenInterface $accessToken
      *
      * @return void
@@ -95,14 +113,16 @@ class ChannelsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getChannelEditors(string $broadcasterId, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function getChannelEditors(
+        string $broadcasterId,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/editors',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array<' . ChannelEditor::class . '>',
+            type: ChannelEditor::class . '[]',
             accessToken: $accessToken
         );
     }

@@ -82,6 +82,7 @@ class ClipsApi extends AbstractApi
      *                                                 response contains the cursor’s value.
      * @param string|null               $after         The cursor used to get the next page of results. The Pagination object in the
      *                                                 response contains the cursor’s value.
+     * @param bool|null                 $isFeatured
      * @param AccessTokenInterface|null $accessToken
      *
      * @return TwitchResponseInterface
@@ -96,6 +97,7 @@ class ClipsApi extends AbstractApi
         int $first = 20,
         string $before = null,
         string $after = null,
+        bool $isFeatured = null,
         AccessTokenInterface $accessToken = null
     ): TwitchResponseInterface {
         if (! $broadcasterId && ! $gameId && ! $id) {
@@ -113,8 +115,9 @@ class ClipsApi extends AbstractApi
                 'after' => $after,
                 'before' => $before,
                 'first' => $first,
+                'is_featured' => $isFeatured
             ],
-            type: 'array<' . Clip::class . '>',
+            type: Clip::class . '[]',
             accessToken: $accessToken
         );
     }

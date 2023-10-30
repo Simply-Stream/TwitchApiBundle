@@ -79,11 +79,6 @@
             <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
         </service>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\MusicApi"
-                 id="simplystream.twitch_api.helix_api.music">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
-        </service>
-
         <service class="SimplyStream\TwitchApiBundle\Helix\Api\PollsApi"
                  id="simplystream.twitch_api.helix_api.polls">
             <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
@@ -116,11 +111,6 @@
 
         <service class="SimplyStream\TwitchApiBundle\Helix\Api\SubscriptionsApi"
                  id="simplystream.twitch_api.helix_api.subscriptions">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
-        </service>
-
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\TagsApi"
-                 id="simplystream.twitch_api.helix_api.tags">
             <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
         </service>
 
@@ -231,5 +221,11 @@
 
         <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\Factories\ConditionFactory"/>
         <service id="SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStorage"/>
+
+        <service id="CuyZ\Valinor\MapperBuilder"/>
+
+        <service id="CuyZ\Valinor\Mapper\TreeMapper">
+            <factory service="CuyZ\Valinor\MapperBuilder" method="mapper"/>
+        </service>
     </services>
 </container>

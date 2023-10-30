@@ -53,7 +53,7 @@ class SubscriptionsApi extends AbstractApi
                 'before' => $before,
                 'after' => $after,
             ],
-            type: 'array<' . Subscription::class . '>',
+            type: Subscription::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -67,16 +67,19 @@ class SubscriptionsApi extends AbstractApi
      * A Twitch extensions may use an app access token if the broadcaster has granted the user:read:subscriptions scope from within the
      * Twitch Extensions manager.
      *
-     * @param string               $broadcasterId The ID of a partner or affiliate broadcaster.
-     * @param string               $userId        The ID of the user that you’re checking to see whether they subscribe to the broadcaster
-     *                                            in broadcaster_id. This ID must match the user ID in the access Token.
-     * @param AccessTokenInterface $accessToken
+     * @param string                    $broadcasterId The ID of a partner or affiliate broadcaster.
+     * @param string                    $userId        The ID of the user that you’re checking to see whether they subscribe to the
+     *                                                 broadcaster in broadcaster_id. This ID must match the user ID in the access Token.
+     * @param AccessTokenInterface|null $accessToken
      *
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function checkUserSubscription(string $broadcasterId, string $userId, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function checkUserSubscription(
+        string $broadcasterId,
+        string $userId,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [

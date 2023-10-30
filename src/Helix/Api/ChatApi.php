@@ -39,7 +39,7 @@ class ChatApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getChatter(
+    public function getChatters(
         string $broadcasterId,
         string $moderatorId,
         AccessTokenInterface $accessToken,
@@ -54,7 +54,7 @@ class ChatApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array<' . Chatter::class . '>',
+            type: Chatter::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -76,14 +76,16 @@ class ChatApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getChannelEmotes(string $broadcasterId, ?AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getChannelEmotes(
+        string $broadcasterId,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/emotes',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array<' . Emote::class . '>',
+            type: Emote::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -99,11 +101,12 @@ class ChatApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getGlobalEmotes(?AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getGlobalEmotes(
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/emotes/global',
-            type: 'array<' . Emote::class . '>',
+            type: Emote::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -128,14 +131,16 @@ class ChatApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getEmoteSets(string $emoteSetId, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getEmoteSets(
+        string $emoteSetId,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/emotes/set',
             query: [
                 'emote_set_id' => $emoteSetId,
             ],
-            type: 'array<' . Emote::class . '>',
+            type: Emote::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -153,14 +158,16 @@ class ChatApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getChannelChatBadges(string $broadcasterId, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getChannelChatBadges(
+        string $broadcasterId,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/badges',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array<' . ChatBadgeSet::class . '>',
+            type: ChatBadgeSet::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -177,11 +184,12 @@ class ChatApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getGlobalChatBadges(AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getGlobalChatBadges(
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/badges/global',
-            type: 'array<' . ChatBadgeSet::class . '<' . ChatBadge::class . '>>',
+            type: ChatBadgeSet::class . '<' . ChatBadge::class . '>[]',
             accessToken: $accessToken
         );
     }
@@ -218,7 +226,7 @@ class ChatApi extends AbstractApi
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: 'array<' . ChatSettings::class . '>',
+            type: ChatSettings::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -251,7 +259,7 @@ class ChatApi extends AbstractApi
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: 'array<' . ChatSettings::class . '>',
+            type: ChatSettings::class . '[]',
             method: Request::METHOD_PATCH,
             body: $body,
             accessToken: $accessToken
@@ -271,7 +279,7 @@ class ChatApi extends AbstractApi
      * @param array                     $body
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return void
      * @throws \JsonException
      */
     public function sendChatAnnouncement(
@@ -279,8 +287,8 @@ class ChatApi extends AbstractApi
         string $moderatorId,
         array $body,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
-        return $this->sendRequest(
+    ): void {
+        $this->sendRequest(
             path: self::BASE_PATH . '/announcements',
             query: [
                 'broadcaster_id' => $broadcasterId,
@@ -353,14 +361,16 @@ class ChatApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getUserChatColor(string $userId, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getUserChatColor(
+        string $userId,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/color',
             query: [
                 'user_id' => $userId,
             ],
-            type: 'array<' . ChatColor::class . '>',
+            type: ChatColor::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -398,9 +408,12 @@ class ChatApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function updateUserChatColor(string $userId, string $color, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
-        return $this->sendRequest(
+    public function updateUserChatColor(
+        string $userId,
+        string $color,
+        AccessTokenInterface $accessToken
+    ): void {
+        $this->sendRequest(
             path: self::BASE_PATH . '/color',
             query: [
                 'user_id' => $userId,

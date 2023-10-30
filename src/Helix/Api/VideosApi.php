@@ -132,8 +132,10 @@ class VideosApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function deleteVideos(string $id, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function deleteVideos(
+        string $id,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [

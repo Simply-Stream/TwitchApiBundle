@@ -25,8 +25,10 @@ class GoalsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getCreatorGoals(string $broadcasterId, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getCreatorGoals(
+        string $broadcasterId,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [

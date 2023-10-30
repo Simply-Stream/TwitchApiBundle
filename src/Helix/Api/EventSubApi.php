@@ -14,7 +14,7 @@ class EventSubApi extends AbstractApi
     /**
      * Creates an EventSub subscription.
      *
-     * Authentication:
+     * Authorization:
      * If you use webhooks to receive events, the request must specify an app access token. The request will fail if you use a user access
      * token. If the subscription type requires user authorization, the user must have granted your app (client ID) permissions to receive
      * those events before you subscribe to them. For example, to subscribe to channel.subscribe events, your app must get a user access
@@ -31,11 +31,14 @@ class EventSubApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function createEventSubSubscription(array $body, string $type, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function createEventSubSubscription(
+        array $body,
+        string $type,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/subscriptions',
-            type: 'array<' . Subscription::class . '<' . $type . '>' . '>',
+            type: Subscription::class . '<' . $type . '>' . '[]',
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -45,7 +48,7 @@ class EventSubApi extends AbstractApi
     /**
      * Deletes an EventSub subscription.
      *
-     * Authentication:
+     * Authorization
      * If you use webhooks to receive events, the request must specify an app access token. The request will fail if you use a user access
      * token.
      *
@@ -58,8 +61,10 @@ class EventSubApi extends AbstractApi
      * @return void
      * @throws \JsonException
      */
-    public function deleteEventSubSubscription(string $id, AccessTokenInterface $accessToken = null): void
-    {
+    public function deleteEventSubSubscription(
+        string $id,
+        AccessTokenInterface $accessToken = null
+    ): void {
         $this->sendRequest(
             path: self::BASE_PATH . '/subscriptions',
             query: [
@@ -73,7 +78,7 @@ class EventSubApi extends AbstractApi
     /**
      * Gets a list of EventSub subscriptions that the client in the access token created.
      *
-     * Authentication:
+     * Authorization
      * If you use webhooks to receive events, the request must specify an app access token. The request will fail if you use a user access
      * token.
      *

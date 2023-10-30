@@ -121,12 +121,15 @@ class ExtensionsApi extends AbstractApi
      * @param array  $body
      * @param string $jwt
      *
-     * @return TwitchResponseInterface
+     * @return void
      * @throws \JsonException
      */
-    public function setExtensionRequiredConfiguration(string $broadcasterId, array $body, string $jwt): TwitchResponseInterface
-    {
-        return $this->sendRequest(
+    public function setExtensionRequiredConfiguration(
+        string $broadcasterId,
+        array $body,
+        string $jwt
+    ): void {
+        $this->sendRequest(
             path: self::BASE_PATH . '/required_configuration',
             query: [
                 'broadcaster_id' => $broadcasterId,
@@ -183,12 +186,14 @@ class ExtensionsApi extends AbstractApi
      * @param array  $body
      * @param string $jwt
      *
-     * @return TwitchResponseInterface
+     * @return void
      * @throws \JsonException
      */
-    public function sendExtensionPubSubMessage(array $body, string $jwt): TwitchResponseInterface
-    {
-        return $this->sendRequest(
+    public function sendExtensionPubSubMessage(
+        array $body,
+        string $jwt
+    ): void {
+        $this->sendRequest(
             path: self::BASE_PATH . '/pubsub',
             method: Request::METHOD_POST,
             body: $body,
@@ -230,7 +235,8 @@ class ExtensionsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array'
+            type: 'array',
+            accessToken: $accessToken
         );
     }
 
@@ -247,8 +253,10 @@ class ExtensionsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getExtensionSecrets(string $extensionId, string $jwt): TwitchResponseInterface
-    {
+    public function getExtensionSecrets(
+        string $extensionId,
+        string $jwt
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/jwt/secrets',
             query: [
@@ -278,8 +286,11 @@ class ExtensionsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function createExtensionSecret(string $extensionId, string $jwt, int $delay = 300): TwitchResponseInterface
-    {
+    public function createExtensionSecret(
+        string $extensionId,
+        string $jwt,
+        int $delay = 300
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/jwt/secrets',
             query: [
@@ -307,12 +318,15 @@ class ExtensionsApi extends AbstractApi
      * @param string $jwt
      * @param array  $body
      *
-     * @return TwitchResponseInterface
+     * @return void
      * @throws \JsonException
      */
-    public function sendExtensionChatMessage(string $broadcasterId, string $jwt, array $body): TwitchResponseInterface
-    {
-        return $this->sendRequest(
+    public function sendExtensionChatMessage(
+        string $broadcasterId,
+        string $jwt,
+        array $body
+    ): void {
+        $this->sendRequest(
             path: self::BASE_PATH . '/chat',
             query: [
                 'broadcaster_id' => $broadcasterId,
@@ -339,8 +353,11 @@ class ExtensionsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getExtensions(string $extensionId, string $jwt, string $extensionVersion = null): TwitchResponseInterface
-    {
+    public function getExtensions(
+        string $extensionId,
+        string $jwt,
+        string $extensionVersion = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
@@ -424,8 +441,10 @@ class ExtensionsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function updateExtensionBitsProduct(array $body, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function updateExtensionBitsProduct(
+        array $body,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: 'bits/' . self::BASE_PATH,
             type: 'array',

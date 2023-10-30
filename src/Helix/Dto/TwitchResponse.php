@@ -2,58 +2,32 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Dto;
 
-use JMS\Serializer\Annotation as Serializer;
-
-class TwitchResponse implements TwitchResponseInterface, TwitchPaginatedResponseInterface
+/**
+ * @template T
+ */
+readonly class TwitchResponse implements TwitchResponseInterface, TwitchPaginatedResponseInterface
 {
     /**
-     * @var mixed
-     * @Serializer\Type("T")
+     * @param T $data
+     * @param array{cursor?: string}|null $pagination
+     * @param int|null $total
+     * @param string|null $template
      */
-    protected mixed $data;
-
-    /**
-     * @var array|null
-     * @Serializer\Type("array")
-     */
-    protected ?array $pagination;
-
-    /**
-     * @var int|null
-     */
-    protected ?int $total = null;
-
-    /**
-     * @var string|null
-     */
-    protected ?string $template = null;
-
-    /**
-     * @param mixed $data
-     */
-    public function __construct(mixed $data)
+    public function __construct(
+        protected mixed   $data,
+        protected ?array  $pagination = null,
+        protected ?int    $total = null,
+        protected ?string $template = null
+    )
     {
-        $this->data = $data;
     }
 
     /**
-     * @return mixed
+     * @return T
      */
     public function getData(): mixed
     {
         return $this->data;
-    }
-
-    /**
-     * @param mixed $data
-     *
-     * @return TwitchResponse
-     */
-    public function setData(mixed $data): TwitchResponse
-    {
-        $this->data = $data;
-
-        return $this;
     }
 
     /**
@@ -65,18 +39,6 @@ class TwitchResponse implements TwitchResponseInterface, TwitchPaginatedResponse
     }
 
     /**
-     * @param array|null $pagination
-     *
-     * @return TwitchResponse
-     */
-    public function setPagination(?array $pagination): TwitchResponse
-    {
-        $this->pagination = $pagination;
-
-        return $this;
-    }
-
-    /**
      * @return int|null
      */
     public function getTotal(): ?int
@@ -85,34 +47,10 @@ class TwitchResponse implements TwitchResponseInterface, TwitchPaginatedResponse
     }
 
     /**
-     * @param int|null $total
-     *
-     * @return TwitchResponse
-     */
-    public function setTotal(?int $total): TwitchResponse
-    {
-        $this->total = $total;
-
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getTemplate(): ?string
     {
         return $this->template;
-    }
-
-    /**
-     * @param string|null $template
-     *
-     * @return TwitchResponse
-     */
-    public function setTemplate(?string $template): TwitchResponse
-    {
-        $this->template = $template;
-
-        return $this;
     }
 }

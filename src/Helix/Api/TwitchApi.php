@@ -23,7 +23,6 @@ class TwitchApi
         protected GoalsApi $goalsApi,
         protected HypeTrainApi $hypeTrainApi,
         protected ModerationApi $moderationApi,
-        protected MusicApi $musicApi,
         protected PollsApi $pollsApi,
         protected PredictionsApi $predictionsApi,
         protected RaidsApi $raidsApi,
@@ -31,7 +30,6 @@ class TwitchApi
         protected SearchApi $searchApi,
         protected StreamsApi $streamsApi,
         protected SubscriptionsApi $subscriptionsApi,
-        protected TagsApi $tagsApi,
         protected TeamsApi $teamsApi,
         protected UsersApi $usersApi,
         protected VideosApi $videosApi,
@@ -160,14 +158,6 @@ class TwitchApi
     }
 
     /**
-     * @return MusicApi
-     */
-    public function getMusicApi(): MusicApi
-    {
-        return $this->musicApi;
-    }
-
-    /**
      * @return PollsApi
      */
     public function getPollsApi(): PollsApi
@@ -221,14 +211,6 @@ class TwitchApi
     public function getSubscriptionsApi(): SubscriptionsApi
     {
         return $this->subscriptionsApi;
-    }
-
-    /**
-     * @return TagsApi
-     */
-    public function getTagsApi(): TagsApi
-    {
-        return $this->tagsApi;
     }
 
     /**

@@ -69,8 +69,10 @@ class PollsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function createPoll(array $body, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function createPoll(
+        array $body,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH,
             type: 'array',
@@ -92,8 +94,10 @@ class PollsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function endPoll(array $body, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function endPoll(
+        array $body,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH,
             type: 'array',

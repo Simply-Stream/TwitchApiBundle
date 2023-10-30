@@ -68,11 +68,13 @@ class ScheduleApi extends AbstractApi
      *
      * @param string $broadcasterId The ID of the broadcaster that owns the streaming schedule you want to get.
      *
+     * @TODO: This might not work. The response from this request is an unstructured text/html mimetype
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getChanelICalendar(string $broadcasterId): TwitchResponseInterface
-    {
+    public function getChanelICalendar(
+        string $broadcasterId
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/icalendar',
             query: [
@@ -104,7 +106,7 @@ class ScheduleApi extends AbstractApi
      *                                                time zone database format (for example, America/New_York). Required if
      *                                                is_vacation_enabled is true.
      *
-     * @return TwitchResponseInterface
+     * @return void
      * @throws \JsonException
      */
     public function updateChannelStreamSchedule(
@@ -114,8 +116,8 @@ class ScheduleApi extends AbstractApi
         DateTime $vacationStartTime = null,
         DateTime $vacationEndTime = null,
         string $timezone = null,
-    ): TwitchResponseInterface {
-        return $this->sendRequest(
+    ): void {
+        $this->sendRequest(
             path: self::BASE_PATH . '/settings',
             query: [
                 'broadcaster_id' => $broadcasterId,
@@ -136,7 +138,8 @@ class ScheduleApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the channel:manage:schedule scope.
      *
-     * @param string               $broadcasterId
+     * @param string               $broadcasterId The ID of the broadcaster that owns the schedule to add the broadcast segment to. This ID
+     *                                            must match the user ID in the user access token.
      * @param array                $body
      * @param AccessTokenInterface $accessToken
      *

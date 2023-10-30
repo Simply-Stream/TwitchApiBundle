@@ -53,9 +53,9 @@ class TwitchUser
     protected int $view_count;
 
     /**
-     * @var string Returned if the request includes the user:read:email scope
+     * @var string|null Returned if the request includes the user:read:email scope
      */
-    protected string $email;
+    protected ?string $email = null;
 
     /**
      * @var \DateTime
@@ -243,19 +243,19 @@ class TwitchUser
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
     /**
-     * @param string $email
+     * @param string|null $email
      *
      * @return TwitchUser
      */
-    public function setEmail(string $email): TwitchUser
+    public function setEmail(?string $email): TwitchUser
     {
         $this->email = $email;
 

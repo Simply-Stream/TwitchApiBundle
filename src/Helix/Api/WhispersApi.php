@@ -3,7 +3,6 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class WhispersApi extends AbstractApi
@@ -31,7 +30,7 @@ class WhispersApi extends AbstractApi
      * @param array                $body
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return void
      * @throws \JsonException
      */
     public function sendWhisper(
@@ -39,8 +38,8 @@ class WhispersApi extends AbstractApi
         string $toUserId,
         array $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
-        return $this->sendRequest(
+    ): void {
+        $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'from_user_id' => $fromUserId,

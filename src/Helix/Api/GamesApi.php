@@ -35,8 +35,12 @@ class GamesApi extends AbstractApi
     ): TwitchResponseInterface {
         return $this->sendRequest(
             path: 'games/top',
-            query: ['after' => $after, 'before' => $before, 'first' => $first],
-            type: 'array<' . Game::class . '>',
+            query: [
+                'after' => $after,
+                'before' => $before,
+                'first' => $first
+            ],
+            type: Game::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -86,7 +90,7 @@ class GamesApi extends AbstractApi
                 'name' => $name,
                 'igdb_id' => $igdbId,
             ],
-            type: 'array<' . Game::class . '>',
+            type: Game::class . '[]',
             accessToken: $accessToken
         );
     }

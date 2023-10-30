@@ -2,8 +2,9 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
+use CuyZ\Valinor\Mapper\Source\JsonSource;
+use CuyZ\Valinor\Mapper\TreeMapper;
 use InvalidArgumentException;
-use JMS\Serializer\SerializerInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
@@ -26,9 +27,9 @@ class ApiClient implements ApiClientInterface
     public function __construct(
         protected HttpClientInterface $client,
         protected TwitchProvider $twitch,
-        protected SerializerInterface $serializer,
+        protected TreeMapper $mapper,
         protected array $options = [],
-        protected TokenStorageInterface $tokenStorage = new InMemoryStorage(),
+        protected TokenStorageInterface $tokenStorage = new InMemoryStorage()
     ) {
         if (! empty($this->options['token'])) {
             foreach ($this->options['token'] as $grant => $token) {
@@ -66,7 +67,6 @@ class ApiClient implements ApiClientInterface
         ]);
 
         if ($response->getStatusCode() >= 400) {
-            // @TODO: Use serializer
             $error = json_decode($response->getContent(false), false, 512, JSON_THROW_ON_ERROR);
             $this->error($error->message, ['response' => $response->getContent(false)]);
             throw new InvalidArgumentException(sprintf('Error from API: "(%s): %s"', $error->error, $error->message));
@@ -76,10 +76,9 @@ class ApiClient implements ApiClientInterface
             return null;
         }
 
-        return $this->serializer->deserialize(
-            $response->getContent(),
+        return $this->mapper->map(
             TwitchResponse::class . ($type ? ("<{$type}>") : ''),
-            'json',
+            new JsonSource($response->getContent(false))
         );
     }
 

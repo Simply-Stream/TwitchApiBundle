@@ -5,11 +5,10 @@ namespace SimplyStream\TwitchApiBundle\Helix\Api;
 use JsonException;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use RuntimeException;
-use SimplyStream\TwitchApiBundle\Helix\Dto\Follows;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponse;
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
 use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchUser;
 use Symfony\Component\HttpFoundation\Request;
+use Webmozart\Assert\Assert;
 
 class UsersApi extends AbstractApi
 {
@@ -41,8 +40,11 @@ class UsersApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws JsonException
      */
-    public function getUsers(array $ids = [], array $logins = [], AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getUsers(
+        array $ids = [],
+        array $logins = [],
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         if (count($ids) === 0 && count($logins) === 0) {
             throw new RuntimeException('You need to specify at least one "id" or "login"');
         }
@@ -57,7 +59,7 @@ class UsersApi extends AbstractApi
                 'id' => $ids,
                 'login' => $logins,
             ],
-            type: 'array<' . TwitchUser::class . '>',
+            type: TwitchUser::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -80,65 +82,19 @@ class UsersApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws JsonException
      */
-    public function updateUser(AccessTokenInterface $accessToken, string $description = null): TwitchResponseInterface
-    {
-        if (strlen($description) > 300) {
-            throw new RuntimeException('A description can not be longer than 300 characters');
-        }
+    public function updateUser(
+        AccessTokenInterface $accessToken,
+        string $description = null
+    ): TwitchResponseInterface {
+        Assert::maxLength($description, 300, "A description can not be longer than 300 characters");
 
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'description' => $description,
             ],
-            type: 'array<' . TwitchUser::class . '>',
+            type: TwitchUser::class . '[]',
             method: Request::METHOD_PUT,
-            accessToken: $accessToken
-        );
-    }
-
-    /**
-     * Gets information about users that are following other users. For example, you can use this endpoint to answer questions like “who is
-     * qotrok following,” “who is following qotrok,” or “is user X following user Y.”
-     *
-     * Authentication:
-     * Requires an app access token or user access token.
-     *
-     * @param string|null               $fromId A user ID. Specify this parameter to discover the users that this user is following.
-     *
-     *                                          You must specify this parameter, the to_id parameter, or both.
-     * @param string|null               $toId   A user ID. Specify this parameter to discover the users who are following this user.
-     *
-     *                                          You must specify this parameter, the from_id parameter, or both.
-     * @param int                       $first  The maximum number of items to return per page in the response. The minimum page size is 1
-     *                                          item per page and the maximum is 100. The default is 20.
-     * @param string|null               $after  The cursor used to get the next page of results. The Pagination object in the response
-     *                                          contains the cursor’s value.
-     * @param AccessTokenInterface|null $accessToken
-     *
-     * @return TwitchResponseInterface
-     * @throws JsonException
-     */
-    public function getUsersFollows(
-        string $fromId = null,
-        string $toId = null,
-        int $first = 20,
-        string $after = null,
-        AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
-        if (! $fromId && ! $toId) {
-            throw new RuntimeException('At minimum, fromId or toId must be provided for a query to be valid.');
-        }
-
-        return $this->sendRequest(
-            path: self::BASE_PATH . '/follows',
-            query: [
-                'to_id' => $toId,
-                'from_id' => $fromId,
-                'after' => $after,
-                'first' => $first,
-            ],
-            type: 'array<' . Follows::class . '>',
             accessToken: $accessToken
         );
     }
@@ -233,8 +189,10 @@ class UsersApi extends AbstractApi
      * @return void
      * @throws JsonException
      */
-    public function unblockUser(string $targetUserId, AccessTokenInterface $accessToken): void
-    {
+    public function unblockUser(
+        string $targetUserId,
+        AccessTokenInterface $accessToken
+    ): void {
         $this->sendRequest(
             path: self::BASE_PATH . '/blocks',
             query: [
@@ -258,8 +216,9 @@ class UsersApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws JsonException
      */
-    public function getUserExtensions(AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function getUserExtensions(
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/extensions/list',
             type: 'array',
@@ -276,18 +235,20 @@ class UsersApi extends AbstractApi
      * Authentication:
      * Requires an app access token or user access token.
      *
-     * @param string|null               $userId The ID of the broadcaster whose active extensions you want to get.
+     * @param string|null               $userId      The ID of the broadcaster whose active extensions you want to get.
      *
-     *                                          This parameter is required if you specify an app access token and is optional if you
-     *                                          specify a user access token. If you specify a user access token and don’t specify this
-     *                                          parameter, the API uses the user ID from the access token.
+     *                                               This parameter is required if you specify an app access token and is optional if you
+     *                                               specify a user access token. If you specify a user access token and don’t specify this
+     *                                               parameter, the API uses the user ID from the access token.
      * @param AccessTokenInterface|null $accessToken
      *
      * @return TwitchResponseInterface
      * @throws JsonException
      */
-    public function getUserActiveExtensions(string $userId = null, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getUserActiveExtensions(
+        string $userId = null,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/extensions',
             query: [
@@ -314,8 +275,10 @@ class UsersApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws JsonException
      */
-    public function updateUserExtensions(array $body, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function updateUserExtensions(
+        array $body,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/extensions',
             method: Request::METHOD_PUT,

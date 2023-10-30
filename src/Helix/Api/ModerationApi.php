@@ -41,8 +41,11 @@ class ModerationApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function checkAutoModStatus(string $broadcasterId, array $body, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function checkAutoModStatus(
+        string $broadcasterId,
+        array $body,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/enforcements/status',
             query: [
@@ -67,12 +70,14 @@ class ModerationApi extends AbstractApi
      * @param array                $body
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return void
      * @throws \JsonException
      */
-    public function manageHeldAutoModMessages(array $body, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
-        return $this->sendRequest(
+    public function manageHeldAutoModMessages(
+        array $body,
+        AccessTokenInterface $accessToken
+    ): void {
+        $this->sendRequest(
             path: self::BASE_PATH . '/automod/message',
             type: 'array',
             method: Request::METHOD_POST,
@@ -415,19 +420,21 @@ class ModerationApi extends AbstractApi
      * Requires a user access token that includes the moderation:read scope. If your app also adds and removes moderators, you can use the
      * channel:manage:moderators scope instead.
      *
-     * @param string               $broadcasterId The ID of the broadcaster whose list of moderators you want to get. This ID must match
-     *                                            the user ID in the access token.
+     * @param string               $broadcasterId      The ID of the broadcaster whose list of moderators you want to get. This ID must
+     *                                                 match the user ID in the access token.
      * @param AccessTokenInterface $accessToken
-     * @param string|null          $userId        A list of user IDs used to filter the results. To specify more than one ID, include this
-     *                                            parameter for each moderator you want to get. For example, user_id=1234&user_id=5678. You
-     *                                            may specify a maximum of 100 IDs.
+     * @param string|null          $userId             A list of user IDs used to filter the results. To specify more than one ID, include
+     *                                                 this parameter for each moderator you want to get. For example,
+     *                                                 user_id=1234&user_id=5678. You may specify a maximum of 100 IDs.
      *
-     *                                            The returned list includes only the users from the list who are moderators in the
-     *                                            broadcaster’s channel. The list is returned in the same order as you specified the IDs.
-     * @param int                  $first         The maximum number of items to return per page in the response. The minimum page size is
-     *                                            1 item per page and the maximum is 100 items per page. The default is 20.
-     * @param string|null          $after         The cursor used to get the next page of results. The Pagination object in the response
-     *                                            contains the cursor’s value.
+     *                                                 The returned list includes only the users from the list who are moderators in the
+     *                                                 broadcaster’s channel. The list is returned in the same order as you specified the
+     *                                                 IDs.
+     * @param int                  $first              The maximum number of items to return per page in the response. The minimum page
+     *                                                 size is
+     *                                                 1 item per page and the maximum is 100 items per page. The default is 20.
+     * @param string|null          $after              The cursor used to get the next page of results. The Pagination object in the
+     *                                                 response contains the cursor’s value.
      *
      * @return TwitchResponseInterface
      * @throws \JsonException
@@ -437,7 +444,7 @@ class ModerationApi extends AbstractApi
         AccessTokenInterface $accessToken,
         string $userId = null,
         int $first = 20,
-        string $after = null
+        string $after = null,
     ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/moderators',
@@ -468,8 +475,11 @@ class ModerationApi extends AbstractApi
      * @return void
      * @throws \JsonException
      */
-    public function addChannelModerator(string $broadcasterId, string $userId, AccessTokenInterface $accessToken): void
-    {
+    public function addChannelModerator(
+        string $broadcasterId,
+        string $userId,
+        AccessTokenInterface $accessToken
+    ): void {
         $this->sendRequest(
             path: self::BASE_PATH . '/moderators',
             query: [
@@ -497,8 +507,11 @@ class ModerationApi extends AbstractApi
      * @return void
      * @throws \JsonException
      */
-    public function removeChannelModerator(string $broadcasterId, string $userId, AccessTokenInterface $accessToken): void
-    {
+    public function removeChannelModerator(
+        string $broadcasterId,
+        string $userId,
+        AccessTokenInterface $accessToken
+    ): void {
         $this->sendRequest(
             path: self::BASE_PATH . '/moderators',
             query: [
@@ -516,8 +529,6 @@ class ModerationApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the channel:read:vips scope. If your app also adds and removes VIP status, you can use
      * the channel:manage:vips scope instead.
-     *
-     * @TODO: I don't really know why this is a case of moderation, it's even stored under channels namespace.
      *
      * @param string               $broadcasterId The ID of the broadcaster whose list of VIPs you want to get. This ID must match the user
      *                                            ID in the access token.
@@ -562,8 +573,6 @@ class ModerationApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the channel:manage:vips scope.
      *
-     * @TODO: I don't really know why this is a case of moderation, it's even stored under channels namespace.
-     *
      * @param string               $userId        The ID of the user to give VIP status to.
      * @param string               $broadcasterId The ID of the broadcaster that’s adding the user as a VIP. This ID must match the user ID
      *                                            in the access token.
@@ -572,8 +581,11 @@ class ModerationApi extends AbstractApi
      * @return void
      * @throws \JsonException
      */
-    public function addChannelVip(string $userId, string $broadcasterId, AccessTokenInterface $accessToken): void
-    {
+    public function addChannelVip(
+        string $userId,
+        string $broadcasterId,
+        AccessTokenInterface $accessToken
+    ): void {
         $this->sendRequest(
             path: '/channels/vips',
             query: [
@@ -597,8 +609,6 @@ class ModerationApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the channel:manage:vips scope.
      *
-     * @TODO: I don't really know why this is a case of moderation, it's even stored under channels namespace.
-     *
      * @param string               $userId        The ID of the user to remove VIP status from.
      * @param string               $broadcasterId The ID of the broadcaster who owns the channel where the user has VIP status.
      * @param AccessTokenInterface $accessToken
@@ -606,8 +616,11 @@ class ModerationApi extends AbstractApi
      * @return void
      * @throws \JsonException
      */
-    public function removeChannelVip(string $userId, string $broadcasterId, AccessTokenInterface $accessToken): void
-    {
+    public function removeChannelVip(
+        string $userId,
+        string $broadcasterId,
+        AccessTokenInterface $accessToken
+    ): void {
         $this->sendRequest(
             path: '/channels/vips',
             query: [
@@ -620,7 +633,7 @@ class ModerationApi extends AbstractApi
     }
 
     /**
-     * (BETA) Activates or deactivates the broadcaster’s Shield Mode.
+     * Activates or deactivates the broadcaster’s Shield Mode.
      *
      * Twitch’s Shield Mode feature is like a panic button that broadcasters can push to protect themselves from chat abuse coming from one
      * or more accounts. When activated, Shield Mode applies the overrides that the broadcaster configured in the Twitch UX. If the
@@ -657,12 +670,12 @@ class ModerationApi extends AbstractApi
     }
 
     /**
-     * (BETA) Gets the broadcaster’s Shield Mode activation status.
+     * Gets the broadcaster’s Shield Mode activation status.
      *
      * To receive notification when the broadcaster activates and deactivates Shield Mode, subscribe to the channel.shield_mode.begin and
      * channel.shield_mode.end subscription types.
      *
-     * Authorization
+     * Authorization:
      * Requires a user access token that includes the moderator:read:shield_mode or moderator:manage:shield_mode scope.
      *
      * @param string               $broadcasterId The ID of the broadcaster whose Shield Mode activation status you want to get.

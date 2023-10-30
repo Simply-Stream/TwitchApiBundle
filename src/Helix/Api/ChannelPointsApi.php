@@ -27,14 +27,17 @@ class ChannelPointsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function createCustomRewards(string $broadcasterId, array $body, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function createCustomRewards(
+        string $broadcasterId,
+        array $body,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/custom_rewards',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array<' . CustomReward::class . '>',
+            type: CustomReward::class . '[]',
             body: $body,
             accessToken: $accessToken,
         );
@@ -56,8 +59,11 @@ class ChannelPointsApi extends AbstractApi
      *
      * @throws \JsonException
      */
-    public function deleteCustomRewards(string $broadcasterId, string $id, AccessTokenInterface $accessToken): void
-    {
+    public function deleteCustomRewards(
+        string $broadcasterId,
+        string $id,
+        AccessTokenInterface $accessToken
+    ): void {
         $this->sendRequest(
             path: self::BASE_PATH . '/custom_rewards',
             query: [
@@ -106,7 +112,7 @@ class ChannelPointsApi extends AbstractApi
                 'id' => $id,
                 'only_manageable_rewards' => $onlyManageableRewards,
             ],
-            type: 'array<' . CustomReward::class . '>',
+            type: CustomReward::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -169,7 +175,7 @@ class ChannelPointsApi extends AbstractApi
                 'after' => $after,
                 'first' => $first,
             ],
-            type: 'array<' . CustomRewardRedemption::class . '>',
+            type: CustomRewardRedemption::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -200,7 +206,7 @@ class ChannelPointsApi extends AbstractApi
                 'broadcaster_id' => $broadcasterId,
                 'id' => $id,
             ],
-            type: 'array<' . CustomReward::class . '>',
+            type: CustomReward::class . '[]',
             method: Request::METHOD_PATCH,
             body: $body,
             accessToken: $accessToken

@@ -68,8 +68,10 @@ class RaidsApi extends AbstractApi
      * @return void
      * @throws \JsonException
      */
-    public function cancelRaid(string $broadcasterId, AccessTokenInterface $accessToken): void
-    {
+    public function cancelRaid(
+        string $broadcasterId,
+        AccessTokenInterface $accessToken
+    ): void {
         $this->sendRequest(
             path: self::BASE_PATH,
             query: [

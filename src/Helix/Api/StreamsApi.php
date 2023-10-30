@@ -23,8 +23,10 @@ class StreamsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getStreamKey(string $broadcasterId, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function getStreamKey(
+        string $broadcasterId,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/key',
             query: [
@@ -159,8 +161,10 @@ class StreamsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function createStreamMarker(array $body, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function createStreamMarker(
+        array $body,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/markers',
             type: 'array',

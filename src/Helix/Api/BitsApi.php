@@ -66,7 +66,7 @@ class BitsApi extends AbstractApi
                 'started_at' => $startedAt?->format(DATE_RFC3339),
                 'user_id' => $userId,
             ],
-            type: 'array<' . BitLeaderboard::class . '>',
+            type: BitLeaderboard::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -90,14 +90,16 @@ class BitsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getCheermotes(string $broadcasterId = null, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getCheermotes(
+        string $broadcasterId = null,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/cheermotes',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array<' . Cheermote::class . '>',
+            type: Cheermote::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -137,7 +139,7 @@ class BitsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array<' . ExtensionTransaction::class . '>',
+            type: ExtensionTransaction::class . '[]',
             accessToken: $accessToken
         );
     }

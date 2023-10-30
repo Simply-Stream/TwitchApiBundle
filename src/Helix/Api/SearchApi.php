@@ -44,7 +44,7 @@ class SearchApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array<' . Game::class . '>',
+            type: Game::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -87,9 +87,10 @@ class SearchApi extends AbstractApi
         AccessTokenInterface $accessToken = null
     ): TwitchResponseInterface {
         return $this->sendRequest(
-            path: self::BASE_PATH . '/categories',
+            path: self::BASE_PATH . '/channels',
             query: [
                 'query' => $query,
+                'live_only' => $liveOnly,
                 'first' => $first,
                 'after' => $after,
             ],

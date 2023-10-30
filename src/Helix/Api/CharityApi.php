@@ -28,14 +28,17 @@ class CharityApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getCharityCampaign(string $broadcasterId, AccessTokenInterface $accessToken): TwitchResponseInterface
+    public function getCharityCampaign(
+        string $broadcasterId,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface
     {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array<' . CharityCampaign::class . '>',
+            type: CharityCampaign::class . '[]',
             accessToken: $accessToken
         );
     }
@@ -72,7 +75,7 @@ class CharityApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array<' . CharityCampaignDonation::class . '>',
+            type: CharityCampaignDonation::class . '[]',
             accessToken: $accessToken
         );
     }

@@ -122,6 +122,13 @@ class Clip
     protected ?int $vod_offset;
 
     /**
+     * A Boolean value that indicates if the clip is featured or not.
+     *
+     * @var bool
+     */
+    protected bool $is_featured;
+
+    /**
      * @return string
      */
     public function getId(): string
@@ -439,5 +446,22 @@ class Clip
         $this->vod_offset = $vod_offset;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIsFeatured(): bool
+    {
+        return $this->is_featured;
+    }
+
+    /**
+     * @param bool $is_featured
+     * @return void
+     */
+    public function setIsFeatured(bool $is_featured): void
+    {
+        $this->is_featured = $is_featured;
     }
 }

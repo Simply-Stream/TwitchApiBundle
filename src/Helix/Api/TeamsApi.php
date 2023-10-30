@@ -21,8 +21,10 @@ class TeamsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getChannelTeams(string $broadcasterId, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function getChannelTeams(
+        string $broadcasterId,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH . '/channel',
             query: [
@@ -39,17 +41,20 @@ class TeamsApi extends AbstractApi
      * Authentication:
      * Requires an app access token or user access token.
      *
-     * @param string               $name The name of the team to get. This parameter and the id parameter are mutually exclusive; you must
-     *                                   specify the team’s name or ID but not both.
-     * @param string               $id   The ID of the team to get. This parameter and the name parameter are mutually exclusive; you must
-     *                                   specify the team’s name or ID but not both.
-     * @param AccessTokenInterface $accessToken
+     * @param string                    $name        The name of the team to get. This parameter and the id parameter are mutually
+     *                                               exclusive; you must specify the team’s name or ID but not both.
+     * @param string                    $id          The ID of the team to get. This parameter and the name parameter are mutually
+     *                                               exclusive; you must specify the team’s name or ID but not both.
+     * @param AccessTokenInterface|null $accessToken
      *
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function getTeams(string $name, string $id, AccessTokenInterface $accessToken): TwitchResponseInterface
-    {
+    public function getTeams(
+        string $name,
+        string $id,
+        AccessTokenInterface $accessToken = null
+    ): TwitchResponseInterface {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [

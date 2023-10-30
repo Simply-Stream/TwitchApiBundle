@@ -65,7 +65,10 @@ class PredictionsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function createPrediction(array $body, AccessTokenInterface $accessToken): TwitchResponseInterface
+    public function createPrediction(
+        array $body,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface
     {
         return $this->sendRequest(
             path: self::BASE_PATH,
@@ -88,7 +91,10 @@ class PredictionsApi extends AbstractApi
      * @return TwitchResponseInterface
      * @throws \JsonException
      */
-    public function endPrediction(array $body, AccessTokenInterface $accessToken): TwitchResponseInterface
+    public function endPrediction(
+        array $body,
+        AccessTokenInterface $accessToken
+    ): TwitchResponseInterface
     {
         return $this->sendRequest(
             path: self::BASE_PATH,

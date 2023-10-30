@@ -11,37 +11,6 @@ class EntitlementsApi extends AbstractApi
     protected const BASE_PATH = 'entitlements';
 
     /**
-     * Gets the status of one or more redemption codes for a Bits reward. Only client IDs approved by Twitch may request a redemption
-     * code’s status.
-     *
-     * Rate limit: You may send at most one request per second per user.
-     *
-     * Authentication:
-     * Requires an app access token. The client ID in the access token must match a client ID that Twitch has approved to provide
-     * entitlements.
-     *
-     * @param string                    $code   The redemption code to check. Include this parameter for each redemption code whose status
-     *                                          you want to check. For example, code=1234&code=5678. You may specify a maximum of 20 codes.
-     * @param int                       $userId The ID of the user that owns the redemption code.
-     * @param AccessTokenInterface|null $accessToken
-     *
-     * @return TwitchResponseInterface
-     * @throws \JsonException
-     */
-    public function getCodeStatus(string $code, int $userId, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
-        return $this->sendRequest(
-            path: self::BASE_PATH . '/codes',
-            query: [
-                'code' => $code,
-                'user_id' => $userId,
-            ],
-            type: 'array',
-            accessToken: $accessToken
-        );
-    }
-
-    /**
      * Gets an organization’s list of entitlements that have been granted to a game, a user, or both.
      *
      * The following table identifies the request parameters that you may specify based on the type of access token used.
@@ -154,37 +123,6 @@ class EntitlementsApi extends AbstractApi
             ],
             type: 'array',
             method: Request::METHOD_PATCH,
-            accessToken: $accessToken
-        );
-    }
-
-    /**
-     * Redeems one or more redemption codes. Redeeming a code credits the user’s account with the entitlement; for example, a Bits reward
-     * earned by playing a game.
-     *
-     * Rate limit: You may send at most one request per second per user.
-     *
-     * Authentication:
-     * Requires an app access token. Only client IDs approved by Twitch may redeem codes on behalf of any Twitch user account.
-     *
-     * @param string                    $code   The redemption code to redeem. To redeem multiple codes, include this parameter for each
-     *                                          redemption code. For example, code=1234&code=5678. You may specify a maximum of 20 codes.
-     * @param string                    $userId An ID of the user that owns the redemption code to redeem.
-     * @param AccessTokenInterface|null $accessToken
-     *
-     * @return TwitchResponseInterface
-     * @throws \JsonException
-     */
-    public function redeemCode(string $code, string $userId, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
-        return $this->sendRequest(
-            path: self::BASE_PATH . '/drops',
-            query: [
-                'code' => $code,
-                'user_id' => $userId,
-            ],
-            type: 'array',
-            method: Request::METHOD_POST,
             accessToken: $accessToken
         );
     }
