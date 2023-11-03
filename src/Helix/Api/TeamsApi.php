@@ -3,7 +3,9 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Teams\Team;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 
 class TeamsApi extends AbstractApi
 {
@@ -18,19 +20,19 @@ class TeamsApi extends AbstractApi
      * @param string                    $broadcasterId The ID of the broadcaster whose teams you want to get.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Team[]>
      * @throws \JsonException
      */
     public function getChannelTeams(
         string $broadcasterId,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/channel',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Team::class),
             accessToken: $accessToken
         );
     }
@@ -47,21 +49,21 @@ class TeamsApi extends AbstractApi
      *                                               exclusive; you must specify the team’s name or ID but not both.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Team[]>
      * @throws \JsonException
      */
     public function getTeams(
         string $name,
         string $id,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'name' => $name,
                 'id' => $id,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Team::class),
             accessToken: $accessToken
         );
     }

@@ -3,9 +3,11 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\CustomReward;
-use SimplyStream\TwitchApiBundle\Helix\Dto\CustomRewardRedemption;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\ChannelPoints\CustomReward;
+use SimplyStream\TwitchApiBundle\Helix\Models\ChannelPoints\CustomRewardRedemption;
+use SimplyStream\TwitchApiBundle\Helix\Models\ChannelPoints\RedemptionStatusRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class ChannelPointsApi extends AbstractApi
@@ -24,20 +26,20 @@ class ChannelPointsApi extends AbstractApi
      * @param array                $body
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<CustomReward[]>
      * @throws \JsonException
      */
     public function createCustomRewards(
         string $broadcasterId,
         array $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/custom_rewards',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: CustomReward::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, CustomReward::class),
             body: $body,
             accessToken: $accessToken,
         );
@@ -96,7 +98,7 @@ class ChannelPointsApi extends AbstractApi
      *                                                    header). Set to true to get only the custom rewards that the app may manage. The
      *                                                    default is false.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<CustomReward[]>
      * @throws \JsonException
      */
     public function getCustomReward(
@@ -104,7 +106,7 @@ class ChannelPointsApi extends AbstractApi
         AccessTokenInterface $accessToken,
         string $id = null,
         bool $onlyManageableRewards = false
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/custom_rewards',
             query: [
@@ -112,7 +114,7 @@ class ChannelPointsApi extends AbstractApi
                 'id' => $id,
                 'only_manageable_rewards' => $onlyManageableRewards,
             ],
-            type: CustomReward::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, CustomReward::class),
             accessToken: $accessToken
         );
     }
@@ -151,7 +153,7 @@ class ChannelPointsApi extends AbstractApi
      * @param int                  $first         The maximum number of redemptions to return per page in the response. The minimum page
      *                                            size is 1 redemption per page and the maximum is 50. The default is 20.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<CustomRewardRedemption[]>
      * @throws \JsonException
      */
     public function getCustomRewardRedemption(
@@ -163,7 +165,7 @@ class ChannelPointsApi extends AbstractApi
         string $sort = 'OLDEST',
         string $after = null,
         int $first = 20,
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/custom_rewards/redemptions',
             query: [
@@ -175,7 +177,7 @@ class ChannelPointsApi extends AbstractApi
                 'after' => $after,
                 'first' => $first,
             ],
-            type: CustomRewardRedemption::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, CustomRewardRedemption::class),
             accessToken: $accessToken
         );
     }
@@ -191,7 +193,7 @@ class ChannelPointsApi extends AbstractApi
      * @param array                $body
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<CustomReward[]>
      * @throws \JsonException
      */
     public function updateCustomReward(
@@ -199,14 +201,14 @@ class ChannelPointsApi extends AbstractApi
         string $id,
         array $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/custom_rewards',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'id' => $id,
             ],
-            type: CustomReward::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, CustomReward::class),
             method: Request::METHOD_PATCH,
             body: $body,
             accessToken: $accessToken
@@ -220,28 +222,25 @@ class ChannelPointsApi extends AbstractApi
      * Authentication:
      * Requires a user access token that includes the channel:manage:redemptions scope.
      *
-     * @param string               $broadcasterId A list of IDs that identify the redemptions to update. To specify more than one ID,
-     *                                            include this parameter for each redemption you want to update. For example,
-     *                                            id=1234&id=5678. You may specify a maximum of 50 IDs.
-     * @param string               $id            The ID of the broadcaster that’s updating the redemption. This ID must match the user ID
-     *                                            associated with the user OAuth token.
-     * @param string               $rewardId      The ID that identifies the reward that’s been redeemed.
-     * @param string               $status        The status to set the redemption to. Possible values are:
-     *                                            - CANCELED
-     *                                            - FULFILLED
-     *                                            Setting the status to CANCELED refunds the user’s channel points.
-     * @param AccessTokenInterface $accessToken
+     * @param string                  $broadcasterId A list of IDs that identify the redemptions to update. To specify more than one ID,
+     *                                               include this parameter for each redemption you want to update. For example,
+     *                                               id=1234&id=5678. You may specify a maximum of 50 IDs.
+     * @param string                  $id            The ID of the broadcaster that’s updating the redemption. This ID must match the user
+     *                                               ID associated with the user OAuth token.
+     * @param string                  $rewardId      The ID that identifies the reward that’s been redeemed.
+     * @param RedemptionStatusRequest $body
+     * @param AccessTokenInterface    $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<CustomRewardRedemption[]>
      * @throws \JsonException
      */
     public function updateRedemptionStatus(
         string $broadcasterId,
         string $id,
         string $rewardId,
-        string $status,
+        RedemptionStatusRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/custom_rewards/redemptions',
             query: [
@@ -249,9 +248,8 @@ class ChannelPointsApi extends AbstractApi
                 'id' => $id,
                 'reward_id' => $rewardId,
             ],
-            body: [
-                'status' => $status,
-            ],
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, CustomRewardRedemption::class),
+            body: $body,
             accessToken: $accessToken
         );
     }

@@ -3,9 +3,10 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\ExtensionReport;
-use SimplyStream\TwitchApiBundle\Helix\Dto\GameReport;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Analytics\ExtensionAnalytics;
+use SimplyStream\TwitchApiBundle\Helix\Models\Analytics\GameAnalytics;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 
 class AnalyticsApi extends AbstractApi
 {
@@ -48,7 +49,7 @@ class AnalyticsApi extends AbstractApi
      *
      * This parameter is ignored if the extension_id parameter is set.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<ExtensionAnalytics[]>
      * @throws \JsonException
      */
     public function getExtensionAnalytics(
@@ -59,7 +60,7 @@ class AnalyticsApi extends AbstractApi
         \DateTime $endedAt = null,
         int $first = 20,
         string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/extensions',
             query: [
@@ -70,7 +71,7 @@ class AnalyticsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: ExtensionReport::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, ExtensionAnalytics::class),
             accessToken: $accessToken
         );
     }
@@ -114,7 +115,7 @@ class AnalyticsApi extends AbstractApi
      *
      *                                             This parameter is ignored if game_id parameter is set.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<GameAnalytics[]>
      * @throws \JsonException
      */
     public function getGameAnalytics(
@@ -125,7 +126,7 @@ class AnalyticsApi extends AbstractApi
         \DateTime $endedAt = null,
         int $first = 20,
         string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/games',
             query: [
@@ -136,7 +137,7 @@ class AnalyticsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: GameReport::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, GameAnalytics::class),
             accessToken: $accessToken
         );
     }

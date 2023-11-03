@@ -3,9 +3,11 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\CharityCampaign;
-use SimplyStream\TwitchApiBundle\Helix\Dto\CharityCampaignDonation;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Charity\CharityCampaign;
+use SimplyStream\TwitchApiBundle\Helix\Models\Charity\CharityCampaignDonation;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 
 class CharityApi extends AbstractApi
 {
@@ -25,20 +27,19 @@ class CharityApi extends AbstractApi
      *                                            the user ID in the access token.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<CharityCampaign[]>
      * @throws \JsonException
      */
     public function getCharityCampaign(
         string $broadcasterId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface
-    {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: CharityCampaign::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, CharityCampaign::class),
             accessToken: $accessToken
         );
     }
@@ -59,7 +60,7 @@ class CharityApi extends AbstractApi
      * @param string|null          $after         The cursor used to get the next page of results. The Pagination object in the response
      *                                            contains the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<CharityCampaignDonation[]>
      * @throws \JsonException
      */
     public function getCharityCampaignDonations(
@@ -75,7 +76,7 @@ class CharityApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: CharityCampaignDonation::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, CharityCampaignDonation::class),
             accessToken: $accessToken
         );
     }

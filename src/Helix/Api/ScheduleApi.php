@@ -4,8 +4,12 @@ namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use DateTime;
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\StreamSchedule;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Schedule\ChannelStreamSchedule;
+use SimplyStream\TwitchApiBundle\Helix\Models\Schedule\CreateChannelStreamScheduleSegmentRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Schedule\UpdateChannelStreamScheduleSegmentRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class ScheduleApi extends AbstractApi
@@ -33,7 +37,7 @@ class ScheduleApi extends AbstractApi
      *                                                 response contains the cursor’s value.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<ChannelStreamSchedule[]>
      * @throws \JsonException
      */
     public function getChannelStreamSchedule(
@@ -44,7 +48,7 @@ class ScheduleApi extends AbstractApi
         int $first = 20,
         string $after = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
@@ -55,7 +59,7 @@ class ScheduleApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, ChannelStreamSchedule::class),
             accessToken: $accessToken
         );
     }
@@ -138,25 +142,25 @@ class ScheduleApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the channel:manage:schedule scope.
      *
-     * @param string               $broadcasterId The ID of the broadcaster that owns the schedule to add the broadcast segment to. This ID
-     *                                            must match the user ID in the user access token.
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param string                                    $broadcasterId The ID of the broadcaster that owns the schedule to add the broadcast
+     *                                                                 segment to. This ID must match the user ID in the user access token.
+     * @param CreateChannelStreamScheduleSegmentRequest $body
+     * @param AccessTokenInterface                      $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ChannelStreamSchedule[]>
      * @throws \JsonException
      */
-    public function createStreamScheduleSegment(
+    public function createChannelStreamScheduleSegment(
         string $broadcasterId,
-        array $body,
+        CreateChannelStreamScheduleSegmentRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/segment',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: StreamSchedule::class,
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ChannelStreamSchedule::class),
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -172,28 +176,28 @@ class ScheduleApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the channel:manage:schedule scope.
      *
-     * @param string               $broadcasterId The ID of the broadcaster who owns the broadcast segment to update. This ID must match
-     *                                            the user ID in the user access token.
-     * @param string               $id            The ID of the broadcast segment to update.
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param string                                    $broadcasterId The ID of the broadcaster who owns the broadcast segment to update.
+     *                                                                 This ID must match the user ID in the user access token.
+     * @param string                                    $id            The ID of the broadcast segment to update.
+     * @param UpdateChannelStreamScheduleSegmentRequest $body
+     * @param AccessTokenInterface                      $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ChannelStreamSchedule[]>
      * @throws \JsonException
      */
-    public function updateStreamScheduleSegment(
+    public function updateChannelStreamScheduleSegment(
         string $broadcasterId,
         string $id,
-        array $body,
+        UpdateChannelStreamScheduleSegmentRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/segment',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'id' => $id,
             ],
-            type: StreamSchedule::class,
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ChannelStreamSchedule::class),
             method: Request::METHOD_PATCH,
             body: $body,
             accessToken: $accessToken

@@ -4,9 +4,9 @@ namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use RuntimeException;
-use SimplyStream\TwitchApiBundle\Helix\Dto\Game;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponse;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Games\Game;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
 
 class GamesApi extends AbstractApi
 {
@@ -24,7 +24,7 @@ class GamesApi extends AbstractApi
      *                                          item per page and the maximum is 100 items per page. The default is 20.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponse
+     * @return TwitchPaginatedDataResponse<Game[]>
      * @throws \JsonException
      */
     public function getTopGames(
@@ -32,7 +32,7 @@ class GamesApi extends AbstractApi
         string $before = null,
         int $first = 20,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: 'games/top',
             query: [
@@ -40,7 +40,7 @@ class GamesApi extends AbstractApi
                 'before' => $before,
                 'first' => $first
             ],
-            type: Game::class . '[]',
+            type: sprintf('%s<%s>', TwitchPaginatedDataResponse::class, Game::class),
             accessToken: $accessToken
         );
     }
@@ -66,7 +66,7 @@ class GamesApi extends AbstractApi
      *                                           endpoint ignores duplicate and invalid IDs or IDs that weren’t found.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Game[]>
      * @throws \JsonException
      */
     public function getGames(
@@ -74,7 +74,7 @@ class GamesApi extends AbstractApi
         array $name = [],
         array $igdbId = [],
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         if ((count($id) + count($name) + count($igdbId)) > 100) {
             throw new RuntimeException('You cannot search for more than 100 ids or games');
         }
@@ -90,7 +90,7 @@ class GamesApi extends AbstractApi
                 'name' => $name,
                 'igdb_id' => $igdbId,
             ],
-            type: Game::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Game::class),
             accessToken: $accessToken
         );
     }

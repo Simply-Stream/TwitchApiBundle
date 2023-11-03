@@ -3,13 +3,19 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\ChatBadge;
-use SimplyStream\TwitchApiBundle\Helix\Dto\ChatBadgeSet;
-use SimplyStream\TwitchApiBundle\Helix\Dto\ChatColor;
-use SimplyStream\TwitchApiBundle\Helix\Dto\ChatSettings;
-use SimplyStream\TwitchApiBundle\Helix\Dto\Chatter;
-use SimplyStream\TwitchApiBundle\Helix\Dto\Emote;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Chat\ChannelEmote;
+use SimplyStream\TwitchApiBundle\Helix\Models\Chat\ChatBadge;
+use SimplyStream\TwitchApiBundle\Helix\Models\Chat\ChatSettings;
+use SimplyStream\TwitchApiBundle\Helix\Models\Chat\Chatter;
+use SimplyStream\TwitchApiBundle\Helix\Models\Chat\EmoteSet;
+use SimplyStream\TwitchApiBundle\Helix\Models\Chat\GlobalEmote;
+use SimplyStream\TwitchApiBundle\Helix\Models\Chat\SendChatAnnouncementRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Chat\UpdateChatSettingsRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Chat\UserChatColor;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchTemplatedDataResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ChatApi extends AbstractApi
@@ -36,7 +42,7 @@ class ChatApi extends AbstractApi
      * @param string|null          $after         The cursor used to get the next page of results. The Pagination object in the response
      *                                            contains the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<Chatter[]>
      * @throws \JsonException
      */
     public function getChatters(
@@ -45,7 +51,7 @@ class ChatApi extends AbstractApi
         AccessTokenInterface $accessToken,
         int $first = 100,
         string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/chatters',
             query: [
@@ -54,7 +60,7 @@ class ChatApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: Chatter::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, Chatter::class),
             accessToken: $accessToken
         );
     }
@@ -73,7 +79,7 @@ class ChatApi extends AbstractApi
      * @param string                    $broadcasterId An ID that identifies the broadcaster whose emotes you want to get.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchTemplatedDataResponse<ChannelEmote[]>
      * @throws \JsonException
      */
     public function getChannelEmotes(
@@ -85,7 +91,7 @@ class ChatApi extends AbstractApi
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: Emote::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchTemplatedDataResponse::class, ChannelEmote::class),
             accessToken: $accessToken
         );
     }
@@ -98,15 +104,15 @@ class ChatApi extends AbstractApi
      *
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchTemplatedDataResponse<GlobalEmote[]>
      * @throws \JsonException
      */
     public function getGlobalEmotes(
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchTemplatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/emotes/global',
-            type: Emote::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchTemplatedDataResponse::class, GlobalEmote::class),
             accessToken: $accessToken
         );
     }
@@ -128,19 +134,19 @@ class ChatApi extends AbstractApi
      *                                              To get emote set IDs, use the Get Channel Emotes API.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchTemplatedDataResponse<EmoteSet[]>
      * @throws \JsonException
      */
     public function getEmoteSets(
         string $emoteSetId,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchTemplatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/emotes/set',
             query: [
                 'emote_set_id' => $emoteSetId,
             ],
-            type: Emote::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchTemplatedDataResponse::class, EmoteSet::class),
             accessToken: $accessToken
         );
     }
@@ -155,7 +161,7 @@ class ChatApi extends AbstractApi
      * @param string                    $broadcasterId The ID of the broadcaster whose chat badges you want to get.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ChatBadge[]>
      * @throws \JsonException
      */
     public function getChannelChatBadges(
@@ -167,7 +173,7 @@ class ChatApi extends AbstractApi
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: ChatBadgeSet::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ChatBadge::class),
             accessToken: $accessToken
         );
     }
@@ -181,15 +187,15 @@ class ChatApi extends AbstractApi
      *
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ChatBadge[]>
      * @throws \JsonException
      */
     public function getGlobalChatBadges(
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/badges/global',
-            type: ChatBadgeSet::class . '<' . ChatBadge::class . '>[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ChatBadge::class),
             accessToken: $accessToken
         );
     }
@@ -212,21 +218,21 @@ class ChatApi extends AbstractApi
      *                                                 If you specify this field, this ID must match the user ID in the user access token.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ChatSettings[]>
      * @throws \JsonException
      */
     public function getChatSettings(
         string $broadcasterId,
         string $moderatorId = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/settings',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: ChatSettings::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ChatSettings::class),
             accessToken: $accessToken
         );
     }
@@ -241,25 +247,25 @@ class ChatApi extends AbstractApi
      * @param string                    $moderatorId   The ID of a user that has permission to moderate the broadcaster’s chat room, or the
      *                                                 broadcaster’s ID if they’re making the update. This ID must match the user ID in the
      *                                                 user access token.
-     * @param array                     $body
+     * @param UpdateChatSettingsRequest $body
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ChatSettings[]>
      * @throws \JsonException
      */
     public function updateChatSettings(
         string $broadcasterId,
         string $moderatorId,
-        array $body,
+        UpdateChatSettingsRequest $body,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/settings',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: ChatSettings::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ChatSettings::class),
             method: Request::METHOD_PATCH,
             body: $body,
             accessToken: $accessToken
@@ -272,12 +278,13 @@ class ChatApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the moderator:manage:announcements scope.
      *
-     * @param string                    $broadcasterId The ID of the broadcaster that owns the chat room to send the announcement to.
-     * @param string                    $moderatorId   The ID of a user who has permission to moderate the broadcaster’s chat room, or the
-     *                                                 broadcaster’s ID if they’re sending the announcement. This ID must match the user ID
-     *                                                 in the user access token.
-     * @param array                     $body
-     * @param AccessTokenInterface|null $accessToken
+     * @param string                      $broadcasterId The ID of the broadcaster that owns the chat room to send the announcement to.
+     * @param string                      $moderatorId   The ID of a user who has permission to moderate the broadcaster’s chat room, or
+     *                                                   the
+     *                                                   broadcaster’s ID if they’re sending the announcement. This ID must match the user
+     *                                                   ID in the user access token.
+     * @param SendChatAnnouncementRequest $body
+     * @param AccessTokenInterface|null   $accessToken
      *
      * @return void
      * @throws \JsonException
@@ -285,7 +292,7 @@ class ChatApi extends AbstractApi
     public function sendChatAnnouncement(
         string $broadcasterId,
         string $moderatorId,
-        array $body,
+        SendChatAnnouncementRequest $body,
         AccessTokenInterface $accessToken = null
     ): void {
         $this->sendRequest(
@@ -351,26 +358,26 @@ class ChatApi extends AbstractApi
      * Authorization:
      * Requires an app access token or user access token.
      *
-     * @param string                    $userId The ID of the user whose username color you want to get. To specify more than one user,
-     *                                          include the user_id parameter for each user to get. For example,
-     *                                          &user_id=1234&user_id=5678. The maximum number of IDs that you may specify is 100.
+     * @param string                    $userId         The ID of the user whose username color you want to get. To specify more than one
+     *                                                  user, include the user_id parameter for each user to get. For example,
+     *                                                  &user_id=1234&user_id=5678. The maximum number of IDs that you may specify is 100.
      *
-     *                                          The API ignores duplicate IDs and IDs that weren’t found.
+     *                                                  The API ignores duplicate IDs and IDs that weren’t found.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<UserChatColor[]>
      * @throws \JsonException
      */
     public function getUserChatColor(
         string $userId,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/color',
             query: [
                 'user_id' => $userId,
             ],
-            type: ChatColor::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, UserChatColor::class),
             accessToken: $accessToken
         );
     }

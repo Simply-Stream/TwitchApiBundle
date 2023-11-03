@@ -3,7 +3,9 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Raids\Raid;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class RaidsApi extends AbstractApi
@@ -31,21 +33,21 @@ class RaidsApi extends AbstractApi
      * @param string               $toBroadcasterId   The ID of the broadcaster to raid.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Raid[]>
      * @throws \JsonException
      */
     public function startRaid(
         string $fromBroadcasterId,
         string $toBroadcasterId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'from_broadcaster_id' => $fromBroadcasterId,
                 'to_broadcaster_id' => $toBroadcasterId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Raid::class),
             method: Request::METHOD_POST,
             accessToken: $accessToken
         );

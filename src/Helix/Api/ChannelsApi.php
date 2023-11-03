@@ -3,10 +3,14 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\ChannelEditor;
-use SimplyStream\TwitchApiBundle\Helix\Dto\ChannelInformation;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponse;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Channels\ChannelEditor;
+use SimplyStream\TwitchApiBundle\Helix\Models\Channels\ChannelFollow;
+use SimplyStream\TwitchApiBundle\Helix\Models\Channels\ChannelInformation;
+use SimplyStream\TwitchApiBundle\Helix\Models\Channels\FollowedChannel;
+use SimplyStream\TwitchApiBundle\Helix\Models\Channels\ModifyChannelInformationRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class ChannelsApi extends AbstractApi
@@ -25,19 +29,19 @@ class ChannelsApi extends AbstractApi
      *                                                 API ignores duplicate IDs and IDs that are not found.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponse
+     * @return TwitchDataResponse<ChannelInformation[]>
      * @throws \JsonException
      */
     public function getChannelInformation(
         array $broadcasterId,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'broadcaster_id' => $broadcasterId
             ],
-            type: ChannelInformation::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ChannelInformation::class),
             accessToken: $accessToken
         );
     }
@@ -48,45 +52,49 @@ class ChannelsApi extends AbstractApi
      * Authentication:
      * Requires a user access token that includes the channel:manage:broadcast scope.
      *
-     * @param string               $broadcasterId The ID of the broadcaster whose channel you want to update. This ID must match the
-     *                                            user ID associated with the user access token.
-     * @param array                $body
-     *                                            - game_id                         String    No    The ID of the game that the user plays.
-     *                                            The game is not updated if the ID isn’t a game ID that Twitch recognizes. To unset this
-     *                                            field, use
-     *                                            “0” or “” (an empty string).
-     *                                            - broadcaster_language            String    No    The user’s
-     *                                            preferred language. Set the value to an ISO 639-1 two-letter language code (for
-     *                                            example, en for English). Set to “other” if the user’s preferred language is not a
-     *                                            Twitch supported language. The language isn’t updated if the language code isn’t a
-     *                                            Twitch supported language.
-     *                                            - title                           String    No    The title of the user’s stream. You may
-     *                                            not set this field to an empty string.
-     *                                            - delay                           Integer   No    The number of seconds you want your
-     *                                            broadcast buffered before streaming it live. The delay helps ensure fairness during
-     *                                            competitive play. Only users with Partner status may set this field. The maximum delay is
-     *                                            900 seconds (15 minutes).
-     *                                            - tags                            String[]  No    A list of channel-defined tags to apply
-     *                                            to the channel. To remove all tags from the channel, set tags to an empty array. Tags
-     *                                            help identify the content that the channel streams. Learn More
-     *                                            A channel may specify a maximum of 10 tags. Each tag is limited to a maximum of 25
-     *                                            characters and may not be an empty string or contain spaces or special characters. Tags
-     *                                            are case insensitive. For readability, consider using camelCasing or PascalCasing.
-     *                                            - content_classification_labels   Label[]   No    List of labels that should be set
-     *                                            as the Channel’s CCLs.
-     *                                            - is_branded_content              Boolean   No    Boolean flag indicating if the
-     *                                            channel has branded content.
+     * @param string                          $broadcasterId The ID of the broadcaster whose channel you want to update. This ID must match
+     *                                                       the user ID associated with the user access token.
+     * @param ModifyChannelInformationRequest $body
+     *                                                       - game_id                         String    No    The ID of the game that the
+     *                                                       user plays. The game is not updated if the ID isn’t a game ID that Twitch
+     *                                                       recognizes. To unset this field, use
+     *                                                       “0” or “” (an empty string).
+     *                                                       - broadcaster_language            String    No    The user’s
+     *                                                       preferred language. Set the value to an ISO 639-1 two-letter language code
+     *                                                       (for
+     *                                                       example, en for English). Set to “other” if the user’s preferred language is
+     *                                                       not a Twitch supported language. The language isn’t updated if the language
+     *                                                       code isn’t a Twitch supported language.
+     *                                                       - title                           String    No    The title of the user’s
+     *                                                       stream. You may not set this field to an empty string.
+     *                                                       - delay                           Integer   No    The number of seconds you
+     *                                                       want your broadcast buffered before streaming it live. The delay helps ensure
+     *                                                       fairness during competitive play. Only users with Partner status may set this
+     *                                                       field. The maximum delay is
+     *                                                       900 seconds (15 minutes).
+     *                                                       - tags                            String[]  No    A list of channel-defined
+     *                                                       tags to apply to the channel. To remove all tags from the channel, set tags to
+     *                                                       an empty array. Tags help identify the content that the channel streams. Learn
+     *                                                       More A channel may specify a maximum of 10 tags. Each tag is limited to a
+     *                                                       maximum of 25 characters and may not be an empty string or contain spaces or
+     *                                                       special characters. Tags are case insensitive. For readability, consider using
+     *                                                       camelCasing or PascalCasing.
+     *                                                       - content_classification_labels   Label[]   No    List of labels that should
+     *                                                       be set as the Channel’s CCLs.
+     *                                                       - is_branded_content              Boolean   No    Boolean flag indicating if
+     *                                                       the channel has branded content.
      *
-     * @TODO: change format of body parameter to be readable
-     *
-     * @param AccessTokenInterface $accessToken
+     * @param AccessTokenInterface            $accessToken
      *
      * @return void
      * @throws \JsonException
+     *
+     * @TODO: change format of body parameter to be readable
+     *
      */
     public function modifyChannelInformation(
         string $broadcasterId,
-        array $body,
+        ModifyChannelInformationRequest $body,
         AccessTokenInterface $accessToken
     ): void {
         $this->sendRequest(
@@ -110,19 +118,19 @@ class ChannelsApi extends AbstractApi
      *                                                 the access token.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ChannelEditor[]>
      * @throws \JsonException
      */
     public function getChannelEditors(
         string $broadcasterId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/editors',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: ChannelEditor::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ChannelEditor::class),
             accessToken: $accessToken
         );
     }
@@ -145,9 +153,8 @@ class ChannelsApi extends AbstractApi
      *                                            contains the cursor’s value.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<FollowedChannel[]>
      * @throws \JsonException
-     * @see https://dev.twitch.tv/docs/api/guide#pagination
      */
     public function getFollowedChannels(
         string $userId,
@@ -155,7 +162,7 @@ class ChannelsApi extends AbstractApi
         ?string $broadcasterId = null,
         int $first = 20,
         ?string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/followed',
             query: [
@@ -164,7 +171,7 @@ class ChannelsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, FollowedChannel::class),
             accessToken: $accessToken
         );
     }
@@ -188,7 +195,7 @@ class ChannelsApi extends AbstractApi
      *                                            contains the cursor’s value.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<ChannelFollow[]>
      * @throws \JsonException
      *
      * @see https://dev.twitch.tv/docs/api/guide#pagination
@@ -199,7 +206,7 @@ class ChannelsApi extends AbstractApi
         ?string $userId = null,
         int $first = 20,
         ?string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/followers',
             query: [
@@ -208,7 +215,7 @@ class ChannelsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, ChannelFollow::class),
             accessToken: $accessToken
         );
     }

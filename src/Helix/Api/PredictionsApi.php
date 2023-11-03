@@ -3,7 +3,12 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Predictions\CreatePredictionRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Predictions\EndPredictionRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Predictions\Prediction;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class PredictionsApi extends AbstractApi
@@ -27,7 +32,7 @@ class PredictionsApi extends AbstractApi
      * @param string|null          $after         The cursor used to get the next page of results. The Pagination object in the response
      *                                            contains the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<Prediction[]>
      * @throws \JsonException
      */
     public function getPredictions(
@@ -36,7 +41,7 @@ class PredictionsApi extends AbstractApi
         string $id = null,
         int $first = 20,
         string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
@@ -45,7 +50,7 @@ class PredictionsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, Prediction::class),
             accessToken: $accessToken
         );
     }
@@ -59,20 +64,19 @@ class PredictionsApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the channel:manage:predictions scope.
      *
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param CreatePredictionRequest $body
+     * @param AccessTokenInterface    $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Prediction[]>
      * @throws \JsonException
      */
     public function createPrediction(
-        array $body,
+        CreatePredictionRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface
-    {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Prediction::class),
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -85,20 +89,19 @@ class PredictionsApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the channel:manage:predictions scope.
      *
-     * @param array                $body
+     * @param EndPredictionRequest $body
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Prediction[]>
      * @throws \JsonException
      */
     public function endPrediction(
-        array $body,
+        EndPredictionRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface
-    {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Prediction::class),
             method: Request::METHOD_PATCH,
             body: $body,
             accessToken: $accessToken

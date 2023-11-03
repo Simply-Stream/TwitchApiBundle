@@ -3,7 +3,9 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\HypeTrain\HypeTrainEvent;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 
 class HypeTrainApi extends AbstractApi
 {
@@ -25,7 +27,7 @@ class HypeTrainApi extends AbstractApi
      * @param string|null               $after         The cursor used to get the next page of results. The Pagination object in the
      *                                                 response contains the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<HypeTrainEvent[]>
      * @throws \JsonException
      */
     public function getHypeTrainEvents(
@@ -33,7 +35,7 @@ class HypeTrainApi extends AbstractApi
         AccessTokenInterface $accessToken = null,
         int $first = 1,
         string $after = null,
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/events',
             query: [
@@ -41,7 +43,7 @@ class HypeTrainApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, HypeTrainEvent::class),
             accessToken: $accessToken
         );
     }

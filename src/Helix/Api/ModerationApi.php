@@ -3,7 +3,23 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\AddBlockedTermRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\AutoModSettings;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\AutoModStatus;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\BannedUser;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\BanUserRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\BlockedTerm;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\CheckAutoModStatusRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\ManageHeldAutoModMessageRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\Moderator;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\ShieldModeStatus;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\UpdateAutoModSettingsRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\UpdateShieldModeStatusRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\UserBan;
+use SimplyStream\TwitchApiBundle\Helix\Models\Moderation\VIP;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class ModerationApi extends AbstractApi
@@ -33,25 +49,25 @@ class ModerationApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the moderation:read scope.
      *
-     * @param string               $broadcasterId The ID of the broadcaster whose AutoMod settings and list of blocked terms are used to
-     *                                            check the message. This ID must match the user ID in the access token.
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param string                    $broadcasterId The ID of the broadcaster whose AutoMod settings and list of blocked terms are used
+     *                                                 to check the message. This ID must match the user ID in the access token.
+     * @param CheckAutoModStatusRequest $body
+     * @param AccessTokenInterface      $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<AutoModStatus[]>
      * @throws \JsonException
      */
     public function checkAutoModStatus(
         string $broadcasterId,
-        array $body,
+        CheckAutoModStatusRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/enforcements/status',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, AutoModStatus::class),
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -67,19 +83,18 @@ class ModerationApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the moderator:manage:automod scope.
      *
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param ManageHeldAutoModMessageRequest $body
+     * @param AccessTokenInterface            $accessToken
      *
      * @return void
      * @throws \JsonException
      */
     public function manageHeldAutoModMessages(
-        array $body,
+        ManageHeldAutoModMessageRequest $body,
         AccessTokenInterface $accessToken
     ): void {
         $this->sendRequest(
             path: self::BASE_PATH . '/automod/message',
-            type: 'array',
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -97,21 +112,21 @@ class ModerationApi extends AbstractApi
      * @param string               $moderatorId
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<AutoModSettings[]>
      * @throws \JsonException
      */
     public function getAutoModSettings(
         string $broadcasterId,
         string $moderatorId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/automod/settings',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, AutoModSettings::class),
             accessToken: $accessToken
         );
     }
@@ -123,28 +138,28 @@ class ModerationApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the moderator:manage:automod_settings scope.
      *
-     * @param string               $broadcasterId The ID of the broadcaster whose AutoMod settings you want to update.
-     * @param string               $moderatorId   The ID of the broadcaster or a user that has permission to moderate the broadcaster’s
-     *                                            chat room. This ID must match the user ID in the user access token.
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param string                       $broadcasterId The ID of the broadcaster whose AutoMod settings you want to update.
+     * @param string                       $moderatorId   The ID of the broadcaster or a user that has permission to moderate the
+     *                                                    broadcaster’s chat room. This ID must match the user ID in the user access token.
+     * @param UpdateAutoModSettingsRequest $body
+     * @param AccessTokenInterface         $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<AutoModSettings[]>
      * @throws \JsonException
      */
     public function updateAutoModSettings(
         string $broadcasterId,
         string $moderatorId,
-        array $body,
+        UpdateAutoModSettingsRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/automod/settings',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, AutoModSettings::class),
             method: Request::METHOD_PUT,
             body: $body,
             accessToken: $accessToken
@@ -173,7 +188,7 @@ class ModerationApi extends AbstractApi
      * @param string|null          $before        The cursor used to get the previous page of results. The Pagination object in the
      *                                            response contains the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<BannedUser[]>
      * @throws \JsonException
      */
     public function getBannedUsers(
@@ -183,7 +198,7 @@ class ModerationApi extends AbstractApi
         int $first = 20,
         string $after = null,
         string $before = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/banned',
             query: [
@@ -193,7 +208,7 @@ class ModerationApi extends AbstractApi
                 'after' => $after,
                 'before' => $before,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, BannedUser::class),
             accessToken: $accessToken
         );
     }
@@ -214,25 +229,25 @@ class ModerationApi extends AbstractApi
      * @param string               $broadcasterId The ID of the broadcaster whose chat room the user is being banned from.
      * @param string               $moderatorId   The ID of the broadcaster or a user that has permission to moderate the broadcaster’s
      *                                            chat room. This ID must match the user ID in the user access token.
-     * @param array                $body
+     * @param BanUserRequest       $body
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<UserBan[]>
      * @throws \JsonException
      */
     public function banUser(
         string $broadcasterId,
         string $moderatorId,
-        array $body,
+        BanUserRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/bans',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, UserBan::class),
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -290,7 +305,7 @@ class ModerationApi extends AbstractApi
      * @param string|null          $after         The cursor used to get the next page of results. The Pagination object in the response
      *                                            contains the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<BlockedTerm[]>
      * @throws \JsonException
      */
     public function getBlockedTerms(
@@ -299,7 +314,7 @@ class ModerationApi extends AbstractApi
         AccessTokenInterface $accessToken,
         int $first = 20,
         string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/blocked_terms',
             query: [
@@ -308,7 +323,7 @@ class ModerationApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, BlockedTerm::class),
             accessToken: $accessToken
         );
     }
@@ -320,28 +335,28 @@ class ModerationApi extends AbstractApi
      * Authentication:
      * Requires a user access token that includes the moderator:manage:blocked_terms scope.
      *
-     * @param string               $broadcasterId The ID of the broadcaster that owns the list of blocked terms.
-     * @param string               $moderatorId   The ID of the broadcaster or a user that has permission to moderate the broadcaster’s
-     *                                            chat room. This ID must match the user ID in the user access token.
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param string                $broadcasterId The ID of the broadcaster that owns the list of blocked terms.
+     * @param string                $moderatorId   The ID of the broadcaster or a user that has permission to moderate the broadcaster’s
+     *                                             chat room. This ID must match the user ID in the user access token.
+     * @param AddBlockedTermRequest $body
+     * @param AccessTokenInterface  $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<BlockedTerm[]>
      * @throws \JsonException
      */
     public function addBlockedTerm(
         string $broadcasterId,
         string $moderatorId,
-        array $body,
+        AddBlockedTermRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/blocked_terms',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, BlockedTerm::class),
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -436,7 +451,7 @@ class ModerationApi extends AbstractApi
      * @param string|null          $after              The cursor used to get the next page of results. The Pagination object in the
      *                                                 response contains the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<Moderator[]>
      * @throws \JsonException
      */
     public function getModerators(
@@ -445,7 +460,7 @@ class ModerationApi extends AbstractApi
         string $userId = null,
         int $first = 20,
         string $after = null,
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/moderators',
             query: [
@@ -454,7 +469,7 @@ class ModerationApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, Moderator::class),
             accessToken: $accessToken
         );
     }
@@ -542,7 +557,7 @@ class ModerationApi extends AbstractApi
      * @param string|null          $after         The cursor used to get the next page of results. The Pagination object in the response
      *                                            contains the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<VIP[]>
      * @throws \JsonException
      */
     public function getVips(
@@ -551,7 +566,7 @@ class ModerationApi extends AbstractApi
         string $userId = null,
         int $first = 20,
         string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: '/channels/vips',
             query: [
@@ -560,7 +575,7 @@ class ModerationApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, VIP::class),
             accessToken: $accessToken
         );
     }
@@ -642,30 +657,31 @@ class ModerationApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the moderator:manage:shield_mode scope.
      *
-     * @param string               $broadcasterId The ID of the broadcaster whose Shield Mode you want to activate or deactivate.
-     * @param string               $moderatorId   The ID of the broadcaster or a user that is one of the broadcaster’s moderators. This ID
-     *                                            must match the user ID in the access token.
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param string                        $broadcasterId The ID of the broadcaster whose Shield Mode you want to activate or deactivate.
+     * @param string                        $moderatorId   The ID of the broadcaster or a user that is one of the broadcaster’s moderators.
+     *                                                  This ID must match the user ID in the access token.
+     * @param UpdateShieldModeStatusRequest $body
+     * @param AccessTokenInterface          $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ShieldModeStatus[]>
      * @throws \JsonException
      */
     public function updateShieldModeStatus(
         string $broadcasterId,
         string $moderatorId,
-        array $body,
+        UpdateShieldModeStatusRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/shield_mode',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ShieldModeStatus::class),
             method: Request::METHOD_PUT,
             body: $body,
+            accessToken: $accessToken
         );
     }
 
@@ -683,21 +699,21 @@ class ModerationApi extends AbstractApi
      *                                            must match the user ID in the access token.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ShieldModeStatus[]>
      * @throws \JsonException
      */
     public function getShieldModeStatus(
         string $broadcasterId,
         string $moderatorId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/shield_mode',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ShieldModeStatus::class),
             accessToken: $accessToken
         );
     }

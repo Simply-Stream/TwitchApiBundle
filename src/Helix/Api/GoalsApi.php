@@ -3,7 +3,8 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Goals\CreatorGoal;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
 
 class GoalsApi extends AbstractApi
 {
@@ -22,19 +23,19 @@ class GoalsApi extends AbstractApi
      *                                                 the user access token.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<CreatorGoal[]>
      * @throws \JsonException
      */
     public function getCreatorGoals(
         string $broadcasterId,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, CreatorGoal::class),
             accessToken: $accessToken
         );
     }

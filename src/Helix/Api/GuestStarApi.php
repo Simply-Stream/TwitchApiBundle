@@ -3,7 +3,12 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\GuestStar\ChannelGuestStarSetting;
+use SimplyStream\TwitchApiBundle\Helix\Models\GuestStar\GuestStarInvite;
+use SimplyStream\TwitchApiBundle\Helix\Models\GuestStar\GuestStarSession;
+use SimplyStream\TwitchApiBundle\Helix\Models\GuestStar\UpdateChannelGuestStarSettingRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class GuestStarApi extends AbstractApi
@@ -22,21 +27,21 @@ class GuestStarApi extends AbstractApi
      *                                                 broadcaster’s chat room. This ID must match the user ID in the user access token.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ChannelGuestStarSetting[]>
      * @throws \JsonException
      */
     public function getChannelGuestStarSettings(
         string $broadcasterId,
         string $moderatorId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/channel_settings',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ChannelGuestStarSetting::class),
             accessToken: $accessToken
         );
     }
@@ -48,9 +53,9 @@ class GuestStarApi extends AbstractApi
      * - Query parameter broadcaster_id must match the user_id in the User-Access token
      * - Requires OAuth Scope: channel:manage:guest_star
      *
-     * @param string               $broadcasterId The ID of the broadcaster you want to update Guest Star settings for.
-     * @param AccessTokenInterface $accessToken
-     * @param array                $body
+     * @param string                               $broadcasterId The ID of the broadcaster you want to update Guest Star settings for.
+     * @param AccessTokenInterface                 $accessToken
+     * @param UpdateChannelGuestStarSettingRequest $body
      *
      * @return void
      * @throws \JsonException
@@ -58,13 +63,13 @@ class GuestStarApi extends AbstractApi
     public function updateChannelGuestStarSettings(
         string $broadcasterId,
         AccessTokenInterface $accessToken,
-        array $body = []
+        UpdateChannelGuestStarSettingRequest $body
     ): void {
         $this->sendRequest(
             path: self::BASE_PATH . '/channel_settings',
             query: [
                 'broadcaster_id' => $broadcasterId,
-                ...$body
+                ...$body->toArray()
             ],
             method: Request::METHOD_PUT,
             accessToken: $accessToken
@@ -83,21 +88,21 @@ class GuestStarApi extends AbstractApi
      *                                                 broadcaster’s chat room. This ID must match the user ID in the user access token.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<GuestStarSession[]>
      * @throws \JsonException
      */
     public function getGuestStarSession(
         string $broadcasterId,
         string $moderatorId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/session',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'moderator_id' => $moderatorId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, GuestStarSession::class),
             accessToken: $accessToken
         );
     }
@@ -114,19 +119,19 @@ class GuestStarApi extends AbstractApi
      *                                            broadcaster_id must match the user_id in the auth token.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<GuestStarSession[]>
      * @throws \JsonException
      */
     public function createGuestStarSession(
         string $broadcasterId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/session',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, GuestStarSession::class),
             method: Request::METHOD_POST,
             accessToken: $accessToken
         );
@@ -145,21 +150,21 @@ class GuestStarApi extends AbstractApi
      * @param string               $sessionId     ID for the session to end on behalf of the broadcaster.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<GuestStarSession[]>
      * @throws \JsonException
      */
     public function endGuestStarSession(
         string $broadcasterId,
         string $sessionId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/session',
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'session_id' => $sessionId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, GuestStarSession::class),
             method: Request::METHOD_DELETE,
             accessToken: $accessToken
         );
@@ -179,7 +184,7 @@ class GuestStarApi extends AbstractApi
      * @param string               $sessionId     The session ID to query for invite status.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<GuestStarInvite[]>
      * @throws \JsonException
      */
     public function getGuestStarInvites(
@@ -187,7 +192,7 @@ class GuestStarApi extends AbstractApi
         string $moderatorId,
         string $sessionId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/invites',
             query: [
@@ -195,7 +200,7 @@ class GuestStarApi extends AbstractApi
                 'moderator_id' => $moderatorId,
                 'session_id' => $sessionId
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, GuestStarInvite::class),
             accessToken: $accessToken
         );
     }

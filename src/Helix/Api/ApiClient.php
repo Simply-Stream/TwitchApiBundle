@@ -14,9 +14,8 @@ use Psr\Log\LoggerTrait;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStorage;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorageInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponse;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidAccessTokenException;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function json_decode;
 
@@ -66,6 +65,7 @@ class ApiClient implements ApiClientInterface
             ]),
         ]);
 
+        // @TODO: Make errors more verbose.
         if ($response->getStatusCode() >= 400) {
             $error = json_decode($response->getContent(false), false, 512, JSON_THROW_ON_ERROR);
             $this->error($error->message, ['response' => $response->getContent(false)]);
@@ -76,22 +76,8 @@ class ApiClient implements ApiClientInterface
             return null;
         }
 
-        return $this->mapper->map(
-            TwitchResponse::class . ($type ? ("<{$type}>") : ''),
-            new JsonSource($response->getContent(false))
+        return $this->mapper->map($type, new JsonSource($response->getContent(false))
         );
-    }
-
-    /**
-     * @param TokenStorageInterface $tokenStorage
-     *
-     * @return $this
-     */
-    public function setTokenStorage(TokenStorageInterface $tokenStorage): self
-    {
-        $this->tokenStorage = $tokenStorage;
-
-        return $this;
     }
 
     /**
@@ -99,8 +85,7 @@ class ApiClient implements ApiClientInterface
      *
      * @return AccessTokenInterface
      */
-    protected function getAccessToken(string $grant): AccessTokenInterface
-    {
+    protected function getAccessToken(string $grant): AccessTokenInterface {
         if ($this->tokenStorage->has($grant)) {
             return $this->tokenStorage->get($grant);
         }
@@ -117,10 +102,20 @@ class ApiClient implements ApiClientInterface
     }
 
     /**
+     * @param TokenStorageInterface $tokenStorage
+     *
+     * @return $this
+     */
+    public function setTokenStorage(TokenStorageInterface $tokenStorage): self {
+        $this->tokenStorage = $tokenStorage;
+
+        return $this;
+    }
+
+    /**
      * {@inheritDoc}
      */
-    public function log($level, \Stringable|string $message, array $context = []): void
-    {
+    public function log($level, \Stringable|string $message, array $context = []): void {
         $this->logger?->log($level, $message, $context);
     }
 }

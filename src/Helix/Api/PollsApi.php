@@ -3,7 +3,12 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Polls\CreatePollRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Polls\EndPollRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Polls\Poll;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class PollsApi extends AbstractApi
@@ -32,7 +37,7 @@ class PollsApi extends AbstractApi
      * @param string|null          $after         The cursor used to get the next page of results. The Pagination object in the response
      *                                            contains the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<Poll[]>
      * @throws \JsonException
      */
     public function getPolls(
@@ -41,7 +46,7 @@ class PollsApi extends AbstractApi
         string $id = null,
         int $first = 20,
         string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
@@ -50,7 +55,7 @@ class PollsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, Poll::class),
             accessToken: $accessToken
         );
     }
@@ -63,19 +68,19 @@ class PollsApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the channel:manage:polls scope.
      *
-     * @param array                $body
+     * @param CreatePollRequest    $body
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Poll[]>
      * @throws \JsonException
      */
     public function createPoll(
-        array $body,
+        CreatePollRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Poll::class),
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -88,19 +93,19 @@ class PollsApi extends AbstractApi
      * Authorization:
      * Requires a user access token that includes the channel:manage:polls scope.
      *
-     * @param array                $body
+     * @param EndPollRequest       $body
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Poll[]>
      * @throws \JsonException
      */
     public function endPoll(
-        array $body,
+        EndPollRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Poll::class),
             method: Request::METHOD_PATCH,
             body: $body,
             accessToken: $accessToken

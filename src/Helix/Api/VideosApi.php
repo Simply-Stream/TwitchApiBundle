@@ -3,7 +3,9 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\Videos\Video;
 use Symfony\Component\HttpFoundation\Request;
 
 class VideosApi extends AbstractApi
@@ -80,7 +82,7 @@ class VideosApi extends AbstractApi
      *                                            Specify this parameter only if you specify the user_id query parameter.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<Video[]>
      * @throws \JsonException
      */
     public function getVideos(
@@ -95,7 +97,7 @@ class VideosApi extends AbstractApi
         string $after = null,
         string $before = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
@@ -110,7 +112,7 @@ class VideosApi extends AbstractApi
                 'after' => $after,
                 'before' => $before,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, Video::class),
             accessToken: $accessToken
         );
     }
@@ -129,19 +131,19 @@ class VideosApi extends AbstractApi
      *                                 deleted.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Video[]>
      * @throws \JsonException
      */
     public function deleteVideos(
         string $id,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'id' => $id,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Video::class),
             method: Request::METHOD_DELETE,
             accessToken: $accessToken
         );

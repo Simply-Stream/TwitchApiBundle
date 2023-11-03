@@ -3,10 +3,13 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\BitLeaderboard;
-use SimplyStream\TwitchApiBundle\Helix\Dto\Cheermote;
-use SimplyStream\TwitchApiBundle\Helix\Dto\ExtensionTransaction;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Bits\BitsLeaderboard;
+use SimplyStream\TwitchApiBundle\Helix\Models\Bits\Cheermote;
+use SimplyStream\TwitchApiBundle\Helix\Models\Bits\ExtensionTransactions;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDateRangeDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 
 class BitsApi extends AbstractApi
 {
@@ -48,7 +51,7 @@ class BitsApi extends AbstractApi
      *                                             1, the response may include users ranked above and below the specified user. To get the
      *                                             leaderboard’s top leaders, don’t specify a user ID.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDateRangeDataResponse<BitsLeaderboard[]>
      * @throws \JsonException
      */
     public function getBitsLeaderboard(
@@ -57,7 +60,7 @@ class BitsApi extends AbstractApi
         string $period = 'all',
         \DateTime $startedAt = null,
         string $userId = null
-    ): TwitchResponseInterface {
+    ): TwitchDateRangeDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/leaderboard',
             query: [
@@ -66,7 +69,7 @@ class BitsApi extends AbstractApi
                 'started_at' => $startedAt?->format(DATE_RFC3339),
                 'user_id' => $userId,
             ],
-            type: BitLeaderboard::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDateRangeDataResponse::class, BitsLeaderboard::class),
             accessToken: $accessToken
         );
     }
@@ -87,19 +90,19 @@ class BitsApi extends AbstractApi
      *                                                 channel_custom.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Cheermote[]>
      * @throws \JsonException
      */
     public function getCheermotes(
         string $broadcasterId = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/cheermotes',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: Cheermote::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Cheermote::class),
             accessToken: $accessToken
         );
     }
@@ -121,7 +124,7 @@ class BitsApi extends AbstractApi
      *                                               contains the cursor’s value.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<ExtensionTransactions[]>
      * @throws \JsonException
      */
     public function getExtensionTransactions(
@@ -130,7 +133,7 @@ class BitsApi extends AbstractApi
         int $first = 20,
         string $after = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: 'extensions/transactions',
             query: [
@@ -139,7 +142,7 @@ class BitsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: ExtensionTransaction::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, ExtensionTransactions::class),
             accessToken: $accessToken
         );
     }

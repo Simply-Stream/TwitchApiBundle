@@ -3,8 +3,12 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\Commercial;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Ads\AdSchedule;
+use SimplyStream\TwitchApiBundle\Helix\Models\Ads\Commercial;
+use SimplyStream\TwitchApiBundle\Helix\Models\Ads\SnoozeNextAd;
+use SimplyStream\TwitchApiBundle\Helix\Models\Ads\StartCommercialRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class AdsApi extends AbstractApi
@@ -22,30 +26,21 @@ class AdsApi extends AbstractApi
      * Authentication:
      * Requires a user access token that includes the channel:edit:commercial scope.
      *
-     * @param string               $broadcasterId The ID of the partner or affiliate broadcaster that wants to run the commercial. This
-     *                                            ID must match the user ID found in the OAuth token.
-     * @param int                  $length        The length of the commercial to run, in seconds. Twitch tries to serve a commercial
-     *                                            that’s the requested length, but it may be shorter or longer. The maximum length you
-     *                                            should request is 180 seconds.
-     * @param AccessTokenInterface $accessToken
+     * @param StartCommercialRequest $body
+     * @param AccessTokenInterface   $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Commercial[]>
      * @throws \JsonException
      */
     public function startCommercial(
-        string $broadcasterId,
-        int $length,
+        StartCommercialRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface
-    {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/commercial',
-            query: [
-                'broadcaster_id' => $broadcasterId,
-                'length' => min($length, 180),
-            ],
-            type: Commercial::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Commercial::class),
             method: Request::METHOD_POST,
+            body: $body,
             accessToken: $accessToken
         );
     }
@@ -61,20 +56,19 @@ class AdsApi extends AbstractApi
      * @param string               $broadcasterId Provided broadcaster_id must match the user_id in the auth token.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<AdSchedule[]>
      * @throws \JsonException
      */
     public function getAdSchedule(
         string $broadcasterId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface
-    {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/ads',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, AdSchedule::class),
             accessToken: $accessToken
         );
     }
@@ -90,20 +84,19 @@ class AdsApi extends AbstractApi
      * @param string               $broadcasterId Provided broadcaster_id must match the user_id in the auth token.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<SnoozeNextAd[]>
      * @throws \JsonException
      */
     public function snoozeNextAd(
         string $broadcasterId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface
-    {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/ads/schedule/snooze',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, SnoozeNextAd::class),
             accessToken: $accessToken
         );
     }

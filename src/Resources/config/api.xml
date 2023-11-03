@@ -157,7 +157,6 @@
             <argument type="service" id="simplystream.twitch_api.helix_api.goals"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.hype_train"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.moderation"/>
-            <argument type="service" id="simplystream.twitch_api.helix_api.music"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.polls"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.predictions"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.raids"/>
@@ -165,7 +164,6 @@
             <argument type="service" id="simplystream.twitch_api.helix_api.search"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.streams"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.subscriptions"/>
-            <argument type="service" id="simplystream.twitch_api.helix_api.tags"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.teams"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.users"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.videos"/>

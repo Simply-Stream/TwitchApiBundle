@@ -3,7 +3,18 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Extensions\Extension;
+use SimplyStream\TwitchApiBundle\Helix\Models\Extensions\ExtensionBitsProduct;
+use SimplyStream\TwitchApiBundle\Helix\Models\Extensions\ExtensionConfigurationSegment;
+use SimplyStream\TwitchApiBundle\Helix\Models\Extensions\ExtensionLiveChannel;
+use SimplyStream\TwitchApiBundle\Helix\Models\Extensions\ExtensionSecret;
+use SimplyStream\TwitchApiBundle\Helix\Models\Extensions\SendExtensionChatMessageRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Extensions\SendExtensionPubSubMessageRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Extensions\SetExtensionConfigurationSegmentRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Extensions\SetExtensionRequiredConfigurationRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Extensions\UpdateExtensionBitsProductRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ExtensionsApi extends AbstractApi
@@ -33,7 +44,7 @@ class ExtensionsApi extends AbstractApi
      *                                   segment parameter to broadcaster or developer. Do not specify this parameter if you set segment to
      *                                   global.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ExtensionConfigurationSegment[]>
      * @throws \JsonException
      */
     public function getExtensionConfigurationSegment(
@@ -41,7 +52,7 @@ class ExtensionsApi extends AbstractApi
         string $segment,
         string $jwt,
         string $broadcasterId = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/configurations',
             query: [
@@ -49,7 +60,7 @@ class ExtensionsApi extends AbstractApi
                 'segment' => $segment,
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ExtensionConfigurationSegment::class),
             headers: [
                 'Authorization' => 'Bearer ' . $jwt,
             ]
@@ -66,41 +77,20 @@ class ExtensionsApi extends AbstractApi
      * Requires a signed JSON Web Token (JWT) created by an Extension Backend Service (EBS). For signing requirements, see Signing the JWT.
      * The signed JWT must include the role, user_id, and exp fields (see JWT Schema). The role field must be set to external.
      *
-     * @param string      $extensionId   The ID of the extension to update.
-     * @param string      $segment       The configuration segment to update. Possible case-sensitive values are:
-     *                                   - broadcaster
-     *                                   - developer
-     *                                   - global
-     * @param string      $jwt
-     * @param string|null $broadcasterId The ID of the broadcaster that installed the extension. Include this field only if the segment is
-     *                                   set to developer or broadcaster.
-     * @param string|null $content       The contents of the segment. This string may be a plain-text string or a string-encoded JSON
-     *                                   object.
-     * @param string|null $version       The version number that identifies this definition of the segment’s data. If not specified, the
-     *                                   latest definition is updated.
+     * @param string                                  $jwt
+     * @param SetExtensionConfigurationSegmentRequest $body
      *
-     * @return TwitchResponseInterface
+     * @return void
      * @throws \JsonException
      */
     public function setExtensionConfigurationSegment(
-        string $extensionId,
-        string $segment,
         string $jwt,
-        string $broadcasterId = null,
-        string $content = null,
-        string $version = null
-    ): TwitchResponseInterface {
-        return $this->sendRequest(
+        SetExtensionConfigurationSegmentRequest $body
+    ): void {
+        $this->sendRequest(
             path: self::BASE_PATH . '/configurations',
-            query: [
-                'extension_id' => $extensionId,
-                'segment' => $segment,
-                'broadcaster_id' => $broadcasterId,
-                'content' => $content,
-                'version' => $version,
-            ],
-            type: 'array',
             method: Request::METHOD_PUT,
+            body: $body,
             headers: [
                 'Authorization' => 'Bearer ' . $jwt,
             ]
@@ -117,16 +107,17 @@ class ExtensionsApi extends AbstractApi
      * the role, user_id, and exp fields (see JWT Schema). Set the role field to external and the user_id field to the ID of the user that
      * owns the extension.
      *
-     * @param string $broadcasterId The ID of the broadcaster that installed the extension on their channel.
-     * @param array  $body
-     * @param string $jwt
+     * @param string                                   $broadcasterId The ID of the broadcaster that installed the extension on their
+     *                                                                channel.
+     * @param SetExtensionRequiredConfigurationRequest $body
+     * @param string                                   $jwt
      *
      * @return void
      * @throws \JsonException
      */
     public function setExtensionRequiredConfiguration(
         string $broadcasterId,
-        array $body,
+        SetExtensionRequiredConfigurationRequest $body,
         string $jwt
     ): void {
         $this->sendRequest(
@@ -190,7 +181,7 @@ class ExtensionsApi extends AbstractApi
      * @throws \JsonException
      */
     public function sendExtensionPubSubMessage(
-        array $body,
+        SendExtensionPubSubMessageRequest $body,
         string $jwt
     ): void {
         $this->sendRequest(
@@ -219,7 +210,7 @@ class ExtensionsApi extends AbstractApi
      *                                               contains the cursor’s value.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<ExtensionLiveChannel>
      * @throws \JsonException
      */
     public function getExtensionLiveChannels(
@@ -227,7 +218,7 @@ class ExtensionsApi extends AbstractApi
         int $first = 20,
         string $after = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/live',
             query: [
@@ -235,7 +226,7 @@ class ExtensionsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, ExtensionLiveChannel::class),
             accessToken: $accessToken
         );
     }
@@ -250,19 +241,19 @@ class ExtensionsApi extends AbstractApi
      * @param string $extensionId The ID of the extension whose shared secrets you want to get.
      * @param string $jwt
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ExtensionSecret>
      * @throws \JsonException
      */
     public function getExtensionSecrets(
         string $extensionId,
         string $jwt
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/jwt/secrets',
             query: [
                 'extension_id' => $extensionId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ExtensionSecret::class),
             headers: [
                 'Authorization' => 'Bearer ' . $jwt,
             ]
@@ -283,21 +274,21 @@ class ExtensionsApi extends AbstractApi
      *                            instances of the extension to gracefully switch over to the new secret. The minimum delay is 300 seconds
      *                            (5 minutes). The default is 300 seconds.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ExtensionSecret>
      * @throws \JsonException
      */
     public function createExtensionSecret(
         string $extensionId,
         string $jwt,
         int $delay = 300
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/jwt/secrets',
             query: [
                 'extension_id' => $extensionId,
                 'delay' => $delay,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ExtensionSecret::class),
             headers: [
                 'Authorization' => 'Bearer ' . $jwt,
             ]
@@ -324,7 +315,7 @@ class ExtensionsApi extends AbstractApi
     public function sendExtensionChatMessage(
         string $broadcasterId,
         string $jwt,
-        array $body
+        SendExtensionChatMessageRequest $body
     ): void {
         $this->sendRequest(
             path: self::BASE_PATH . '/chat',
@@ -350,21 +341,21 @@ class ExtensionsApi extends AbstractApi
      * @param string|null $extensionVersion The version of the extension to get. If not specified, it returns the latest, released version.
      *                                      If you don’t have a released version, you must specify a version; otherwise, the list is empty.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Extension[]>
      * @throws \JsonException
      */
     public function getExtensions(
         string $extensionId,
         string $jwt,
         string $extensionVersion = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'extension_id' => $extensionId,
                 'extension_version' => $extensionVersion,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Extension::class),
             headers: [
                 'Authorization' => 'Bearer ' . $jwt,
             ]
@@ -382,21 +373,21 @@ class ExtensionsApi extends AbstractApi
      *                                                    version.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Extension>
      * @throws \JsonException
      */
     public function getReleasedExtensions(
         string $extensionId,
         string $extensionVersion = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/released',
             query: [
                 'extension_id' => $extensionId,
                 'extension_version' => $extensionVersion,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Extension::class),
             accessToken: $accessToken
         );
     }
@@ -411,19 +402,19 @@ class ExtensionsApi extends AbstractApi
      *                                                    products in the response. The default is false.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ExtensionBitsProduct[]>
      * @throws \JsonException
      */
     public function getExtensionBitsProducts(
         bool $shouldIncludeAll = false,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: 'bits/' . self::BASE_PATH,
             query: [
                 'should_include_all' => $shouldIncludeAll,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ExtensionBitsProduct::class),
             accessToken: $accessToken
         );
     }
@@ -435,19 +426,19 @@ class ExtensionsApi extends AbstractApi
      * Authorization:
      * Requires an app access token. The client ID in the app access token must be the extension’s client ID.
      *
-     * @param array                     $body
-     * @param AccessTokenInterface|null $accessToken
+     * @param UpdateExtensionBitsProductRequest $body
+     * @param AccessTokenInterface|null         $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ExtensionBitsProduct[]>
      * @throws \JsonException
      */
     public function updateExtensionBitsProduct(
-        array $body,
+        UpdateExtensionBitsProductRequest $body,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: 'bits/' . self::BASE_PATH,
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ExtensionBitsProduct::class),
             method: Request::METHOD_PUT,
             body: $body,
             accessToken: $accessToken

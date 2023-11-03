@@ -3,8 +3,10 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\Clip;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Clip\Clip;
+use SimplyStream\TwitchApiBundle\Helix\Models\Clip\ClipProcess;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class ClipsApi extends AbstractApi
@@ -39,21 +41,21 @@ class ClipsApi extends AbstractApi
      *                                            true, Twitch adds a delay before capturing the clip (this basically shifts the capture
      *                                            window to the right slightly).
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ClipProcess[]>
      * @throws \JsonException
      */
     public function createClip(
         string $broadcasterId,
         AccessTokenInterface $accessToken,
         bool $hasDelay = false
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'has_delay' => $hasDelay,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ClipProcess::class),
             method: Request::METHOD_POST,
             accessToken: $accessToken
         );
@@ -85,7 +87,7 @@ class ClipsApi extends AbstractApi
      * @param bool|null                 $isFeatured
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<Clip[]>
      * @throws \JsonException
      */
     public function getClips(
@@ -99,7 +101,7 @@ class ClipsApi extends AbstractApi
         string $after = null,
         bool $isFeatured = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         if (! $broadcasterId && ! $gameId && ! $id) {
             throw new \RuntimeException('You need to specify at least one kind of ID');
         }
@@ -117,7 +119,7 @@ class ClipsApi extends AbstractApi
                 'first' => $first,
                 'is_featured' => $isFeatured
             ],
-            type: Clip::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, Clip::class),
             accessToken: $accessToken
         );
     }

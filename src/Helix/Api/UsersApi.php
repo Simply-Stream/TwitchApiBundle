@@ -4,9 +4,12 @@ namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use JsonException;
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use RuntimeException;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchUser;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\Users\UpdateUserExtensionRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Users\User;
+use SimplyStream\TwitchApiBundle\Helix\Models\Users\UserActiveExtension;
+use SimplyStream\TwitchApiBundle\Helix\Models\Users\UserBlock;
+use SimplyStream\TwitchApiBundle\Helix\Models\Users\UserExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Webmozart\Assert\Assert;
 
@@ -37,21 +40,16 @@ class UsersApi extends AbstractApi
      *                                          login names you may specify is 100.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<User[]>
      * @throws JsonException
      */
     public function getUsers(
         array $ids = [],
         array $logins = [],
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
-        if (count($ids) === 0 && count($logins) === 0) {
-            throw new RuntimeException('You need to specify at least one "id" or "login"');
-        }
-
-        if ((count($ids) + count($logins)) > 100) {
-            throw new RuntimeException('You can only request a total amount of 100 users at once');
-        }
+    ): TwitchDataResponse {
+        Assert::eq(count($ids) + count($logins), 0, 'You need to specify at least one "id" or "login"');
+        Assert::lessThanEq(count($ids) + count($logins), 100, 'You can only request a total amount of 100 users at once');
 
         return $this->sendRequest(
             path: self::BASE_PATH,
@@ -59,7 +57,7 @@ class UsersApi extends AbstractApi
                 'id' => $ids,
                 'login' => $logins,
             ],
-            type: TwitchUser::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, User::class),
             accessToken: $accessToken
         );
     }
@@ -79,13 +77,13 @@ class UsersApi extends AbstractApi
      *                                          To remove the description, specify this parameter but don’t set it’s value (for example,
      *                                          ?description=).
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<User[]>
      * @throws JsonException
      */
     public function updateUser(
         AccessTokenInterface $accessToken,
         string $description = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         Assert::maxLength($description, 300, "A description can not be longer than 300 characters");
 
         return $this->sendRequest(
@@ -93,7 +91,7 @@ class UsersApi extends AbstractApi
             query: [
                 'description' => $description,
             ],
-            type: TwitchUser::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, User::class),
             method: Request::METHOD_PUT,
             accessToken: $accessToken
         );
@@ -112,7 +110,7 @@ class UsersApi extends AbstractApi
      * @param string|null          $after         The cursor used to get the next page of results. The Pagination object in the response
      *                                            contains the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<UserBlock[]>
      * @throws JsonException
      */
     public function getUserBlockList(
@@ -120,7 +118,7 @@ class UsersApi extends AbstractApi
         AccessTokenInterface $accessToken,
         int $first = 20,
         string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/blocks',
             query: [
@@ -128,7 +126,7 @@ class UsersApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, UserBlock::class),
             accessToken: $accessToken
         );
     }
@@ -213,15 +211,15 @@ class UsersApi extends AbstractApi
      *
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<UserExtension[]>
      * @throws JsonException
      */
     public function getUserExtensions(
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/extensions/list',
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, UserExtension::class),
             accessToken: $accessToken
         );
     }
@@ -235,26 +233,26 @@ class UsersApi extends AbstractApi
      * Authentication:
      * Requires an app access token or user access token.
      *
-     * @param string|null               $userId      The ID of the broadcaster whose active extensions you want to get.
+     * @param string|null               $userId The ID of the broadcaster whose active extensions you want to get.
      *
      *                                               This parameter is required if you specify an app access token and is optional if you
      *                                               specify a user access token. If you specify a user access token and don’t specify this
      *                                               parameter, the API uses the user ID from the access token.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<UserActiveExtension[]>
      * @throws JsonException
      */
     public function getUserActiveExtensions(
         string $userId = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/extensions',
             query: [
                 'user_id' => $userId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, UserActiveExtension::class),
             accessToken: $accessToken
         );
     }
@@ -269,18 +267,19 @@ class UsersApi extends AbstractApi
      * Authentication:
      * Requires a user access token that includes the user:edit:broadcast scope.
      *
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param UpdateUserExtensionRequest $body
+     * @param AccessTokenInterface       $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<UserActiveExtension>
      * @throws JsonException
      */
     public function updateUserExtensions(
-        array $body,
+        UpdateUserExtensionRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/extensions',
+            type: sprintf('%s<%s>', TwitchDataResponse::class, UserActiveExtension::class),
             method: Request::METHOD_PUT,
             body: $body,
             accessToken: $accessToken

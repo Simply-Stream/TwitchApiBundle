@@ -3,8 +3,11 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Subscription;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\CreateEventSubSubscriptionRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\EventSubResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\PaginatedEventSubResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class EventSubApi extends AbstractApi
@@ -24,21 +27,21 @@ class EventSubApi extends AbstractApi
      * access token. If the subscription type requires user authorization, the token must include the required scope. However, if the
      * subscription type doesn’t include user authorization, the token may include any scopes or no scopes.
      *
-     * @param array                     $body
-     * @param string                    $type
-     * @param AccessTokenInterface|null $accessToken
+     * @param CreateEventSubSubscriptionRequest $body
+     * @param string                            $type
+     * @param AccessTokenInterface|null         $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return EventSubResponse<Subscription[]>
      * @throws \JsonException
      */
     public function createEventSubSubscription(
-        array $body,
+        CreateEventSubSubscriptionRequest $body,
         string $type,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): EventSubResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/subscriptions',
-            type: Subscription::class . '<' . $type . '>' . '[]',
+            type: sprintf('%s<%s<%s>[]>', EventSubResponse::class, Subscription::class, $type),
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -103,7 +106,7 @@ class EventSubApi extends AbstractApi
      *                                          contains the cursor’s value.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return PaginatedEventSubResponse<Subscription[]>
      * @throws \JsonException
      */
     public function getEventSubSubscriptions(
@@ -112,7 +115,7 @@ class EventSubApi extends AbstractApi
         string $userId = null,
         string $after = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): PaginatedEventSubResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/subscriptions',
             query: [
@@ -121,7 +124,7 @@ class EventSubApi extends AbstractApi
                 'user_id' => $userId,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', PaginatedEventSubResponse::class, Subscription::class),
             accessToken: $accessToken
         );
     }

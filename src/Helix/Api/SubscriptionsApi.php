@@ -3,8 +3,8 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\Subscription;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Subscriptions\Subscription;
+use SimplyStream\TwitchApiBundle\Helix\Models\Subscriptions\TwitchPaginatedSubPointsResponse;
 
 class SubscriptionsApi extends AbstractApi
 {
@@ -33,7 +33,7 @@ class SubscriptionsApi extends AbstractApi
      *                                                 value.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedSubPointsResponse<Subscription[]>
      * @throws \JsonException
      */
     public function getBroadcasterSubscriptions(
@@ -43,7 +43,7 @@ class SubscriptionsApi extends AbstractApi
         string $after = null,
         string $before = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedSubPointsResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
@@ -53,7 +53,7 @@ class SubscriptionsApi extends AbstractApi
                 'before' => $before,
                 'after' => $after,
             ],
-            type: Subscription::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchPaginatedSubPointsResponse::class, Subscription::class),
             accessToken: $accessToken
         );
     }
@@ -72,21 +72,21 @@ class SubscriptionsApi extends AbstractApi
      *                                                 broadcaster in broadcaster_id. This ID must match the user ID in the access Token.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedSubPointsResponse<Subscription[]>
      * @throws \JsonException
      */
     public function checkUserSubscription(
         string $broadcasterId,
         string $userId,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedSubPointsResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'broadcaster_id' => $broadcasterId,
                 'user_id' => $userId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedSubPointsResponse::class, Subscription::class),
             accessToken: $accessToken
         );
     }

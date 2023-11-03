@@ -3,7 +3,12 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Streams\CreateStreamMarkerRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\Streams\Stream;
+use SimplyStream\TwitchApiBundle\Helix\Models\Streams\StreamKey;
+use SimplyStream\TwitchApiBundle\Helix\Models\Streams\StreamMarker;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class StreamsApi extends AbstractApi
@@ -20,19 +25,19 @@ class StreamsApi extends AbstractApi
      *                                            access token.
      * @param AccessTokenInterface $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<StreamKey[]>
      * @throws \JsonException
      */
     public function getStreamKey(
         string $broadcasterId,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/key',
             query: [
                 'broadcaster_id' => $broadcasterId,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, StreamKey::class),
             accessToken: $accessToken
         );
     }
@@ -75,7 +80,7 @@ class StreamsApi extends AbstractApi
      *                                             contains the cursor’s value.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<Stream[]>
      * @throws \JsonException
      */
     public function getStreams(
@@ -88,7 +93,7 @@ class StreamsApi extends AbstractApi
         string $before = null,
         string $after = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
@@ -101,7 +106,7 @@ class StreamsApi extends AbstractApi
                 'before' => $after,
                 'after' => $before,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, Stream::class),
             accessToken: $accessToken
         );
     }
@@ -120,7 +125,7 @@ class StreamsApi extends AbstractApi
      * @param string|null          $after  The cursor used to get the next page of results. The Pagination object in the response contains
      *                                     the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<Stream[]>
      * @throws \JsonException
      */
     public function getFollowedStreams(
@@ -128,7 +133,7 @@ class StreamsApi extends AbstractApi
         AccessTokenInterface $accessToken,
         int $first = 100,
         string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/followed',
             query: [
@@ -136,7 +141,7 @@ class StreamsApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, Stream::class),
             accessToken: $accessToken
         );
     }
@@ -155,19 +160,19 @@ class StreamsApi extends AbstractApi
      * Authentication:
      * Requires a user access token that includes the channel:manage:broadcast scope.
      *
-     * @param array                $body
-     * @param AccessTokenInterface $accessToken
+     * @param CreateStreamMarkerRequest $body
+     * @param AccessTokenInterface      $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<StreamMarker[]>
      * @throws \JsonException
      */
     public function createStreamMarker(
-        array $body,
+        CreateStreamMarkerRequest $body,
         AccessTokenInterface $accessToken
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/markers',
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, StreamMarker::class),
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken
@@ -199,7 +204,7 @@ class StreamsApi extends AbstractApi
      * @param string|null          $after   The cursor used to get the next page of results. The Pagination object in the response contains
      *                                      the cursor’s value.
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<StreamMarker[]>
      * @throws \JsonException
      */
     public function getStreamMarkers(
@@ -209,7 +214,7 @@ class StreamsApi extends AbstractApi
         int $first = 20,
         string $before = null,
         string $after = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/markers',
             query: [
@@ -219,7 +224,7 @@ class StreamsApi extends AbstractApi
                 'before' => $before,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, StreamMarker::class),
             accessToken: $accessToken
         );
     }

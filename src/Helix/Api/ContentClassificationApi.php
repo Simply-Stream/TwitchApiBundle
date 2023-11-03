@@ -3,7 +3,9 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\CCLs\ContentClassificationLabel;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 
 class ContentClassificationApi extends AbstractApi
 {
@@ -22,19 +24,19 @@ class ContentClassificationApi extends AbstractApi
      *                                          "tr-TR", "vi-VN", "zh-CN", "zh-TW"
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<ContentClassificationLabel[]>
      * @throws \JsonException
      */
     public function getContentClassificationLevels(
         string $locale = 'en-US',
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH,
             query: [
                 'locale' => $locale,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, ContentClassificationLabel::class),
             accessToken: $accessToken
         );
     }

@@ -3,7 +3,12 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Entitlements\DropEntitlement;
+use SimplyStream\TwitchApiBundle\Helix\Models\Entitlements\DropEntitlementUpdate;
+use SimplyStream\TwitchApiBundle\Helix\Models\Entitlements\UpdateDropEntitlementRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class EntitlementsApi extends AbstractApi
@@ -57,7 +62,7 @@ class EntitlementsApi extends AbstractApi
      *                                                     is 20.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<DropEntitlement[]>
      * @throws \JsonException
      */
     public function getDropsEntitlements(
@@ -68,7 +73,7 @@ class EntitlementsApi extends AbstractApi
         string $after = null,
         int $first = 20,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/drops',
             query: [
@@ -79,7 +84,7 @@ class EntitlementsApi extends AbstractApi
                 'after' => $after,
                 'first' => $first,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, DropEntitlement::class),
             accessToken: $accessToken
         );
     }
@@ -100,29 +105,21 @@ class EntitlementsApi extends AbstractApi
      * Authentication:
      * Requires an app access token or user access token. The client ID in the access token must own the game.
      *
-     * @param array<string>|null        $entitlementIds    A list of IDs that identify the entitlements to update. You may specify a
-     *                                                     maximum of 100 IDs.
-     * @param string|null               $fulfillmentStatus The fulfillment status to set the entitlements to. Possible values are:
-     *                                                     - CLAIMED — The user claimed the benefit.
-     *                                                     - FULFILLED — The developer granted the benefit that the user claimed.
-     * @param AccessTokenInterface|null $accessToken
+     * @param UpdateDropEntitlementRequest $body
+     * @param AccessTokenInterface|null    $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchDataResponse<DropEntitlementUpdate[]>
      * @throws \JsonException
      */
     public function updateDropsEntitlements(
-        array $entitlementIds = null,
-        string $fulfillmentStatus = null,
+        UpdateDropEntitlementRequest $body,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/drops',
-            query: [
-                'entitlement_ids' => $entitlementIds,
-                'fulfillment_status' => $fulfillmentStatus,
-            ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchDataResponse::class, DropEntitlementUpdate::class),
             method: Request::METHOD_PATCH,
+            body: $body,
             accessToken: $accessToken
         );
     }

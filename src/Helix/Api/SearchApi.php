@@ -3,8 +3,10 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use SimplyStream\TwitchApiBundle\Helix\Dto\Game;
-use SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponseInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Search\Category;
+use SimplyStream\TwitchApiBundle\Helix\Models\Search\Channel;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 
 class SearchApi extends AbstractApi
 {
@@ -28,7 +30,7 @@ class SearchApi extends AbstractApi
      *                                         contains the cursor’s value.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<Category[]>
      * @throws \JsonException
      */
     public function searchCategories(
@@ -36,7 +38,7 @@ class SearchApi extends AbstractApi
         int $first = 20,
         string $after = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/categories',
             query: [
@@ -44,7 +46,7 @@ class SearchApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: Game::class . '[]',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, Category::class),
             accessToken: $accessToken
         );
     }
@@ -76,7 +78,7 @@ class SearchApi extends AbstractApi
      *                                            contains the cursor’s value.
      * @param AccessTokenInterface|null $accessToken
      *
-     * @return TwitchResponseInterface
+     * @return TwitchPaginatedDataResponse<Channel[]>
      * @throws \JsonException
      */
     public function searchChannels(
@@ -85,7 +87,7 @@ class SearchApi extends AbstractApi
         int $first = 20,
         string $after = null,
         AccessTokenInterface $accessToken = null
-    ): TwitchResponseInterface {
+    ): TwitchPaginatedDataResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/channels',
             query: [
@@ -94,7 +96,7 @@ class SearchApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: 'array',
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, Channel::class),
             accessToken: $accessToken
         );
     }

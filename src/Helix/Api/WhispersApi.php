@@ -3,6 +3,7 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\Whispers\SendWhisperRequest;
 use Symfony\Component\HttpFoundation\Request;
 
 class WhispersApi extends AbstractApi
@@ -27,7 +28,7 @@ class WhispersApi extends AbstractApi
      * @param string               $fromUserId The ID of the user sending the whisper. This user must have a verified phone number. This ID
      *                                         must match the user ID in the user access token.
      * @param string               $toUserId   The ID of the user to receive the whisper.
-     * @param array                $body
+     * @param SendWhisperRequest   $body
      * @param AccessTokenInterface $accessToken
      *
      * @return void
@@ -36,7 +37,7 @@ class WhispersApi extends AbstractApi
     public function sendWhisper(
         string $fromUserId,
         string $toUserId,
-        array $body,
+        SendWhisperRequest $body,
         AccessTokenInterface $accessToken
     ): void {
         $this->sendRequest(
