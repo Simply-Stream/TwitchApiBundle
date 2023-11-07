@@ -4,6 +4,7 @@ namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\UriInterface;
+use SimplyStream\TwitchApiBundle\Helix\Models\AbstractModel;
 use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 
 /**
@@ -17,7 +18,7 @@ interface ApiClientInterface
      * @param UriInterface              $uri
      * @param string|null               $type
      * @param string                    $method
-     * @param array|null                $body
+     * @param AbstractModel|null        $body
      * @param AccessTokenInterface|null $accessToken
      *
      * @return T|null
@@ -26,7 +27,7 @@ interface ApiClientInterface
         UriInterface $uri,
         string $type = null,
         string $method = 'GET',
-        array $body = null,
-        AccessTokenInterface $accessToken = null
+        ?AbstractModel $body = null,
+        ?AccessTokenInterface $accessToken = null
     ): ?TwitchResponseInterface;
 }

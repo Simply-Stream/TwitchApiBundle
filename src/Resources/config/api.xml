@@ -5,9 +5,13 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service class="SimplyStream\TwitchApiBundle\Helix\Api\AdsApi"
-                 id="simplystream.twitch_api.helix_api.ads">
+                 id="simplystream.twitch_api.helix_api.ads"
+                 public="true">
             <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\AdsApi"
+                 alias="simplystream.twitch_api.helix_api.ads"
+                 public="false"/>
 
         <service class="SimplyStream\TwitchApiBundle\Helix\Api\AnalyticsApi"
                  id="simplystream.twitch_api.helix_api.analytics">
@@ -50,9 +54,13 @@
         </service>
 
         <service class="SimplyStream\TwitchApiBundle\Helix\Api\EventSubApi"
-                 id="simplystream.twitch_api.helix_api.event_sub">
+                 id="simplystream.twitch_api.helix_api.event_sub" public="true">
             <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\EventSubApi"
+                 alias="simplystream.twitch_api.helix_api.event_sub"
+                 public="false"/>
+
 
         <service class="SimplyStream\TwitchApiBundle\Helix\Api\ExtensionsApi"
                  id="simplystream.twitch_api.helix_api.extensions">
@@ -120,9 +128,13 @@
         </service>
 
         <service class="SimplyStream\TwitchApiBundle\Helix\Api\UsersApi"
-                 id="simplystream.twitch_api.helix_api.users">
+                 id="simplystream.twitch_api.helix_api.users"
+                 public="true">
             <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\UsersApi"
+                 alias="simplystream.twitch_api.helix_api.users"
+                 public="false"/>
 
         <service class="SimplyStream\TwitchApiBundle\Helix\Api\VideosApi"
                  id="simplystream.twitch_api.helix_api.videos">
@@ -141,7 +153,8 @@
             <argument type="abstract"/>
         </service>
 
-        <service id="SimplyStream\TwitchApiBundle\Helix\Api\TwitchApi">
+        <service class="SimplyStream\TwitchApiBundle\Helix\Api\TwitchApi"
+                 id="simply_stream_twitch_api.helix_api.twitch_api">
             <argument type="service" id="simplystream.twitch_api.helix_api.analytics"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.bits"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.channel_points"/>
@@ -169,6 +182,9 @@
             <argument type="service" id="simplystream.twitch_api.helix_api.videos"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.whispers"/>
         </service>
+        <service id="SimplyStream\TwitchApiBundle\Helix\Api\TwitchApi"
+                 alias="simply_stream_twitch_api.helix_api.twitch_api"
+                 public="false"/>
 
         <service id="simplystream_twitch_api.serializer.twitch_response_handler"
                  class="SimplyStream\TwitchApiBundle\Serializer\TwitchResponseHandler">
@@ -221,9 +237,5 @@
         <service id="SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStorage"/>
 
         <service id="CuyZ\Valinor\MapperBuilder"/>
-
-        <service id="CuyZ\Valinor\Mapper\TreeMapper">
-            <factory service="CuyZ\Valinor\MapperBuilder" method="mapper"/>
-        </service>
     </services>
 </container>

@@ -8,7 +8,6 @@ use SimplyStream\TwitchApiBundle\Helix\Models\Ads\Commercial;
 use SimplyStream\TwitchApiBundle\Helix\Models\Ads\SnoozeNextAd;
 use SimplyStream\TwitchApiBundle\Helix\Models\Ads\StartCommercialRequest;
 use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
-use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class AdsApi extends AbstractApi

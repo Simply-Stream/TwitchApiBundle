@@ -2,9 +2,10 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\Ads;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\AbstractModel;
 use Webmozart\Assert\Assert;
 
-final readonly class StartCommercialRequest
+final readonly class StartCommercialRequest extends AbstractModel
 {
     /**
      * @param string $broadcasterId The ID of the partner or affiliate broadcaster that wants to run the commercial. This ID must match the

@@ -5,7 +5,8 @@ namespace SimplyStream\TwitchApiBundle\Helix\Api;
 use JsonException;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
-use SimplyStream\TwitchApiBundle\Helix\Models\Users\UpdateUserExtensionRequest;
+use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
+use SimplyStream\TwitchApiBundle\Helix\Models\Users\UpdateUserExtension;
 use SimplyStream\TwitchApiBundle\Helix\Models\Users\User;
 use SimplyStream\TwitchApiBundle\Helix\Models\Users\UserActiveExtension;
 use SimplyStream\TwitchApiBundle\Helix\Models\Users\UserBlock;
@@ -48,7 +49,7 @@ class UsersApi extends AbstractApi
         array $logins = [],
         AccessTokenInterface $accessToken = null
     ): TwitchDataResponse {
-        Assert::eq(count($ids) + count($logins), 0, 'You need to specify at least one "id" or "login"');
+        Assert::greaterThan(count($ids) + count($logins), 0, 'You need to specify at least one "id" or "login"');
         Assert::lessThanEq(count($ids) + count($logins), 100, 'You can only request a total amount of 100 users at once');
 
         return $this->sendRequest(
@@ -126,7 +127,7 @@ class UsersApi extends AbstractApi
                 'first' => $first,
                 'after' => $after,
             ],
-            type: sprintf('%s<%s[]>', TwitchDataResponse::class, UserBlock::class),
+            type: sprintf('%s<%s[]>', TwitchPaginatedDataResponse::class, UserBlock::class),
             accessToken: $accessToken
         );
     }
@@ -252,7 +253,7 @@ class UsersApi extends AbstractApi
             query: [
                 'user_id' => $userId,
             ],
-            type: sprintf('%s<%s[]>', TwitchDataResponse::class, UserActiveExtension::class),
+            type: sprintf('%s<%s>', TwitchDataResponse::class, UserActiveExtension::class),
             accessToken: $accessToken
         );
     }
@@ -267,14 +268,14 @@ class UsersApi extends AbstractApi
      * Authentication:
      * Requires a user access token that includes the user:edit:broadcast scope.
      *
-     * @param UpdateUserExtensionRequest $body
-     * @param AccessTokenInterface       $accessToken
+     * @param UpdateUserExtension  $body
+     * @param AccessTokenInterface $accessToken
      *
      * @return TwitchDataResponse<UserActiveExtension>
      * @throws JsonException
      */
     public function updateUserExtensions(
-        UpdateUserExtensionRequest $body,
+        UpdateUserExtension $body,
         AccessTokenInterface $accessToken
     ): TwitchDataResponse {
         return $this->sendRequest(

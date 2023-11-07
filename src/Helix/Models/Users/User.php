@@ -24,14 +24,14 @@ final readonly class User
      *
      *                                            NOTE: This field has been deprecated (see Get Users API endpoint – “view_count”
      *                                            deprecation). Any data in this field is not valid and should not be used.
-     * @param string             $email           The user’s verified email address. The object includes this field only if the user access
+     * @param \DateTimeImmutable $createdAt       The UTC date and time that the user’s account was created. The timestamp is in RFC3339
+     *                                            format.
+     * @param string|null        $email           The user’s verified email address. The object includes this field only if the user access
      *                                            token includes the user:read:email scope.
      *
      *                                            If the request contains more than one user, only the user associated with the access
      *                                            token that provided consent will include an email address — the email address for all
      *                                            other users will be empty.
-     * @param \DateTimeImmutable $createdAt       The UTC date and time that the user’s account was created. The timestamp is in RFC3339
-     *                                            format.
      */
     public function __construct(
         private string $id,
@@ -43,8 +43,8 @@ final readonly class User
         private string $profileImageUrl,
         private string $offlineImageUrl,
         private int $viewCount,
-        private string $email,
-        private \DateTimeImmutable $createdAt
+        private \DateTimeImmutable $createdAt,
+        private ?string $email = null
     ) {
     }
 

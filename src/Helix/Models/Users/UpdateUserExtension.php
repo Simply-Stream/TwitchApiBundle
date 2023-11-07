@@ -2,7 +2,9 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\Users;
 
-final readonly class UpdateUserExtensionRequest
+use SimplyStream\TwitchApiBundle\Helix\Models\AbstractModel;
+
+final readonly class UpdateUserExtension extends AbstractModel
 {
     /**
      * @param array $data The extensions to update. The data field is a dictionary of extension types. The dictionary’s possible keys are:

@@ -6,11 +6,15 @@ use SimplyStream\TwitchApiBundle\Helix\Models\TwitchDataResponse;
 
 /**
  * @template T
+ * @extends TwitchDataResponse<T>
  */
 final readonly class EventSubResponse extends TwitchDataResponse
 {
     /**
-     * @param T $data
+     * @param T   $data
+     * @param int $total
+     * @param int $totalCost
+     * @param int $maxTotalCost
      */
     public function __construct(
         mixed $data,

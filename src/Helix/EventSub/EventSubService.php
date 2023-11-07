@@ -33,7 +33,6 @@ class EventSubService
     public const WEBHOOK_CALLBACK_MESSAGE_TIMESTAMP = 'Twitch-Eventsub-Message-Timestamp';
     public const WEBHOOK_CALLBACK_EVENT_TYPE = 'Twitch-Eventsub-Subscription-Type';
     public const WEBHOOK_CALLBACK_MESSAGE_ID = 'Twitch-Eventsub-Message-Id';
-
     public const WEBHOOK_ENABLED = 'enabled';
     public const WEBHOOK_CALLBACK_VERIFICATION = 'webhook_callback_verification';
     public const WEBHOOK_CALLBACK_VERIFICATION_PENDING = 'webhook_callback_verification_pending';

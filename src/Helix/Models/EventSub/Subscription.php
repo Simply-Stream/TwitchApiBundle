@@ -2,9 +2,8 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub;
 
-/**
- * @template T
- */
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition\ConditionInterface;
+
 final readonly class Subscription
 {
     /**
@@ -16,19 +15,19 @@ final readonly class Subscription
      *                                      specified callback URL (see Responding to a challenge request).
      * @param string             $type      The subscription’s type.
      * @param string             $version   The version number that identifies this definition of the subscription’s data.
-     * @param T|array            $condition The subscription’s parameter values. This is a string-encoded JSON object whose contents are
+     * @param ConditionInterface $condition The subscription’s parameter values. This is a string-encoded JSON object whose contents are
      *                                      determined by the subscription type.
      * @param \DateTimeImmutable $createdAt The date and time (in RFC3339 format) of when the subscription was created.
-     * @param array              $transport The transport details used to send the notifications.
+     * @param Transport          $transport The transport details used to send the notifications.
      */
     public function __construct(
         private string $id,
         private string $status,
         private string $type,
         private string $version,
-        private mixed $condition,
+        private ConditionInterface $condition,
         private \DateTimeImmutable $createdAt,
-        private array $transport,
+        private Transport $transport,
     ) {
     }
 
@@ -48,7 +47,7 @@ final readonly class Subscription
         return $this->version;
     }
 
-    public function getCondition(): mixed {
+    public function getCondition(): ConditionInterface {
         return $this->condition;
     }
 
@@ -56,7 +55,7 @@ final readonly class Subscription
         return $this->createdAt;
     }
 
-    public function getTransport(): array {
+    public function getTransport(): Transport {
         return $this->transport;
     }
 }

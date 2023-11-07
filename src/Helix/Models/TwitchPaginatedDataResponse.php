@@ -4,6 +4,7 @@ namespace SimplyStream\TwitchApiBundle\Helix\Models;
 
 /**
  * @template T
+ * @extends TwitchDataResponse<T>
  */
 readonly class TwitchPaginatedDataResponse extends TwitchDataResponse implements TwitchPaginatedResponseInterface
 {

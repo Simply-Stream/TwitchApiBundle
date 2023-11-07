@@ -2,8 +2,11 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
-use CuyZ\Valinor\Mapper\Source\JsonSource;
-use CuyZ\Valinor\Mapper\TreeMapper;
+use CuyZ\Valinor\Mapper\MappingError;
+use CuyZ\Valinor\Mapper\Object\DynamicConstructor;
+use CuyZ\Valinor\Mapper\Source\Source;
+use CuyZ\Valinor\Mapper\Tree\Message\Messages;
+use CuyZ\Valinor\MapperBuilder;
 use InvalidArgumentException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
@@ -11,11 +14,17 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerTrait;
+use Psr\Log\LogLevel;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStorage;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorageInterface;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidAccessTokenException;
+use SimplyStream\TwitchApiBundle\Helix\Models\AbstractModel;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition\Conditions;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
+use Stringable;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function json_decode;
 
@@ -26,7 +35,7 @@ class ApiClient implements ApiClientInterface
     public function __construct(
         protected HttpClientInterface $client,
         protected TwitchProvider $twitch,
-        protected TreeMapper $mapper,
+        protected MapperBuilder $mapperBuilder,
         protected array $options = [],
         protected TokenStorageInterface $tokenStorage = new InMemoryStorage()
     ) {
@@ -48,8 +57,8 @@ class ApiClient implements ApiClientInterface
         UriInterface $uri,
         string $type = null,
         string $method = 'GET',
-        array $body = null,
-        AccessTokenInterface $accessToken = null,
+        ?AbstractModel $body = null,
+        ?AccessTokenInterface $accessToken = null,
         array $headers = []
     ): ?TwitchResponseInterface {
         if (! $accessToken) {
@@ -57,18 +66,18 @@ class ApiClient implements ApiClientInterface
         }
 
         $response = $this->client->request($method, $uri, [
-            'json' => $body,
+            'json' => $body?->toArray(),
             'headers' => array_merge($headers, [
                 'Authorization' => ucfirst($accessToken->getValues()['token_type']) . ' ' . $accessToken->getToken(),
                 'Content-Type' => 'application/json',
                 'Client-ID' => $this->options['clientId'],
             ]),
         ]);
+        $responseContent = $response->getContent(false);
 
-        // @TODO: Make errors more verbose.
         if ($response->getStatusCode() >= 400) {
-            $error = json_decode($response->getContent(false), false, 512, JSON_THROW_ON_ERROR);
-            $this->error($error->message, ['response' => $response->getContent(false)]);
+            $error = json_decode($responseContent, false, 512, JSON_THROW_ON_ERROR);
+            $this->error($error->message, ['response' => $responseContent]);
             throw new InvalidArgumentException(sprintf('Error from API: "(%s): %s"', $error->error, $error->message));
         }
 
@@ -76,8 +85,38 @@ class ApiClient implements ApiClientInterface
             return null;
         }
 
-        return $this->mapper->map($type, new JsonSource($response->getContent(false))
-        );
+        try {
+            $source = Source::json($responseContent);
+            return $this->mapperBuilder
+                ->registerConstructor(
+                    #[DynamicConstructor]
+                    function (string $className, array $value): Subscription {
+                        // @TODO: Check if it makes sense to create different Subscriptions instead of Conditions
+                        //        Conditions will then be a strict array thats integrity is checked by the mapper (or subscription code)
+                        $type = Conditions::MAP[$value['type']];
+
+                        return new Subscription(
+                            $value['id'],
+                            $value['status'],
+                            $value['type'],
+                            $value['version'],
+                            new $type(...$value['condition']),
+                            new \DateTimeImmutable($value['createdAt']),
+                            new Transport(...$value['transport'])
+                        );
+                    }
+                )
+                ->allowPermissiveTypes()
+                ->allowSuperfluousKeys()
+                ->mapper()->map($type, $source->camelCaseKeys());
+        } catch (MappingError $mappingError) {
+            $messages = Messages::flattenFromNode($mappingError->node())->errors();
+            foreach ($messages as $message) {
+                $this->log($message, LogLevel::ERROR);
+            }
+
+            throw $mappingError;
+        }
     }
 
     /**
@@ -102,6 +141,13 @@ class ApiClient implements ApiClientInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function log($level, Stringable|string $message, array $context = []): void {
+        $this->logger?->log($level, $message, $context);
+    }
+
+    /**
      * @param TokenStorageInterface $tokenStorage
      *
      * @return $this
@@ -110,12 +156,5 @@ class ApiClient implements ApiClientInterface
         $this->tokenStorage = $tokenStorage;
 
         return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function log($level, \Stringable|string $message, array $context = []): void {
-        $this->logger?->log($level, $message, $context);
     }
 }

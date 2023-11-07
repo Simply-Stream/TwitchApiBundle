@@ -36,7 +36,7 @@ final readonly class ModifyChannelInformationRequest
         private ?string $title = null,
         private ?int $delay = null,
         private ?array $tags = null,
-        private ?array $contentClassificationLabels,
+        private ?array $contentClassificationLabels = [],
         private ?bool $isBrandedContent = null
     ) {
         if (null !== $this->broadcasterLanguage) {

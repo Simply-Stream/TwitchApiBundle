@@ -7,7 +7,6 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\CreateEventSubSubscriptio
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\EventSubResponse;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\PaginatedEventSubResponse;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
-use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class EventSubApi extends AbstractApi
@@ -28,7 +27,6 @@ class EventSubApi extends AbstractApi
      * subscription type doesn’t include user authorization, the token may include any scopes or no scopes.
      *
      * @param CreateEventSubSubscriptionRequest $body
-     * @param string                            $type
      * @param AccessTokenInterface|null         $accessToken
      *
      * @return EventSubResponse<Subscription[]>
@@ -36,12 +34,11 @@ class EventSubApi extends AbstractApi
      */
     public function createEventSubSubscription(
         CreateEventSubSubscriptionRequest $body,
-        string $type,
         AccessTokenInterface $accessToken = null
     ): EventSubResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/subscriptions',
-            type: sprintf('%s<%s<%s>[]>', EventSubResponse::class, Subscription::class, $type),
+            type: sprintf('%s<%s[]>', EventSubResponse::class, Subscription::class),
             method: Request::METHOD_POST,
             body: $body,
             accessToken: $accessToken

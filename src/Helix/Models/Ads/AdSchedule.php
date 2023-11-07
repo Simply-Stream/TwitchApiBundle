@@ -30,7 +30,7 @@ final readonly class AdSchedule
         return $this->snoozeCount;
     }
 
-    public function getSnoozeRefreshAt(): string {
+    public function getSnoozeRefreshAt(): \DateTimeImmutable {
         return $this->snoozeRefreshAt;
     }
 

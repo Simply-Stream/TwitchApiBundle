@@ -69,7 +69,7 @@ class SimplyStreamTwitchApiExtension extends Extension
         $apiClient->setArguments([
             new Reference($config['http_client']),
             $container->getDefinition('simplystream_twitch_api.helix_authentication_provider.twitch_provider'),
-            new Reference('CuyZ\Valinor\Mapper\TreeMapper'),
+            new Reference('CuyZ\Valinor\MapperBuilder'),
             $apiClientOptions,
         ]);
     }

@@ -7,11 +7,16 @@ use SimplyStream\TwitchApiBundle\Helix\Models\TwitchPaginatedDataResponse;
 
 /**
  * @template T
+ * @extends TwitchPaginatedDataResponse<T>
  */
 final readonly class PaginatedEventSubResponse extends TwitchPaginatedDataResponse
 {
     /**
      * @param T $data
+     * @param Pagination $pagination
+     * @param int        $total
+     * @param int        $totalCost
+     * @param int        $maxTotalCost
      */
     public function __construct(
         mixed $data,
