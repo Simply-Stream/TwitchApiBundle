@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 /*
  * MIT License
@@ -8,21 +8,20 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub;
 
-use JMS\Serializer\SerializerInterface as JMSSerializerInterfaceAlias;
+use CuyZ\Valinor\Mapper\MappingError;
+use CuyZ\Valinor\Mapper\Source\JsonSource;
+use CuyZ\Valinor\Mapper\TreeMapper;
+use CuyZ\Valinor\MapperBuilder;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\RequestInterface;
 use SimplyStream\TwitchApiBundle\Helix\Api\EventSubApi;
-use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Conditions\Conditions;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\EventResponse;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events\Events;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidSignatureException;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\UnsupportedEventException;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
-use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 /**
  * @package SimplyStream\TwitchApiBundle\Helix\EventSub
@@ -41,21 +40,19 @@ class EventSubService
     public const WEBHOOK_AUTHORIZATION_REVOKED = 'authorization_revoked';
     public const WEBHOOK_USER_REVOKED = 'user_removed';
 
-    protected NormalizerInterface $normalizer;
+    protected TreeMapper $mapper;
 
     /**
-     * @param EventSubApi                 $eventSubApi
-     * @param JMSSerializerInterfaceAlias $jmsSerializer
-     * @param TwitchProvider              $twitch
-     * @param array                       $options
+     * @param EventSubApi   $eventSubApi
+     * @param MapperBuilder $mapperBuilder
+     * @param array         $options
      */
     public function __construct(
         protected EventSubApi $eventSubApi,
-        protected JMSSerializerInterfaceAlias $jmsSerializer,
-        protected TwitchProvider $twitch,
+        MapperBuilder $mapperBuilder,
         protected array $options
     ) {
-        $this->normalizer = new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter());
+        $this->mapper = $mapperBuilder->mapper();
     }
 
     /**
@@ -65,25 +62,68 @@ class EventSubService
      * @param AccessTokenInterface|null $accessToken
      *
      * @return TwitchResponseInterface
-     * @throws \RuntimeException
+     * @throws \JsonException
      */
-    public function subscribe(Subscription $subscription, AccessTokenInterface $accessToken = null): TwitchResponseInterface
-    {
+    public function subscribe(Subscription $subscription, AccessTokenInterface $accessToken = null): TwitchResponseInterface {
         try {
-            if (! $subscription->getTransport()->getSecret()) {
-                $subscription->getTransport()->setSecret($this->options['webhook']['secret']);
-            }
-
-            $response = $this->eventSubApi->createEventSubSubscription(
-                $this->jmsSerializer->toArray($subscription, type: Subscription::class . '<' . $subscription->getCondition()::class . '>'),
-                $subscription->getCondition()::class,
-                $accessToken
-            );
-        } catch (\JsonException $e) {
+            $response = $this->eventSubApi->createEventSubSubscription($subscription, $accessToken);
+        } catch (MappingError $e) {
             throw new \RuntimeException($e->getMessage());
         }
 
         return $response;
+    }
+
+    /**
+     * Unsubscribes from a subscription with $subscriptionId
+     *
+     * @param string $subscriptionId
+     *
+     * @return void
+     * @throws \JsonException
+     */
+    public function unsubscribe(string $subscriptionId): void {
+        $this->eventSubApi->deleteEventSubSubscription($subscriptionId);
+    }
+
+    /**
+     * Returns all current subscriptions from Twitch
+     *
+     * @return TwitchResponseInterface
+     * @throws \JsonException
+     */
+    public function getSubscriptions(): TwitchResponseInterface {
+        return $this->eventSubApi->getEventSubSubscriptions();
+    }
+
+    /**
+     * Handles the callback send by Twitch. Will return raw json if Twitch send a verification request or maps the response to an
+     * EventInterface. Will throw an exception on unsupported events or invalid signature.
+     * Note: Do not forget to respond to Twitch with the raw challenge, that'll be provided in this methods response.
+     *
+     * @param RequestInterface $request
+     * @param string|null      $secret
+     *
+     * @return EventResponse
+     *
+     * @throws InvalidSignatureException
+     * @throws UnsupportedEventException
+     */
+    public function handleSubscriptionCallback(RequestInterface $request, ?string $secret = null): EventResponse {
+        $this->verifySignature($request, $secret);
+        $type = $this->extractType($request);
+
+        /** @var EventResponse $eventResponse */
+        $eventResponse = $this->mapper->map(
+            sprintf('%s<%s, %s>', EventResponse::class, Conditions::CONDITIONS[$type], Events::AVAILABLE_EVENTS[$type]),
+            new JsonSource((string)$request->getBody())
+        );
+
+        if ($eventResponse->getSubscription()->getStatus() === self::WEBHOOK_CALLBACK_VERIFICATION_PENDING && ! $eventResponse->getChallenge()) {
+            throw new \RuntimeException('Challenge is missing');
+        }
+
+        return $eventResponse;
     }
 
     /**
@@ -95,8 +135,7 @@ class EventSubService
      * @return bool
      * @throws InvalidSignatureException
      */
-    public function verifySignature(RequestInterface $request, ?string $secret = null): bool
-    {
+    public function verifySignature(RequestInterface $request, ?string $secret = null): bool {
         $content = (string)$request->getBody();
         $receivedSignature = current($request->getHeader(self::WEBHOOK_CALLBACK_MESSAGE_SIGNATURE_HEADER));
 
@@ -118,30 +157,6 @@ class EventSubService
     }
 
     /**
-     * Unsubscribes from a subscription with $subscriptionId
-     *
-     * @param string $subscriptionId
-     *
-     * @return void
-     * @throws \JsonException
-     */
-    public function unsubscribe(string $subscriptionId): void
-    {
-        $this->eventSubApi->deleteEventSubSubscription($subscriptionId);
-    }
-
-    /**
-     * Returns all current subscriptions from Twitch
-     *
-     * @return TwitchResponseInterface
-     * @throws \JsonException
-     */
-    public function getSubscriptions(): TwitchResponseInterface
-    {
-        return $this->eventSubApi->getEventSubSubscriptions();
-    }
-
-    /**
      * Extract the event type from headers. Throws exception if event is not supported.
      *
      * @param RequestInterface $request
@@ -149,45 +164,12 @@ class EventSubService
      * @return string
      * @throws UnsupportedEventException
      */
-    protected function extractType(RequestInterface $request): string
-    {
+    protected function extractType(RequestInterface $request): string {
         $type = \current($request->getHeader(self::WEBHOOK_CALLBACK_EVENT_TYPE));
         if (! $type || ! \array_key_exists($type, Events::AVAILABLE_EVENTS)) {
             throw new UnsupportedEventException(sprintf('The received event "%s" is not supported', $type));
         }
 
         return $type;
-    }
-
-    /**
-     * Handles the callback send by Twitch. Will return raw json if Twitch send a verification request or maps the response to an
-     * EventInterface. Will throw an exception on unsupported events or invalid signature.
-     * Note: Do not forget to respond to Twitch with the raw challenge, that'll be provided in this methods response.
-     *
-     * @param RequestInterface $request
-     * @param string|null      $secret
-     *
-     * @return EventResponse
-     *
-     * @throws InvalidSignatureException
-     * @throws UnsupportedEventException
-     */
-    public function handleSubscriptionCallback(RequestInterface $request, ?string $secret = null): EventResponse
-    {
-        $this->verifySignature($request, $secret);
-        $type = $this->extractType($request);
-
-        /** @var EventResponse $eventResponse */
-        $eventResponse = $this->jmsSerializer->deserialize(
-            (string)$request->getBody(),
-            sprintf('%s<%s, %s>', EventResponse::class, Conditions::CONDITIONS[$type], Events::AVAILABLE_EVENTS[$type]),
-            'json'
-        );
-
-        if ($eventResponse->getSubscription()->getStatus() === self::WEBHOOK_CALLBACK_VERIFICATION_PENDING && ! $eventResponse->getChallenge()) {
-            throw new \RuntimeException('Challenge is missing');
-        }
-
-        return $eventResponse;
     }
 }

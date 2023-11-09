@@ -2,6 +2,7 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
+use CuyZ\Valinor\Mapper\MappingError;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\CreateEventSubSubscriptionRequest;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\EventSubResponse;
@@ -26,21 +27,28 @@ class EventSubApi extends AbstractApi
      * access token. If the subscription type requires user authorization, the token must include the required scope. However, if the
      * subscription type doesn’t include user authorization, the token may include any scopes or no scopes.
      *
-     * @param CreateEventSubSubscriptionRequest $body
-     * @param AccessTokenInterface|null         $accessToken
+     * @param Subscription              $subscription
+     * @param AccessTokenInterface|null $accessToken
      *
      * @return EventSubResponse<Subscription[]>
+     * @throws MappingError
      * @throws \JsonException
      */
     public function createEventSubSubscription(
-        CreateEventSubSubscriptionRequest $body,
+        Subscription $subscription,
         AccessTokenInterface $accessToken = null
     ): EventSubResponse {
         return $this->sendRequest(
             path: self::BASE_PATH . '/subscriptions',
             type: sprintf('%s<%s[]>', EventSubResponse::class, Subscription::class),
             method: Request::METHOD_POST,
-            body: $body,
+            // I don't really like this way, but better than nothing at the moment
+            body: new CreateEventSubSubscriptionRequest(
+                $subscription->getType(),
+                $subscription->getVersion(),
+                $subscription->getCondition(),
+                $subscription->getTransport()
+            ),
             accessToken: $accessToken
         );
     }

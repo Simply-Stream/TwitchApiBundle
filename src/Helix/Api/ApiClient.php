@@ -20,8 +20,8 @@ use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStor
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\TokenStorageInterface;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidAccessTokenException;
 use SimplyStream\TwitchApiBundle\Helix\Models\AbstractModel;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition\Conditions;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscriptions\Subscriptions;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Stringable;
@@ -91,18 +91,14 @@ class ApiClient implements ApiClientInterface
                 ->registerConstructor(
                     #[DynamicConstructor]
                     function (string $className, array $value): Subscription {
-                        // @TODO: Check if it makes sense to create different Subscriptions instead of Conditions
-                        //        Conditions will then be a strict array thats integrity is checked by the mapper (or subscription code)
-                        $type = Conditions::MAP[$value['type']];
+                        $type = Subscriptions::MAP[$value['type']];
 
-                        return new Subscription(
+                        return new $type(
+                            $value['condition'],
+                            new Transport(...$value['transport']),
                             $value['id'],
                             $value['status'],
-                            $value['type'],
-                            $value['version'],
-                            new $type(...$value['condition']),
                             new \DateTimeImmutable($value['createdAt']),
-                            new Transport(...$value['transport'])
                         );
                     }
                 )
