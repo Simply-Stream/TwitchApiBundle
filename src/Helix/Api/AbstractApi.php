@@ -47,16 +47,30 @@ abstract class AbstractApi
     }
 
     /**
-     * This function will build the query string the way twitch requires it
+     * This function will build the query string the way twitch requires it.
+     * Twitch wants a format like this: ?login=user_login&login=another_user&login=someone_else
+     * Due to the fact, that it's not how the standard works, http_build_query won't work here.
      *
-     * @param array $query
+     * @param array           $query
+     * @param string|int|null $prefix
      *
-     * @return array|string|string[]|null
+     * @return string|null
      */
-    private function buildQueryString(array $query) {
-        // Remove empty values and put everything together
-        $queryString = http_build_query(array_filter($query));
+    private function buildQueryString(array $query, string|int|null $prefix = null) {
+        $queryString = '';
 
-        return preg_replace('/%5B(?:\d|[1-9]\d+)%5D=/', '=', $queryString);
+        foreach ($query as $key => $value) {
+            if ($prefix !== null) {
+                $key = $prefix;
+            }
+
+            if (is_array($value)) {
+                $queryString .= $this->buildQueryString($value, $key);
+            } else {
+                $queryString .= urlencode($key) . '=' . urlencode($value) . '&';
+            }
+        }
+
+        return rtrim($queryString, '&');
     }
 }

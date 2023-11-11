@@ -50,10 +50,10 @@ class StreamsApi extends AbstractApi
      * Authentication:
      * Requires an app access token or user access token.
      *
-     * @param string|null               $userId    A user ID used to filter the list of streams. Returns only the streams of those users
+     * @param array|null                $userId    A user ID used to filter the list of streams. Returns only the streams of those users
      *                                             that are broadcasting. You may specify a maximum of 100 IDs. To specify multiple IDs,
      *                                             include the user_id parameter for each user. For example, &user_id=1234&user_id=5678.
-     * @param string|null               $userLogin A user login name used to filter the list of streams. Returns only the streams of those
+     * @param array|null                $userLogin A user login name used to filter the list of streams. Returns only the streams of those
      *                                             users that are broadcasting. You may specify a maximum of 100 login names. To specify
      *                                             multiple names, include the user_login parameter for each user. For example,
      *                                             &user_login=foo&user_login=bar.
@@ -81,11 +81,12 @@ class StreamsApi extends AbstractApi
      * @param AccessTokenInterface|null $accessToken
      *
      * @return TwitchPaginatedDataResponse<Stream[]>
+     * @throws MappingError
      * @throws \JsonException
      */
     public function getStreams(
-        string $userId = null,
-        string $userLogin = null,
+        array $userId = [],
+        array $userLogin = [],
         string $gameId = null,
         string $type = 'all',
         string $language = null,
