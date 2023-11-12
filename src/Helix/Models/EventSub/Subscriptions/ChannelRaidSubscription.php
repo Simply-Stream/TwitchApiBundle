@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A poll started on a specified channel.
+ * A broadcaster raids another broadcaster’s channel.
  */
 final readonly class ChannelRaidSubscription extends Subscription
 {

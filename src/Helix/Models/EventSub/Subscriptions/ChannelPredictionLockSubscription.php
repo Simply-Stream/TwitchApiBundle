@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A poll started on a specified channel.
+ * A Prediction was locked on a specified channel.
  */
 final readonly class ChannelPredictionLockSubscription extends Subscription
 {

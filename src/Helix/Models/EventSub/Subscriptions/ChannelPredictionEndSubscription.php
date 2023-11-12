@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A poll ended on a specified channel.
+ * A Prediction ended on a specified channel.
  */
 final readonly class ChannelPredictionEndSubscription extends Subscription
 {

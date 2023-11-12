@@ -6,6 +6,9 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition\ShoutoutReceive
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
+/**
+ * Sends a notification when the specified broadcaster receives a Shoutout.
+ */
 final readonly class ShoutoutReceivedSubscription extends Subscription
 {
     public const TYPE = 'channel.shoutout.receive';

@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A poll started on a specified channel.
+ * A notification when a user sends a resubscription chat message in a specific channel.
  */
 final readonly class ChannelSubscriptionMessageSubscription extends Subscription
 {

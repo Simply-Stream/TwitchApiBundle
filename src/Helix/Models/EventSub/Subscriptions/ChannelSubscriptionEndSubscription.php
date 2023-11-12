@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A poll started on a specified channel.
+ * A notification when a subscription to the specified channel ends.
  */
 final readonly class ChannelSubscriptionEndSubscription extends Subscription
 {

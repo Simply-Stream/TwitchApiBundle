@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A poll started on a specified channel.
+ * Get notified when progress (either positive or negative) is made towards a broadcaster’s goal.
  */
 final readonly class GoalsProgressSubscription extends Subscription
 {

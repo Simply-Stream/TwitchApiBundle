@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A poll started on a specified channel.
+ * Sends a notification when the broadcaster deactivates Shield Mode.
  */
 final readonly class ShieldModeEndSubscription extends Subscription
 {

@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * Users respond to a poll on a specified channel.
+ * Users participated in a Prediction on a specified channel.
  */
 final readonly class ChannelPredictionProgressSubscription extends Subscription
 {

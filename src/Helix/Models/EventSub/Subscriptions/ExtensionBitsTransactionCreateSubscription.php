@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A broadcaster updates their channel properties e.g., category, title, content classification labels, broadcast, or language.
+ * A Bits transaction occurred for a specified Twitch Extension.
  */
 final readonly class ExtensionBitsTransactionCreateSubscription extends Subscription
 {

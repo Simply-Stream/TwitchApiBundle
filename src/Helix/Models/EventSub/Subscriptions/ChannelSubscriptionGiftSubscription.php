@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A poll started on a specified channel.
+ * A notification when a viewer gives a gift subscription to one or more users in the specified channel.
  */
 final readonly class ChannelSubscriptionGiftSubscription extends Subscription
 {

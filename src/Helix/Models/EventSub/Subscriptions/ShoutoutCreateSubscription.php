@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A poll started on a specified channel.
+ * Sends a notification when the specified broadcaster sends a Shoutout.
  */
 final readonly class ShoutoutCreateSubscription extends Subscription
 {

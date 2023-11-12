@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A broadcaster updates their channel properties e.g., category, title, content classification labels, broadcast, or language.
+ * An entitlement for a Drop is granted to a user.
  */
 final readonly class DropEntitlementGrantSubscription extends Subscription
 {

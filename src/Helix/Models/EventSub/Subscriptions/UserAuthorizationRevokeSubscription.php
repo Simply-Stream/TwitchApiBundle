@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A poll started on a specified channel.
+ * A user’s authorization has been revoked for your client id.
  */
 final readonly class UserAuthorizationRevokeSubscription extends Subscription
 {

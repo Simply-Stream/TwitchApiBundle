@@ -7,7 +7,7 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
 /**
- * A viewer is banned from the specified channel.
+ * A viewer is unbanned from the specified channel.
  */
 final readonly class ChannelUnbanSubscription extends Subscription
 {
