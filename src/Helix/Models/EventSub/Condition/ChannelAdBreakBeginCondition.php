@@ -2,24 +2,22 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+
 /**
  * (BETA) Channel Ad Break Begin
  * A midroll commercial break has started running.
  */
 final readonly class ChannelAdBreakBeginCondition implements ConditionInterface
 {
-    public const TYPE = 'channel.ad_break.begin	';
+    use SerializesModels;
 
     public function __construct(
-        private string $broadcasterId
+        private string $broadcasterUserId
     ) {
     }
 
-    public static function getType(): string {
-        return self::TYPE;
-    }
-
-    public function getBroadcasterId(): string {
-        return $this->broadcasterId;
+    public function getBroadcasterUserId(): string {
+        return $this->broadcasterUserId;
     }
 }

@@ -2,19 +2,17 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+
 final readonly class DropEntitlementGrantCondition implements ConditionInterface
 {
-    public const TYPE = 'drop.entitlement.grant';
+    use SerializesModels;
 
     public function __construct(
         private string $organizationId,
         private string $categoryId,
         private string $campaignId
     ) {
-    }
-
-    public static function getType(): string {
-        return self::TYPE;
     }
 
     public function getOrganizationId(): string {

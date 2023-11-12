@@ -9,17 +9,15 @@
 namespace SimplyStream\TwitchApiBundle\Helix\EventSub;
 
 use CuyZ\Valinor\Mapper\MappingError;
-use CuyZ\Valinor\Mapper\Source\JsonSource;
+use CuyZ\Valinor\Mapper\Source\Exception\InvalidSource;
 use CuyZ\Valinor\Mapper\TreeMapper;
 use CuyZ\Valinor\MapperBuilder;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\RequestInterface;
 use SimplyStream\TwitchApiBundle\Helix\Api\EventSubApi;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Conditions\Conditions;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\EventResponse;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events\Events;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidSignatureException;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\UnsupportedEventException;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Events\Events;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 
@@ -107,24 +105,27 @@ class EventSubService
      * @return EventResponse
      *
      * @throws InvalidSignatureException
+     * @throws MappingError
      * @throws UnsupportedEventException
+     * @throws InvalidSource
      */
-    public function handleSubscriptionCallback(RequestInterface $request, ?string $secret = null): EventResponse {
-        $this->verifySignature($request, $secret);
-        $type = $this->extractType($request);
-
-        /** @var EventResponse $eventResponse */
-        $eventResponse = $this->mapper->map(
-            sprintf('%s<%s, %s>', EventResponse::class, Conditions::CONDITIONS[$type], Events::AVAILABLE_EVENTS[$type]),
-            new JsonSource((string)$request->getBody())
-        );
-
-        if ($eventResponse->getSubscription()->getStatus() === self::WEBHOOK_CALLBACK_VERIFICATION_PENDING && ! $eventResponse->getChallenge()) {
-            throw new \RuntimeException('Challenge is missing');
-        }
-
-        return $eventResponse;
-    }
+    // @TODO: Fix this
+//    public function handleSubscriptionCallback(RequestInterface $request, ?string $secret = null): EventResponse {
+//        $this->verifySignature($request, $secret);
+//        $type = $this->extractType($request);
+//
+//        /** @var EventResponse $eventResponse */
+//        $eventResponse = $this->mapper->map(
+//            sprintf('%s<%s, %s>', EventResponse::class, Conditions::CONDITIONS[$type], Events::AVAILABLE_EVENTS[$type]),
+//            new JsonSource((string)$request->getBody())
+//        );
+//
+//        if ($eventResponse->getSubscription()->getStatus() === self::WEBHOOK_CALLBACK_VERIFICATION_PENDING && ! $eventResponse->getChallenge()) {
+//            throw new \RuntimeException('Challenge is missing');
+//        }
+//
+//        return $eventResponse;
+//    }
 
     /**
      * Verify signature sent in Twitch request to subscription verification callback

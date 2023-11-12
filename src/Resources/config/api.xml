@@ -61,7 +61,6 @@
                  alias="simplystream.twitch_api.helix_api.event_sub"
                  public="false"/>
 
-
         <service class="SimplyStream\TwitchApiBundle\Helix\Api\ExtensionsApi"
                  id="simplystream.twitch_api.helix_api.extensions">
             <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
@@ -148,8 +147,7 @@
 
         <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService">
             <argument type="service" id="simplystream.twitch_api.helix_api.event_sub"/>
-            <argument type="service" id="jms_serializer"/>
-            <argument type="service" id="simplystream_twitch_api.helix_authentication_provider.twitch_provider"/>
+            <argument type="service" id="CuyZ\Valinor\MapperBuilder"/>
             <argument type="abstract"/>
         </service>
 
@@ -233,7 +231,6 @@
                  format="json"/>
         </service>
 
-        <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\Factories\ConditionFactory"/>
         <service id="SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStorage"/>
 
         <service id="CuyZ\Valinor\MapperBuilder"/>

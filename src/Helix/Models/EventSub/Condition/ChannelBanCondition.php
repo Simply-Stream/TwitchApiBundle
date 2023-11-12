@@ -2,9 +2,11 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+
 final readonly class ChannelBanCondition implements ConditionInterface
 {
-    public const TYPE = 'channel.ban';
+    use SerializesModels;
 
     /**
      * @param string $broadcasterUserId The broadcaster user ID for the channel you want to get ban notifications for.
@@ -12,10 +14,6 @@ final readonly class ChannelBanCondition implements ConditionInterface
     public function __construct(
         private string $broadcasterUserId
     ) {
-    }
-
-    public static function getType(): string {
-        return self::TYPE;
     }
 
     public function getBroadcasterUserId(): string {

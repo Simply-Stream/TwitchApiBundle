@@ -2,17 +2,15 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+
 final readonly class UserAuthorizationGrantCondition implements ConditionInterface
 {
-    public const TYPE = 'user.authorization.grant';
+    use SerializesModels;
 
     public function __construct(
         private string $clientId
     ) {
-    }
-
-    public static function getType(): string {
-        return self::TYPE;
     }
 
     public function getClientId(): string {

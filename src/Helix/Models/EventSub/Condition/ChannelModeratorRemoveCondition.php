@@ -2,17 +2,15 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+
 final readonly class ChannelModeratorRemoveCondition implements ConditionInterface
 {
-    public const TYPE = 'channel.moderator.remove';
+    use SerializesModels;
 
     public function __construct(
         private string $broadcasterUserId
     ) {
-    }
-
-    public static function getType(): string {
-        return self::TYPE;
     }
 
     public function getBroadcasterUserId(): string {

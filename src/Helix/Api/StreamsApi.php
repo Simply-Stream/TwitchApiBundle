@@ -2,6 +2,7 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
+use CuyZ\Valinor\Mapper\MappingError;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use SimplyStream\TwitchApiBundle\Helix\Models\Streams\CreateStreamMarkerRequest;
 use SimplyStream\TwitchApiBundle\Helix\Models\Streams\Stream;

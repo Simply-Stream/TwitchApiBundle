@@ -2,25 +2,23 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+
 final readonly class ChannelPointsCustomRewardRedemptionUpdateCondition implements ConditionInterface
 {
-    public const TYPE = 'channel.channel_points_custom_reward_redemption.update';
+    use SerializesModels;
 
     public function __construct(
         private string $broadcasterUserId,
-        private string $rewardId
+        private ?string $rewardId = null
     ) {
-    }
-
-    public static function getType(): string {
-        return self::TYPE;
     }
 
     public function getBroadcasterUserId(): string {
         return $this->broadcasterUserId;
     }
 
-    public function getRewardId(): string {
+    public function getRewardId(): ?string {
         return $this->rewardId;
     }
 }

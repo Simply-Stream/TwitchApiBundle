@@ -43,7 +43,7 @@ class SimplyStreamTwitchApiExtension extends Extension
         ]);
 
         $eventServiceDefinition = $container->getDefinition(EventSubService::class);
-        $eventServiceDefinition->setArgument(3, [
+        $eventServiceDefinition->setArgument(2, [
             'clientId' => $config['twitch_id'],
             'webhook' => ['secret' => $config['webhook']['secret']],
         ]);

@@ -42,7 +42,7 @@ abstract class AbstractApi
         $uri = new Uri(ApiClientInterface::BASE_API_URL . $path);
 
         return $this->apiClient->sendRequest(
-            $uri->withQuery($this->buildQueryString($query)), $type, $method, $body, $accessToken, $headers
+            $uri->withQuery($this->buildQueryString(array_filter($query))), $type, $method, $body, $accessToken, $headers
         );
     }
 

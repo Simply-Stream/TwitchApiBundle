@@ -18,14 +18,12 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Conditions\ChannelFollowCondition;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\EventResponse;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Events\StreamOnlineEvent;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidAccessTokenException;
 use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidSignatureException;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Transport;
+use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Events\StreamOnlineEvent;
 use Symfony\Component\Serializer\Serializer;
 
 /**

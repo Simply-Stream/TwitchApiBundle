@@ -6,12 +6,9 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition\ShoutoutReceive
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 
-/**
- * A poll started on a specified channel.
- */
 final readonly class ShoutoutReceivedSubscription extends Subscription
 {
-    public const TYPE = 'channel.shoutout.received';
+    public const TYPE = 'channel.shoutout.receive';
 
     public function __construct(
         array $condition,

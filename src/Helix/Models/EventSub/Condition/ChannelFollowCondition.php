@@ -2,18 +2,16 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+
 final readonly class ChannelFollowCondition implements ConditionInterface
 {
-    public const TYPE = 'channel.follow';
+    use SerializesModels;
 
     public function __construct(
         private string $broadcasterUserId,
         private string $moderatorUserId
     ) {
-    }
-
-    public static function getType(): string {
-        return self::TYPE;
     }
 
     public function getBroadcasterUserId(): string {

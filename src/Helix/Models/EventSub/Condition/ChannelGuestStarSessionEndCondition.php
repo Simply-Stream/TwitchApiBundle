@@ -2,18 +2,16 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+
 final readonly class ChannelGuestStarSessionEndCondition implements ConditionInterface
 {
-    public const TYPE = 'channel.guest_star_session.end';
+    use SerializesModels;
 
     public function __construct(
         private string $broadcasterUserId,
         private string $moderatorUserId
     ) {
-    }
-
-    public static function getType(): string {
-        return self::TYPE;
     }
 
     public function getBroadcasterUserId(): string {

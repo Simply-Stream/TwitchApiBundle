@@ -2,18 +2,16 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+
 class ChannelChatClearUserMessagesCondition implements ConditionInterface
 {
-    public const TYPE = 'channel.chat.clear_user_messages';
+    use SerializesModels;
 
     public function __construct(
         private string $broadcasterUserId,
         private string $userId
     ) {
-    }
-
-    public static function getType(): string {
-        return self::TYPE;
     }
 
     public function getBroadcasterUserId(): string {

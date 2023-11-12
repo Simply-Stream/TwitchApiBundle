@@ -2,18 +2,16 @@
 
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
 
+use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+
 final readonly class ChannelRaidCondition implements ConditionInterface
 {
-    public const TYPE = 'channel.raid';
+    use SerializesModels;
 
     public function __construct(
-        private string $fromBroadcasterUserId,
-        private string $toBroadcasterUserId
+        private ?string $fromBroadcasterUserId = null,
+        private ?string $toBroadcasterUserId = null
     ) {
-    }
-
-    public static function getType(): string {
-        return self::TYPE;
     }
 
     public function getFromBroadcasterUserId(): string {
