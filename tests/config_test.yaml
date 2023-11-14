@@ -4,13 +4,11 @@ imports:
 framework:
   test: true
   secret: 'Simply Stream Twitch API Tests'
-  http_client:
 
 simplystream_twitch_api:
-#  http_client: 'http_client'
   http_client: 'Symfony\Component\HttpClient\MockHttpClient'
-  twitch_id: '%env(TWITCH_ID)%'
-  twitch_secret: '%env(TWITCH_SECRET)%'
+  twitch_id: '123456'
+  twitch_secret: '123456'
   redirect_uri: 'https://localhost/check/twitch'
   webhook:
     secret: '123456'
