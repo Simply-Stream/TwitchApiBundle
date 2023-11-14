@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 /*
  * MIT License
@@ -13,15 +13,13 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder(): TreeBuilder
-    {
+    public function getConfigTreeBuilder(): TreeBuilder {
         $treeBuilder = new TreeBuilder('simplystream_twitch_api');
         $rootNode = $treeBuilder->getRootNode();
         //@formatter:off
         $rootNode
             ->children()
                 ->scalarNode('http_client')
-                    ->isRequired()
                     ->info('Service id of HTTP client to use (must implement \Symfony\Contracts\HttpClient\HttpClientInterface)')
                 ->end()
                 ->arrayNode('token')
@@ -35,15 +33,15 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->scalarNode('twitch_id')->isRequired()->end()
-                ->scalarNode('twitch_secret')->isRequired()->end()
-                ->scalarNode('redirect_uri')->isRequired()->end()
+                ->scalarNode('twitch_id')->end()
+                ->scalarNode('twitch_secret')->end()
+                ->scalarNode('redirect_uri')->end()
                 ->arrayNode('scopes')
                     ->scalarPrototype()->end()
                 ->end()
                 ->arrayNode('webhook')
                     ->children()
-                        ->scalarNode('secret')->isRequired()->end()
+                        ->scalarNode('secret')->end()
                     ->end()
                 ->end()
             ->end()

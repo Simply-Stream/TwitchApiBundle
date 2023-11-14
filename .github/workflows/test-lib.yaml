@@ -1,27 +1,46 @@
 name: 'Test compatibility with symfony framework'
 
 on:
-  pull_request_target:
+  pull_request:
 
 jobs:
   create-project:
     name: Tests if project is usable
-    run-on: Ubuntu-22.04
+    runs-on: Ubuntu-20.04
 
     steps:
       - name: Setup PHP 8.2
-        if: "always() && steps.config.outcome == 'success'"
         uses: shivammathur/setup-php@v2
         with:
           coverage: "none"
           php-version: "8.2"
 
       - name: Create-project with skeleton ^6
-        if: "always() && steps.config.outcome == 'success'"
         run: |
           set -x
           php -v
           composer create-project --ansi "symfony/skeleton:^6" v6
           cd v6
-          composer config extra.symfony.allow-contrib ${{ inputs.contrib && 'true' || 'false' }}
-          composer require -W --ansi simply-stream/twitch-api-bundle:dev-${{ GITHUB_HEAD_REF }}
+          composer config extra.symfony.allow-contrib true
+          composer require -W --ansi simply-stream/twitch-api-bundle:dev-${{ github.head_ref }}
+
+  run-qa-suite:
+    name: Run PHPunit
+    runs-on: Ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: "none"
+          php-version: "8.2"
+
+      - uses: php-actions/composer@v6
+        with:
+          php_version: "8.2"
+
+      - name: Execute phpunit binary
+        run: vendor/bin/phpunit --configuration phpunit.dist.xml tests
