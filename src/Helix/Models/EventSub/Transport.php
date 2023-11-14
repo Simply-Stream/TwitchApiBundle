@@ -3,6 +3,7 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Models\EventSub;
 
 use SimplyStream\TwitchApiBundle\Helix\Models\SerializesModels;
+use Webmozart\Assert\Assert;
 
 final readonly class Transport
 {
@@ -34,6 +35,7 @@ final readonly class Transport
         private ?string $secret = null,
         private ?string $sessionId = null
     ) {
+        Assert::inArray($this->method, ['webhook', 'websocket']);
     }
 
     public function getMethod(): string {
