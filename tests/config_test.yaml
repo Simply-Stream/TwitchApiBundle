@@ -1,12 +1,8 @@
-imports:
-  - { resource: '@SimplyStreamTwitchApiBundle/Resources/config/api.xml' }
-
 framework:
   test: true
   secret: 'Simply Stream Twitch API Tests'
 
 simplystream_twitch_api:
-  http_client: 'Symfony\Component\HttpClient\MockHttpClient'
   twitch_id: '123456'
   twitch_secret: '123456'
   redirect_uri: 'https://localhost/check/twitch'

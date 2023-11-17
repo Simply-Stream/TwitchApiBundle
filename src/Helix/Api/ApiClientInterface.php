@@ -3,7 +3,6 @@
 namespace SimplyStream\TwitchApiBundle\Helix\Api;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use Psr\Http\Message\UriInterface;
 use SimplyStream\TwitchApiBundle\Helix\Models\AbstractModel;
 use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 
@@ -12,10 +11,12 @@ use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
  */
 interface ApiClientInterface
 {
+    // @TODO: Make this configurable to allow mock server for functional testing when applicable
     public const BASE_API_URL = 'https://api.twitch.tv/helix/';
 
     /**
-     * @param UriInterface              $uri
+     * @param string                    $path
+     * @param array                     $query
      * @param string|null               $type
      * @param string                    $method
      * @param AbstractModel|null        $body
@@ -24,7 +25,8 @@ interface ApiClientInterface
      * @return T|null
      */
     public function sendRequest(
-        UriInterface $uri,
+        string $path,
+        array $query,
         string $type = null,
         string $method = 'GET',
         ?AbstractModel $body = null,

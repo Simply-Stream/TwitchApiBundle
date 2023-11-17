@@ -43,4 +43,7 @@ jobs:
           php_version: "8.2"
 
       - name: Execute phpunit binary
+        env:
+          TWITCH_ID: '123456'
+          TWITCH_SECRET: '654321'
         run: vendor/bin/phpunit --configuration phpunit.dist.xml tests

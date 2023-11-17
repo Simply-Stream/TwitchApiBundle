@@ -19,9 +19,6 @@ class Configuration implements ConfigurationInterface
         //@formatter:off
         $rootNode
             ->children()
-                ->scalarNode('http_client')
-                    ->info('Service id of HTTP client to use (must implement \Symfony\Contracts\HttpClient\HttpClientInterface)')
-                ->end()
                 ->arrayNode('token')
                     ->children()
                         ->arrayNode('client_credentials')

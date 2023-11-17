@@ -11,7 +11,9 @@ use InvalidArgumentException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use Psr\Http\Message\UriInterface;
+use Nyholm\Psr7\Uri;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerTrait;
 use Psr\Log\LogLevel;
@@ -25,18 +27,26 @@ use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscriptions\Subscriptio
 use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
 use SimplyStream\TwitchApiBundle\Helix\Models\TwitchResponseInterface;
 use Stringable;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use function json_decode;
 
 class ApiClient implements ApiClientInterface
 {
     use LoggerTrait, LoggerAwareTrait;
 
+    /**
+     * @param ClientInterface         $client
+     * @param RequestFactoryInterface $requestFactory
+     * @param TwitchProvider          $twitch
+     * @param MapperBuilder           $mapperBuilder
+     * @param array|null              $options
+     * @param TokenStorageInterface   $tokenStorage
+     */
     public function __construct(
-        protected HttpClientInterface $client,
+        protected ClientInterface $client,
+        protected RequestFactoryInterface $requestFactory,
         protected TwitchProvider $twitch,
         protected MapperBuilder $mapperBuilder,
-        protected array $options = [],
+        protected ?array $options = null,
         protected TokenStorageInterface $tokenStorage = new InMemoryStorage()
     ) {
         if (! empty($this->options['token'])) {
@@ -54,7 +64,8 @@ class ApiClient implements ApiClientInterface
      * {@inheritDoc}
      */
     public function sendRequest(
-        UriInterface $uri,
+        string $path,
+        array $query,
         string $type = null,
         string $method = 'GET',
         ?AbstractModel $body = null,
@@ -65,15 +76,28 @@ class ApiClient implements ApiClientInterface
             $accessToken = $this->getAccessToken('client_credentials');
         }
 
-        $response = $this->client->request($method, $uri, [
-            'json' => $body?->toArray(),
-            'headers' => array_merge($headers, [
-                'Authorization' => ucfirst($accessToken->getValues()['token_type']) . ' ' . $accessToken->getToken(),
-                'Content-Type' => 'application/json',
-                'Client-ID' => $this->options['clientId'],
-            ]),
-        ]);
-        $responseContent = $response->getContent(false);
+        $uri = new Uri(self::BASE_API_URL . $path);
+        $uri->withQuery($this->buildQueryString(array_filter($query)));
+        $request = $this->requestFactory->createRequest($method, $uri);
+
+
+        if ($body) {
+            $request->withBody($this->requestFactory->createStream(\json_encode($body, JSON_THROW_ON_ERROR)));
+        }
+
+        $request = $request
+            ->withHeader('Authorization', ucfirst($accessToken->getValues()['token_type']) . ' ' . $accessToken->getToken())
+            ->withHeader('Content-Type', 'application/json')
+            ->withHeader('Client-ID', $this->options['clientId']);
+
+        if ($headers) {
+            foreach ($headers as $header => $value) {
+                $request = $request->withHeader($header, $value);
+            }
+        }
+
+        $response = $this->client->sendRequest($request);
+        $responseContent = $response->getBody()->getContents();
 
         if ($response->getStatusCode() >= 400) {
             $error = json_decode($responseContent, false, 512, JSON_THROW_ON_ERROR);
@@ -134,6 +158,34 @@ class ApiClient implements ApiClientInterface
         }
 
         return $accessToken;
+    }
+
+    /**
+     * This function will build the query string the way twitch requires it.
+     * Twitch wants a format like this: ?login=user_login&login=another_user&login=someone_else
+     * Due to the fact, that it's not how the standard works, http_build_query won't work here.
+     *
+     * @param array           $query
+     * @param string|int|null $prefix
+     *
+     * @return string|null
+     */
+    private function buildQueryString(array $query, string|int|null $prefix = null) {
+        $queryString = '';
+
+        foreach ($query as $key => $value) {
+            if ($prefix !== null) {
+                $key = $prefix;
+            }
+
+            if (is_array($value)) {
+                $queryString .= $this->buildQueryString($value, $key);
+            } else {
+                $queryString .= urlencode($key) . '=' . urlencode($value) . '&';
+            }
+        }
+
+        return rtrim($queryString, '&');
     }
 
     /**

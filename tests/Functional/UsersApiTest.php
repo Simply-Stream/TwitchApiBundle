@@ -46,7 +46,7 @@ JSON
             ]);
 
         $usersApi = $container->get('simplystream.twitch_api.helix_api.users');
-        $usersResponse = $usersApi->getUsers(logins: ['some_username']);
+        $usersResponse = $usersApi->getUsers(logins: ['some_username'], accessToken: new AccessToken(['access_token' => '123', 'token_type' => 'Bearer']));
 
         $this->assertInstanceOf(TwitchDataResponse::class, $usersResponse);
         $this->assertIsArray($usersResponse->getData());
