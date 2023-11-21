@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 /*
  * MIT License
@@ -18,8 +19,8 @@ class SimplyStreamTwitchApiExtension extends Extension
     /**
      * {@inheritDoc}
      */
-    public function load(array $configs, ContainerBuilder $container) {
-        // @TODO: Replace by php styled service definition
+    public function load(array $configs, ContainerBuilder $container)
+    {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('oauth.xml');
         $loader->load('api.xml');
@@ -27,32 +28,35 @@ class SimplyStreamTwitchApiExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // @TODO: Check if this class is still needed, now that KnpU has a helix provider
-        $twitchProviderDefinition = $container->getDefinition('simplystream.twitch_api.helix_authentication_provider.twitch_provider');
+        // This is deprecated and will be replaced by https://github.com/vertisan/oauth2-twitch-helix
+        $twitchProviderDefinition = $container->getDefinition(
+            'simplystream.twitch_api.helix_authentication_provider.twitch_provider'
+        );
         $twitchProviderDefinition->setArgument(0, [
             'clientId' => $config['twitch_id'],
-            'clientSecret' => $config['twitch_secret'],
+            'clientSecret' => $config['twitch_secret'] ?? null,
             'urlAuthorize' => 'https://id.twitch.tv/oauth2/authorize',
             'urlAccessToken' => 'https://id.twitch.tv/oauth2/token',
             'urlResourceOwnerDetails' => 'https://id.twitch.tv/oauth2/userinfo',
-            'redirectUri' => $config['redirect_uri'],
-            'scopes' => $config['scopes'],
+            'redirectUri' => $config['redirect_uri'] ?? [],
+            'scopes' => $config['scopes'] ?? [],
         ]);
 
         $eventServiceDefinition = $container->getDefinition('simplystream.twitch_api.helix.event_sub_service');
         $eventServiceDefinition->setArgument(2, [
             'clientId' => $config['twitch_id'],
-            'webhook' => ['secret' => $config['webhook']['secret']],
+            'webhook' => ['secret' => $config['webhook']['secret'] ?? null],
         ]);
 
         $apiServiceDefinition = $container->getDefinition('simplystream.twitch_api.helix_api.api_client');
-        $apiServiceDefinition->setArgument(4, [
+        $apiServiceDefinition->setArgument(5, [
             'clientId' => $config['twitch_id'],
-            'webhook' => ['secret' => $config['webhook']['secret']],
+            'webhook' => ['secret' => $config['webhook']['secret'] ?? null],
         ]);
         $container->setDefinition('simplystream.twitch_api.helix_api.api_client', $apiServiceDefinition);
 
         $apiClientDefinition = $container->getDefinition('simplystream.twitch_api.helix_api.api_client');
+
         $apiClientOptions = [
             'clientId' => $config['twitch_id'],
         ];
@@ -75,7 +79,8 @@ class SimplyStreamTwitchApiExtension extends Extension
     /**
      * {@inheritDoc}
      */
-    public function getAlias(): string {
+    public function getAlias(): string
+    {
         return 'simplystream_twitch_api';
     }
 }

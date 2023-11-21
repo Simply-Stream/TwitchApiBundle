@@ -4,7 +4,7 @@ namespace SimplyStream\TwitchApiBundle\Tests\Helix\Authentication;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use PHPUnit\Framework\TestCase;
-use SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStorage;
+use SimplyStream\TwitchApi\Helix\Authentication\Token\Storage\InMemoryStorage;
 
 class InMemoryStorageTest extends TestCase
 {

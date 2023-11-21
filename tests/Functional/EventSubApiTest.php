@@ -3,11 +3,11 @@
 namespace SimplyStream\TwitchApiBundle\Tests\Functional;
 
 use League\OAuth2\Client\Token\AccessToken;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\EventSubResponse;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscription;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscriptions;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
+use SimplyStream\TwitchApi\Helix\Models\EventSub\Condition;
+use SimplyStream\TwitchApi\Helix\Models\EventSub\EventSubResponse;
+use SimplyStream\TwitchApi\Helix\Models\EventSub\Subscription;
+use SimplyStream\TwitchApi\Helix\Models\EventSub\Subscriptions;
+use SimplyStream\TwitchApi\Helix\Models\EventSub\Transport;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;

@@ -30,7 +30,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->scalarNode('twitch_id')->end()
+                ->scalarNode('twitch_id')->isRequired()->end()
                 ->scalarNode('twitch_secret')->end()
                 ->scalarNode('redirect_uri')->end()
                 ->arrayNode('scopes')

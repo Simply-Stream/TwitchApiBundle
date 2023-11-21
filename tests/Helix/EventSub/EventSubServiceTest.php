@@ -14,22 +14,22 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
 use Nyholm\Psr7\Stream;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
-use SimplyStream\TwitchApiBundle\Helix\Api\EventSubApi;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\ChallengeMissingException;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\InvalidSignatureException;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\MissingHeaderException;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\Exceptions\UnsupportedEventException;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Condition\StreamOnlineCondition;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\EventResponse;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\EventSubResponse;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Subscriptions\StreamOnlineSubscription;
-use SimplyStream\TwitchApiBundle\Helix\Models\EventSub\Transport;
+use SimplyStream\TwitchApi\Helix\Api\EventSubApi;
+use SimplyStream\TwitchApi\Helix\EventSub\EventSubService;
+use SimplyStream\TwitchApi\Helix\EventSub\Exceptions\ChallengeMissingException;
+use SimplyStream\TwitchApi\Helix\EventSub\Exceptions\InvalidSignatureException;
+use SimplyStream\TwitchApi\Helix\EventSub\Exceptions\MissingHeaderException;
+use SimplyStream\TwitchApi\Helix\EventSub\Exceptions\UnsupportedEventException;
+use SimplyStream\TwitchApi\Helix\Models\EventSub\Condition\StreamOnlineCondition;
+use SimplyStream\TwitchApi\Helix\Models\EventSub\EventResponse;
+use SimplyStream\TwitchApi\Helix\Models\EventSub\EventSubResponse;
+use SimplyStream\TwitchApi\Helix\Models\EventSub\Subscriptions\StreamOnlineSubscription;
+use SimplyStream\TwitchApi\Helix\Models\EventSub\Transport;
 
 /**
  * @package SimplyStream\TwitchApiBundle\Tests\Helix\EventSub
  *
- * @covers  \SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService
+ * @covers  \SimplyStream\TwitchApi\Helix\EventSub\EventSubService
  */
 class EventSubServiceTest extends TestCase
 {

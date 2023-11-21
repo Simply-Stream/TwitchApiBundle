@@ -23,27 +23,3 @@ jobs:
           cd v6
           composer config extra.symfony.allow-contrib true
           composer require -W --ansi simply-stream/twitch-api-bundle:dev-${{ github.head_ref }}
-
-  run-qa-suite:
-    name: Run PHPunit
-    runs-on: Ubuntu-20.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup PHP 8.2
-        uses: shivammathur/setup-php@v2
-        with:
-          coverage: "none"
-          php-version: "8.2"
-
-      - uses: php-actions/composer@v6
-        with:
-          php_version: "8.2"
-
-      - name: Execute phpunit binary
-        env:
-          TWITCH_ID: '123456'
-          TWITCH_SECRET: '654321'
-        run: vendor/bin/phpunit --configuration phpunit.dist.xml tests

@@ -4,7 +4,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service class="SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider"
+        <service class="SimplyStream\TwitchApi\Helix\Authentication\Provider\TwitchProvider"
                  id="simplystream.twitch_api.helix_authentication_provider.twitch_provider" public="true">
             <argument/>
             <!-- will be filled in with options dynamically -->

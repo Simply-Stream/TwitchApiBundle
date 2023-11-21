@@ -11,14 +11,10 @@ class AppTestKernel extends Kernel
 {
 
     public function registerBundles(): iterable {
-        $bundles = [];
-
-        if ($this->getEnvironment() === 'test') {
-            $bundles[] = new FrameworkBundle();
-            $bundles[] = new SimplyStreamTwitchApiBundle();
-        }
-
-        return $bundles;
+        return [
+            new FrameworkBundle(),
+            new SimplyStreamTwitchApiBundle(),
+        ];
     }
 
     /**

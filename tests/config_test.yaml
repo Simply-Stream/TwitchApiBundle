@@ -8,7 +8,3 @@ simplystream_twitch_api:
   redirect_uri: 'https://localhost/check/twitch'
   webhook:
     secret: '123456'
-
-services:
-  Symfony\Component\HttpClient\MockHttpClient:
-    public: true
