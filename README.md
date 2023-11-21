@@ -1,5 +1,7 @@
 # Twitch API Bundle
 
+This library is a bridge between [SimplyStream/TwitchApi](https://github.com/Simply-Stream/TwitchApi) and [Symfony](https://symfony.com) and will initialize every API needed into a Symfony service.
+
 Installation
 ============
 
@@ -42,10 +44,8 @@ return [
 ];
 ```
 
-Configuration
+Full configuration
 =============
-
-Following configuration is required:
 
 ```yaml
     simplystream_twitch_api:
@@ -55,12 +55,11 @@ Following configuration is required:
                 token: '123'
                 expires_in: 1000
                 token_type: 'Bearer'
-        # Any \Symfony\Contracts\HttpClient\HttpClientInterface implementation
-        http_client: 'http_client'
-        # Currently the jms_serializer, but the intention is to support more
-        serializer: 'jms_serializer'
         # See https://dev.twitch.tv/docs/authentication#registration on how to get client id and secret
         twitch_id: '%env(TWITCH_ID)%'
+        
+        # OAuth specific config
+        
         twitch_secret: '%env(TWITCH_SECRET)%'
         # The url your user will be redirected to in authentication process
         redirect_uri: '%env(TWITCH_REDIRECT_URI)%'
