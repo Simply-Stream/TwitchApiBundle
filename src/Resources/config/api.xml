@@ -291,8 +291,6 @@
                  class="SimplyStream\TwitchApi\Helix\Api\ApiClient" public="true">
             <argument key="$client" type="service" id="simplystream.twitch_api.http_client"/>
             <argument key="$requestFactory" type="service" id="simplystream.twitch_api.psr17.factory"/>
-            <argument key="$twitch" type="service"
-                      id="simplystream.twitch_api.helix_authentication_provider.twitch_provider"/>
             <argument key="$mapperBuilder" type="service" id="simplystream.twitch_api.mapper_builder"/>
             <argument key="$uriFactory" type="service" id="simplystream.twitch_api.http_client"/>
             <argument key="$options" type="abstract"/>
@@ -300,9 +298,6 @@
         <service id="SimplyStream\TwitchApi\Helix\Api\ApiClient"
                  alias="simplystream.twitch_api.helix_api.api_client"
                  public="false"/>
-
-        <service id="simplystream.twitch_api.helix_authentication.token_storage.in_memory"
-                 class="SimplyStream\TwitchApi\Helix\Authentication\Token\Storage\InMemoryStorage"/>
 
         <service id="simplystream.twitch_api.mapper_builder" class="CuyZ\Valinor\MapperBuilder"/>
     </services>
