@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 /*
  * MIT License
@@ -13,38 +13,32 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder(): TreeBuilder
-    {
+    public function getConfigTreeBuilder(): TreeBuilder {
         $treeBuilder = new TreeBuilder('simplystream_twitch_api');
         $rootNode = $treeBuilder->getRootNode();
         //@formatter:off
         $rootNode
             ->children()
-                ->scalarNode('http_client')
-                    ->isRequired()
-                    ->info('Service id of HTTP client to use (must implement \Psr\Http\Client\ClientInterface)')
-                ->end()
-                ->scalarNode('serializer')
-                    ->isRequired()
-                    ->info('Service id of HTTP client to use (must implement \JMS\Serializer\SerializerInterface)')
-                ->end()
-                ->scalarNode('request_factory')
-                    ->isRequired()
-                    ->info('Service id of Request factory to use (must implement \Psr\Http\Message\RequestFactoryInterface)')
-                ->end()
-                ->scalarNode('stream_factory')
-                    ->isRequired()
-                    ->info('Service id of Request factory to use (must implement \Psr\Http\Message\StreamFactoryInterface)')
+                ->arrayNode('token')
+                    ->children()
+                        ->arrayNode('client_credentials')
+                            ->children()
+                                ->scalarNode('token')->end()
+                                ->scalarNode('expires_in')->end()
+                                ->scalarNode('token_type')->end()
+                            ->end()
+                        ->end()
+                    ->end()
                 ->end()
                 ->scalarNode('twitch_id')->isRequired()->end()
-                ->scalarNode('twitch_secret')->isRequired()->end()
-                ->scalarNode('redirect_uri')->isRequired()->end()
+                ->scalarNode('twitch_secret')->end()
+                ->scalarNode('redirect_uri')->end()
                 ->arrayNode('scopes')
                     ->scalarPrototype()->end()
                 ->end()
                 ->arrayNode('webhook')
                     ->children()
-                        ->scalarNode('secret')->isRequired()->end()
+                        ->scalarNode('secret')->end()
                     ->end()
                 ->end()
             ->end()

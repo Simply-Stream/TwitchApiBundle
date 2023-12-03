@@ -1,0 +1,10 @@
+framework:
+  test: true
+  secret: 'Simply Stream Twitch API Tests'
+
+simplystream_twitch_api:
+  twitch_id: '123456'
+  twitch_secret: '123456'
+  redirect_uri: 'https://localhost/check/twitch'
+  webhook:
+    secret: '123456'

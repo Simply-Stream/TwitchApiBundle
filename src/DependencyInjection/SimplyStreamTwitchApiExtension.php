@@ -1,4 +1,5 @@
-<?php declare(strict_types = 1);
+<?php
+declare(strict_types=1);
 
 /*
  * MIT License
@@ -8,13 +9,10 @@
 
 namespace SimplyStream\TwitchApiBundle\DependencyInjection;
 
-use SimplyStream\TwitchApiBundle\Helix\Api\ApiClient;
-use SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 
 class SimplyStreamTwitchApiExtension extends Extension
 {
@@ -30,35 +28,51 @@ class SimplyStreamTwitchApiExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // @TODO: Check if this class is still needed, now that KnpU has a helix provider
-        $twitchProviderDefinition = $container->getDefinition('simplystream_twitch_api.helix_authentication_provider.twitch_provider');
+        // This is deprecated and will be replaced by https://github.com/vertisan/oauth2-twitch-helix
+        $twitchProviderDefinition = $container->getDefinition(
+            'simplystream.twitch_api.helix_authentication_provider.twitch_provider'
+        );
         $twitchProviderDefinition->setArgument(0, [
             'clientId' => $config['twitch_id'],
-            'clientSecret' => $config['twitch_secret'],
+            'clientSecret' => $config['twitch_secret'] ?? null,
             'urlAuthorize' => 'https://id.twitch.tv/oauth2/authorize',
             'urlAccessToken' => 'https://id.twitch.tv/oauth2/token',
             'urlResourceOwnerDetails' => 'https://id.twitch.tv/oauth2/userinfo',
-            'redirectUri' => $config['redirect_uri'],
-            'scopes' => $config['scopes'],
+            'redirectUri' => $config['redirect_uri'] ?? [],
+            'scopes' => $config['scopes'] ?? [],
         ]);
 
-        $eventServiceDefinition = $container->getDefinition(EventSubService::class);
-        $eventServiceDefinition->setArgument(3, [
+        $eventServiceDefinition = $container->getDefinition('simplystream.twitch_api.helix.event_sub_service');
+        $eventServiceDefinition->setArgument(2, [
             'clientId' => $config['twitch_id'],
-            'webhook' => ['secret' => $config['webhook']['secret']],
+            'webhook' => ['secret' => $config['webhook']['secret'] ?? null],
         ]);
 
-        $apiClient = $container->register(
-            'simplystream_twitch_api.helix_api.api_client',
-            ApiClient::class
-        );
-        $apiClient->setArguments([
-            new Reference($config['http_client']),
-            new Reference($config['request_factory']),
-            $container->getDefinition('simplystream_twitch_api.helix_authentication_provider.twitch_provider'),
-            new Reference($config['serializer']),
-            new Reference($config['stream_factory']),
-            ['clientId' => $config['twitch_id']],
+        $apiServiceDefinition = $container->getDefinition('simplystream.twitch_api.helix_api.api_client');
+        $apiServiceDefinition->setArgument(5, [
+            'clientId' => $config['twitch_id'],
+            'webhook' => ['secret' => $config['webhook']['secret'] ?? null],
+        ]);
+        $container->setDefinition('simplystream.twitch_api.helix_api.api_client', $apiServiceDefinition);
+
+        $apiClientDefinition = $container->getDefinition('simplystream.twitch_api.helix_api.api_client');
+
+        $apiClientOptions = [
+            'clientId' => $config['twitch_id'],
+        ];
+
+        if (isset($config['token']['client_credentials'])) {
+            $apiClientOptions['token'] = [
+                'client_credentials' => [
+                    'token' => $config['token']['client_credentials']['token'],
+                    'expires_in' => $config['token']['client_credentials']['expires_in'],
+                    'token_type' => $config['token']['client_credentials']['token_type'],
+                ],
+            ];
+        }
+
+        $apiClientDefinition->setArgument('$options', [
+            'clientId' => $config['twitch_id']
         ]);
     }
 

@@ -4,154 +4,254 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\AdsApi"
-                 id="simplystream.twitch_api.helix_api.ads">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\AdsApi"
+                 id="simplystream.twitch_api.helix_api.ads"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\AdsApi"
+                 alias="simplystream.twitch_api.helix_api.ads"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\AnalyticsApi"
-                 id="simplystream.twitch_api.helix_api.analytics">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\AnalyticsApi"
+                 id="simplystream.twitch_api.helix_api.analytics"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\AnalyticsApi"
+                 alias="simplystream.twitch_api.helix_api.analytics"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\BitsApi"
-                 id="simplystream.twitch_api.helix_api.bits">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\BitsApi"
+                 id="simplystream.twitch_api.helix_api.bits"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\BitsApi"
+                 alias="simplystream.twitch_api.helix_api.bits"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\ChannelPointsApi"
-                 id="simplystream.twitch_api.helix_api.channel_points">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\ChannelPointsApi"
+                 id="simplystream.twitch_api.helix_api.channel_points"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\ChannelPointsApi"
+                 alias="simplystream.twitch_api.helix_api.channel_points"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\ChannelsApi"
-                 id="simplystream.twitch_api.helix_api.channels">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\ChannelsApi"
+                 id="simplystream.twitch_api.helix_api.channels"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\ChannelsApi"
+                 alias="simplystream.twitch_api.helix_api.channels"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\CharityApi"
-                 id="simplystream.twitch_api.helix_api.charity">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\CharityApi"
+                 id="simplystream.twitch_api.helix_api.charity"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\CharityApi"
+                 alias="simplystream.twitch_api.helix_api.charity"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\ChatApi"
-                 id="simplystream.twitch_api.helix_api.chat">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\ChatApi"
+                 id="simplystream.twitch_api.helix_api.chat"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\ChatApi"
+                 alias="simplystream.twitch_api.helix_api.chat"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\ClipsApi"
-                 id="simplystream.twitch_api.helix_api.clips">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\ClipsApi"
+                 id="simplystream.twitch_api.helix_api.clips"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\ClipsApi"
+                 alias="simplystream.twitch_api.helix_api.clips"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\EntitlementsApi"
-                 id="simplystream.twitch_api.helix_api.entitlements">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\EntitlementsApi"
+                 id="simplystream.twitch_api.helix_api.entitlements"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\EntitlementsApi"
+                 alias="simplystream.twitch_api.helix_api.entitlements"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\EventSubApi"
-                 id="simplystream.twitch_api.helix_api.event_sub">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\EventSubApi"
+                 id="simplystream.twitch_api.helix_api.event_sub"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\EventSubApi"
+                 alias="simplystream.twitch_api.helix_api.event_sub"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\ExtensionsApi"
-                 id="simplystream.twitch_api.helix_api.extensions">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\ExtensionsApi"
+                 id="simplystream.twitch_api.helix_api.extensions"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\ExtensionsApi"
+                 alias="simplystream.twitch_api.helix_api.extensions"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\GamesApi"
-                 id="simplystream.twitch_api.helix_api.games">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\GamesApi"
+                 id="simplystream.twitch_api.helix_api.games"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\GamesApi"
+                 alias="simplystream.twitch_api.helix_api.games"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\GoalsApi"
-                 id="simplystream.twitch_api.helix_api.goals">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\GoalsApi"
+                 id="simplystream.twitch_api.helix_api.goals"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\GoalsApi"
+                 alias="simplystream.twitch_api.helix_api.goals"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\HypeTrainApi"
-                 id="simplystream.twitch_api.helix_api.hype_train">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\HypeTrainApi"
+                 id="simplystream.twitch_api.helix_api.hype_train"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\HypeTrainApi"
+                 alias="simplystream.twitch_api.helix_api.hype_train"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\ModerationApi"
-                 id="simplystream.twitch_api.helix_api.moderation">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\ModerationApi"
+                 id="simplystream.twitch_api.helix_api.moderation"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\ModerationApi"
+                 alias="simplystream.twitch_api.helix_api.moderation"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\MusicApi"
-                 id="simplystream.twitch_api.helix_api.music">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\PollsApi"
+                 id="simplystream.twitch_api.helix_api.polls"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\PollsApi"
+                 alias="simplystream.twitch_api.helix_api.polls"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\PollsApi"
-                 id="simplystream.twitch_api.helix_api.polls">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\PredictionsApi"
+                 id="simplystream.twitch_api.helix_api.predictions"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\PredictionsApi"
+                 alias="simplystream.twitch_api.helix_api.predictions"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\PredictionsApi"
-                 id="simplystream.twitch_api.helix_api.predictions">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\RaidsApi"
+                 id="simplystream.twitch_api.helix_api.raids"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\RaidsApi"
+                 alias="simplystream.twitch_api.helix_api.raids"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\RaidsApi"
-                 id="simplystream.twitch_api.helix_api.raids">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\ScheduleApi"
+                 id="simplystream.twitch_api.helix_api.schedule"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\ScheduleApi"
+                 alias="simplystream.twitch_api.helix_api.schedule"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\ScheduleApi"
-                 id="simplystream.twitch_api.helix_api.schedule">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\SearchApi"
+                 id="simplystream.twitch_api.helix_api.search"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\SearchApi"
+                 alias="simplystream.twitch_api.helix_api.search"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\SearchApi"
-                 id="simplystream.twitch_api.helix_api.search">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\StreamsApi"
+                 id="simplystream.twitch_api.helix_api.streams"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\StreamsApi"
+                 alias="simplystream.twitch_api.helix_api.streams"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\StreamsApi"
-                 id="simplystream.twitch_api.helix_api.streams">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\SubscriptionsApi"
+                 id="simplystream.twitch_api.helix_api.subscriptions"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\SubscriptionsApi"
+                 alias="simplystream.twitch_api.helix_api.subscriptions"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\SubscriptionsApi"
-                 id="simplystream.twitch_api.helix_api.subscriptions">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\TeamsApi"
+                 id="simplystream.twitch_api.helix_api.teams"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\TeamsApi"
+                 alias="simplystream.twitch_api.helix_api.teams"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\TagsApi"
-                 id="simplystream.twitch_api.helix_api.tags">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\UsersApi"
+                 id="simplystream.twitch_api.helix_api.users"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\UsersApi"
+                 alias="simplystream.twitch_api.helix_api.users"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\TeamsApi"
-                 id="simplystream.twitch_api.helix_api.teams">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\VideosApi"
+                 id="simplystream.twitch_api.helix_api.videos"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\VideosApi"
+                 alias="simplystream.twitch_api.helix_api.videos"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\UsersApi"
-                 id="simplystream.twitch_api.helix_api.users">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
+        <service class="SimplyStream\TwitchApi\Helix\Api\WhispersApi"
+                 id="simplystream.twitch_api.helix_api.whispers"
+                 public="true">
+            <argument type="service" id="simplystream.twitch_api.helix_api.api_client"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\WhispersApi"
+                 alias="simplystream.twitch_api.helix_api.whispers"
+                 public="false"/>
 
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\VideosApi"
-                 id="simplystream.twitch_api.helix_api.videos">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
-        </service>
-
-        <service class="SimplyStream\TwitchApiBundle\Helix\Api\WhispersApi"
-                 id="simplystream.twitch_api.helix_api.whispers">
-            <argument type="service" id="simplystream_twitch_api.helix_api.api_client"/>
-        </service>
-
-        <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\EventSubService">
+        <service id="simplystream.twitch_api.helix.event_sub_service"
+                 class="SimplyStream\TwitchApi\Helix\EventSub\EventSubService"
+                 public="true">
             <argument type="service" id="simplystream.twitch_api.helix_api.event_sub"/>
-            <argument type="service" id="jms_serializer"/>
-            <argument type="service" id="simplystream_twitch_api.helix_authentication_provider.twitch_provider"/>
+            <argument type="service" id="simplystream.twitch_api.mapper_builder"/>
             <argument type="abstract"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\EventSub\EventSubService"
+                 alias="simplystream.twitch_api.helix.event_sub_service"
+                 public="false"/>
 
-        <service id="SimplyStream\TwitchApiBundle\Helix\Api\TwitchApi">
+        <service class="SimplyStream\TwitchApi\Helix\Api\TwitchApi"
+                 id="simplystream.twitch_api.helix_api.twitch_api"
+                 public="true">
             <argument type="service" id="simplystream.twitch_api.helix_api.analytics"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.bits"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.channel_points"/>
@@ -167,7 +267,6 @@
             <argument type="service" id="simplystream.twitch_api.helix_api.goals"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.hype_train"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.moderation"/>
-            <argument type="service" id="simplystream.twitch_api.helix_api.music"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.polls"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.predictions"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.raids"/>
@@ -175,61 +274,31 @@
             <argument type="service" id="simplystream.twitch_api.helix_api.search"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.streams"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.subscriptions"/>
-            <argument type="service" id="simplystream.twitch_api.helix_api.tags"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.teams"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.users"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.videos"/>
             <argument type="service" id="simplystream.twitch_api.helix_api.whispers"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\TwitchApi"
+                 alias="simplystream.twitch_api.helix_api.twitch_api"
+                 public="false"/>
 
-        <service id="simplystream_twitch_api.serializer.twitch_response_handler"
-                 class="SimplyStream\TwitchApiBundle\Serializer\TwitchResponseHandler">
-            <argument type="service" id="jms_serializer.object_constructor"/>
-            <argument type="service" id="jms_serializer.accessor_strategy"/>
+        <service id="simplystream.twitch_api.http_client"
+                 class="Symfony\Component\HttpClient\HttplugClient"/>
+        <service id="simplystream.twitch_api.psr17.factory" class="Nyholm\Psr7\Factory\Psr17Factory"/>
 
-            <tag name="jms_serializer.handler"
-                 type="SimplyStream\TwitchApiBundle\Helix\Dto\TwitchResponse"
-                 direction="deserialization"
-                 format="json"/>
+        <service id="simplystream.twitch_api.helix_api.api_client"
+                 class="SimplyStream\TwitchApi\Helix\Api\ApiClient" public="true">
+            <argument key="$client" type="service" id="simplystream.twitch_api.http_client"/>
+            <argument key="$requestFactory" type="service" id="simplystream.twitch_api.psr17.factory"/>
+            <argument key="$mapperBuilder" type="service" id="simplystream.twitch_api.mapper_builder"/>
+            <argument key="$uriFactory" type="service" id="simplystream.twitch_api.http_client"/>
+            <argument key="$options" type="abstract"/>
         </service>
+        <service id="SimplyStream\TwitchApi\Helix\Api\ApiClient"
+                 alias="simplystream.twitch_api.helix_api.api_client"
+                 public="false"/>
 
-        <service id="simplystream_twitch_api.serializer.eventsub_response_handler"
-                 class="SimplyStream\TwitchApiBundle\Serializer\TwitchResponseHandler">
-            <argument type="service" id="jms_serializer.object_constructor"/>
-            <argument type="service" id="jms_serializer.accessor_strategy"/>
-
-            <tag name="jms_serializer.handler"
-                 type="SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\EventResponse"
-                 direction="deserialization"
-                 method="deserializeTwitchResponseFromjson"
-                 format="json"/>
-        </service>
-
-        <service id="simplystream_twitch_api.serializer.subscription_response_handler"
-                 class="SimplyStream\TwitchApiBundle\Serializer\TwitchResponseHandler">
-            <argument type="service" id="jms_serializer.object_constructor"/>
-            <argument type="service" id="jms_serializer.accessor_strategy"/>
-
-            <tag name="jms_serializer.handler"
-                 type="SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Subscription"
-                 direction="deserialization"
-                 method="deserializeTwitchResponseFromjson"
-                 format="json"/>
-        </service>
-
-        <service id="simplystream_twitch_api.serializer.subscription_response_handler.serialize"
-                 class="SimplyStream\TwitchApiBundle\Serializer\TwitchResponseHandler">
-            <argument type="service" id="jms_serializer.object_constructor"/>
-            <argument type="service" id="jms_serializer.accessor_strategy"/>
-
-            <tag name="jms_serializer.handler"
-                 type="SimplyStream\TwitchApiBundle\Helix\EventSub\Dto\Subscription"
-                 direction="serialization"
-                 method="serializeTwitchResponseToArray"
-                 format="json"/>
-        </service>
-
-        <service id="SimplyStream\TwitchApiBundle\Helix\EventSub\Factories\ConditionFactory"/>
-        <service id="SimplyStream\TwitchApiBundle\Helix\Authentication\Token\Storage\InMemoryStorage"/>
+        <service id="simplystream.twitch_api.mapper_builder" class="CuyZ\Valinor\MapperBuilder"/>
     </services>
 </container>
