@@ -298,7 +298,6 @@
         <service id="SimplyStream\TwitchApi\Helix\Api\ApiClient"
                  alias="simplystream.twitch_api.helix_api.api_client"
                  public="false"/>
-
         <service id="simplystream.twitch_api.mapper_builder" class="CuyZ\Valinor\MapperBuilder"/>
     </services>
 </container>
