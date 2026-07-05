@@ -4,7 +4,7 @@ declare(strict_types=1);
 /*
  * MIT License
  *
- * Copyright (c) 2021 AaricDev (simply-stream.com)
+ * Copyright (c) 2021 TobiDev (simply-stream.com)
  */
 
 namespace SimplyStream\TwitchApiBundle\DependencyInjection;
