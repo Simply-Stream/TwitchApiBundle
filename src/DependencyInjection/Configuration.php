@@ -1,54 +1,64 @@
-<?php declare(strict_types = 1);
+<?php
 
 /*
  * MIT License
  *
- * Copyright (c) 2021 AaricDev (simply-stream.com)
+ * Copyright (c) 2021 TobiDev (simply-stream.com)
  */
+
+declare(strict_types=1);
 
 namespace SimplyStream\TwitchApiBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('simplystream_twitch_api');
-        $rootNode = $treeBuilder->getRootNode();
+
         //@formatter:off
-        $rootNode
+        $treeBuilder->getRootNode()
             ->children()
-                ->scalarNode('http_client')
+                ->scalarNode('client_id')
                     ->isRequired()
-                    ->info('Service id of HTTP client to use (must implement \Psr\Http\Client\ClientInterface)')
+                    ->cannotBeEmpty()
+                    ->info('Your application\'s client ID, sent as the Client-Id header on every request.')
                 ->end()
-                ->scalarNode('serializer')
-                    ->isRequired()
-                    ->info('Service id of HTTP client to use (must implement \JMS\Serializer\SerializerInterface)')
+                ->scalarNode('base_url')
+                    ->defaultNull()
+                    ->info('Override the Helix base URL, for example to point at the Twitch CLI\'s mock API.')
                 ->end()
-                ->scalarNode('request_factory')
-                    ->isRequired()
-                    ->info('Service id of Request factory to use (must implement \Psr\Http\Message\RequestFactoryInterface)')
-                ->end()
-                ->scalarNode('stream_factory')
-                    ->isRequired()
-                    ->info('Service id of Request factory to use (must implement \Psr\Http\Message\StreamFactoryInterface)')
-                ->end()
-                ->scalarNode('twitch_id')->isRequired()->end()
-                ->scalarNode('twitch_secret')->isRequired()->end()
-                ->scalarNode('redirect_uri')->isRequired()->end()
-                ->arrayNode('scopes')
-                    ->scalarPrototype()->end()
-                ->end()
-                ->arrayNode('webhook')
-                    ->children()
-                        ->scalarNode('secret')->isRequired()->end()
+            ->arrayNode('event_sub')
+                ->info('Only needed if you receive EventSub webhooks.')
+                ->children()
+                    ->scalarNode('webhook_secret')
+                        ->defaultNull()
+                        ->info('The secret you passed to Twitch when creating the subscription. Required to verify incoming webhook signatures.')
+                    ->end()
+                    ->integerNode('freshness_tolerance_seconds')
+                        ->defaultNull()
+                        ->min(1)
+                        ->info('How far a message timestamp may deviate from now before it is rejected. Defaults to the library\'s 600 seconds.')
+                    ->end()
+                    ->scalarNode('processed_message_store')
+                        ->defaultNull()
+                        ->info('Service ID of a ProcessedMessageStoreInterface implementation. Defaults to an in-memory store, which does NOT deduplicate across requests — see the README.')
+                    ->end()
+                    ->scalarNode('clock')
+                        ->defaultNull()
+                        ->info('Service ID of a ClockInterface implementation. Defaults to the system clock.')
+                    ->end()
+                    ->arrayNode('event_classes')
+                        ->scalarPrototype()->end()
+                        ->info('Fully qualified event class names to register. Defaults to every event class shipped with the library.')
+                        ->end()
                     ->end()
                 ->end()
             ->end()
-        ;
+        ->end();
         //@formatter:on
 
         return $treeBuilder;
