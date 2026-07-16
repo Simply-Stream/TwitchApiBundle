@@ -15,7 +15,7 @@
         "symfony/http-client": "^6.2 || ^7.0",
         "nyholm/psr7": "^1.5",
         "simply-stream/twitch-api": "2.0.x-dev",
-        "simply-stream/twitch-api-symfony-serializer-bridge": "dev-develop"
+        "simply-stream/twitch-api-symfony-serializer-bridge": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
