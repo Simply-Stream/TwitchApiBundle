@@ -17,6 +17,14 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class SimplyStreamTwitchApiExtension extends Extension
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function getAlias(): string
+    {
+        return 'simplystream_twitch_api';
+    }
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
@@ -24,7 +32,7 @@ final class SimplyStreamTwitchApiExtension extends Extension
 
         $config = $this->processConfiguration(new Configuration(), $configs);
 
-        $apiClient = $container->getDefinition('simplystream.twitch_api.helix_api.api_client');
+        $apiClient = $container->getDefinition('simplystream.twitch_api.api_client');
         $apiClient->setArgument('$clientId', $config['client_id']);
 
         if (null !== $config['base_url']) {
