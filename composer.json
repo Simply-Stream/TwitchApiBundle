@@ -10,9 +10,9 @@
     ],
     "require": {
         "php": "^8.4",
-        "symfony/http-foundation": "^6.2 || ^7.0",
-        "symfony/property-info": "^6.2 || ^7.0",
-        "symfony/http-client": "^6.2 || ^7.0",
+        "symfony/http-foundation": "^6.2 || ^7.0 || ^8.0",
+        "symfony/property-info": "^6.2 || ^7.0 || ^8.0",
+        "symfony/http-client": "^6.2 || ^7.0 || ^8.0",
         "nyholm/psr7": "^1.5",
         "simply-stream/twitch-api": "^2.0",
         "simply-stream/twitch-api-symfony-serializer-bridge": "^1.0"
